@@ -1,0 +1,3 @@
+Do not use terminal or PowerShell commands (such as Select-String, grep, Get-Content, or cat) to search, read, or inspect files. Use built-in file reading and editing tools directly. Perform file edits directly without running shell commands.
+
+Do not use terminal commands or PowerShell scripts (such as New-Item, Set-Content, mkdir, echo, or Select-String) to create folders, write files, or inspect code. Always perform file and directory creation using native file-system tools directly.

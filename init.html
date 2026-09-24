@@ -1,0 +1,2882 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Servisin Aja — All Screens Artboard Layout for Figma</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: { DEFAULT: "#FF5722", dark: "#E64A19", 50: "#FFF1EC" },
+              ink: "#1A1A1A",
+              surface: "#F8F9FA",
+              good: "#22C55E",
+              warn: "#F59E0B",
+              info: "#3B82F6",
+              line: "#EAEAEC",
+            },
+            fontFamily: {
+              sans: ['"Plus Jakarta Sans"', "system-ui", "sans-serif"],
+            },
+            borderRadius: { xl2: "20px" },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+        background-color: #0f172a;
+      }
+      .frame {
+        width: 390px;
+        height: 844px;
+        position: relative;
+        background: #ffffff;
+        border-radius: 42px;
+        overflow: hidden;
+        flex-shrink: 0;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      }
+      .tap {
+        min-height: 44px;
+      }
+      .qr-cell {
+        background: #1a1a1a;
+      }
+      ::-webkit-scrollbar {
+        display: none;
+      }
+      * {
+        scrollbar-width: none;
+      }
+    </style>
+  </head>
+  <body class="p-10 min-h-screen text-slate-100">
+    <!-- Header Info -->
+    <header class="max-w-7xl mx-auto mb-10 text-center">
+      <h1 class="text-3xl font-extrabold text-white tracking-tight">
+        Servisin Aja — Figma UI Export Canvas
+      </h1>
+      <p class="text-slate-400 text-sm mt-2">
+        15 UI Screens rendered statically side-by-side for 1-click import into
+        Figma using <b>html.to.design</b> or <b>HTML to Figma</b>.
+      </p>
+    </header>
+
+    <!-- Screens Grid Container -->
+    <div
+      class="flex flex-wrap gap-12 justify-center items-start max-w-[1800px] mx-auto"
+    >
+      <!-- ================= 01. SPLASH ================= -->
+      <div class="flex flex-col items-center gap-3">
+        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider"
+          >01 · Splash</span
+        >
+        <div class="frame ring-8 ring-black/40 flex flex-col justify-between">
+          <!-- Status bar -->
+          <div
+            class="h-11 flex items-center justify-between px-7 z-40 text-white"
+          >
+            <span class="text-[13px] font-bold tracking-tight">9:41</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="none">
+                <rect
+                  x="0"
+                  y="7"
+                  width="3"
+                  height="5"
+                  rx="0.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="5"
+                  y="4.5"
+                  width="3"
+                  height="7.5"
+                  rx="0.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="10"
+                  y="2"
+                  width="3"
+                  height="10"
+                  rx="0.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="15"
+                  y="0"
+                  width="3"
+                  height="12"
+                  rx="0.5"
+                  fill="currentColor"
+                  opacity=".9"
+                />
+              </svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+                <path
+                  d="M8 9.5a1.3 1.3 0 100 2.6 1.3 1.3 0 000-2.6zM4.8 6.8a4.5 4.5 0 016.4 0l-1.1 1.1a3 3 0 00-4.2 0L4.8 6.8zM2.2 4.2a8.2 8.2 0 0111.6 0L12.7 5.3a6.7 6.7 0 00-9.4 0L2.2 4.2z"
+                  fill="currentColor"
+                />
+              </svg>
+              <svg width="24" height="12" viewBox="0 0 24 12" fill="none">
+                <rect
+                  x="0.5"
+                  y="0.5"
+                  width="21"
+                  height="11"
+                  rx="2.5"
+                  stroke="currentColor"
+                />
+                <rect
+                  x="2"
+                  y="2"
+                  width="16"
+                  height="8"
+                  rx="1.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="22.5"
+                  y="4"
+                  width="1.5"
+                  height="4"
+                  rx="0.7"
+                  fill="currentColor"
+                />
+              </svg>
+            </div>
+          </div>
+          <div
+            class="flex-1 flex flex-col items-center justify-center bg-gradient-to-br from-brand to-brand-dark text-white"
+          >
+            <div
+              class="w-20 h-20 rounded-3xl bg-white/15 flex items-center justify-center mb-4"
+            >
+              <svg
+                width="34"
+                height="34"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="white"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <circle cx="5" cy="17" r="3" />
+                <circle cx="19" cy="17" r="3" />
+                <path d="M5 17h6l3-7h4M9 10H6l-1 3M14 6h3l2 4" />
+              </svg>
+            </div>
+            <h1 class="font-extrabold text-[22px] tracking-tight">
+              Servisin Aja
+            </h1>
+            <p class="text-white/70 text-[12.5px] mt-1">
+              Servis motor, gampang aja
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= 02. ONBOARDING ================= -->
+      <div class="flex flex-col items-center gap-3">
+        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider"
+          >02 · Onboarding</span
+        >
+        <div class="frame ring-8 ring-black/40 flex flex-col px-6">
+          <div class="h-11 flex items-center justify-between px-1 text-ink">
+            <span class="text-[13px] font-bold tracking-tight">9:41</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="none">
+                <rect
+                  x="0"
+                  y="7"
+                  width="3"
+                  height="5"
+                  rx="0.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="5"
+                  y="4.5"
+                  width="3"
+                  height="7.5"
+                  rx="0.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="10"
+                  y="2"
+                  width="3"
+                  height="10"
+                  rx="0.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="15"
+                  y="0"
+                  width="3"
+                  height="12"
+                  rx="0.5"
+                  fill="currentColor"
+                  opacity=".9"
+                />
+              </svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+                <path
+                  d="M8 9.5a1.3 1.3 0 100 2.6 1.3 1.3 0 000-2.6zM4.8 6.8a4.5 4.5 0 016.4 0l-1.1 1.1a3 3 0 00-4.2 0L4.8 6.8zM2.2 4.2a8.2 8.2 0 0111.6 0L12.7 5.3a6.7 6.7 0 00-9.4 0L2.2 4.2z"
+                  fill="currentColor"
+                />
+              </svg>
+              <svg width="24" height="12" viewBox="0 0 24 12" fill="none">
+                <rect
+                  x="0.5"
+                  y="0.5"
+                  width="21"
+                  height="11"
+                  rx="2.5"
+                  stroke="currentColor"
+                />
+                <rect
+                  x="2"
+                  y="2"
+                  width="16"
+                  height="8"
+                  rx="1.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="22.5"
+                  y="4"
+                  width="1.5"
+                  height="4"
+                  rx="0.7"
+                  fill="currentColor"
+                />
+              </svg>
+            </div>
+          </div>
+          <div
+            class="flex-1 flex flex-col items-center justify-center text-center"
+          >
+            <div
+              class="w-40 h-40 rounded-3xl bg-brand-50 flex items-center justify-center mb-6"
+            >
+              <svg
+                width="48"
+                height="48"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#FF5722"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <circle cx="5" cy="17" r="3" />
+                <circle cx="19" cy="17" r="3" />
+                <path d="M5 17h6l3-7h4M9 10H6l-1 3M14 6h3l2 4" />
+              </svg>
+            </div>
+            <h2 class="font-bold text-ink text-[19px]">
+              Booking Banyak Motor Sekaligus
+            </h2>
+            <p
+              class="text-ink/50 text-[13px] mt-2 leading-relaxed max-w-[260px]"
+            >
+              Atur servis, part, dan keluhan tiap motor dalam satu transaksi.
+            </p>
+          </div>
+          <div class="flex justify-center gap-1.5 mb-5">
+            <div class="h-1.5 rounded-full w-6 bg-brand"></div>
+            <div class="h-1.5 rounded-full w-1.5 bg-line"></div>
+            <div class="h-1.5 rounded-full w-1.5 bg-line"></div>
+          </div>
+          <button
+            class="tap w-full rounded-xl font-bold text-[14px] py-3.5 bg-brand text-white mb-2.5"
+          >
+            Lanjut
+          </button>
+          <button
+            class="tap w-full text-center text-[13px] text-ink/40 font-semibold pb-6"
+          >
+            Lewati
+          </button>
+        </div>
+      </div>
+
+      <!-- ================= 03. LOGIN ================= -->
+      <div class="flex flex-col items-center gap-3">
+        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider"
+          >03 · Login</span
+        >
+        <div
+          class="frame ring-8 ring-black/40 flex flex-col px-6 justify-between py-6"
+        >
+          <div class="h-11 flex items-center justify-between px-1 text-ink">
+            <span class="text-[13px] font-bold tracking-tight">9:41</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="none">
+                <rect
+                  x="0"
+                  y="7"
+                  width="3"
+                  height="5"
+                  rx="0.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="5"
+                  y="4.5"
+                  width="3"
+                  height="7.5"
+                  rx="0.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="10"
+                  y="2"
+                  width="3"
+                  height="10"
+                  rx="0.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="15"
+                  y="0"
+                  width="3"
+                  height="12"
+                  rx="0.5"
+                  fill="currentColor"
+                  opacity=".9"
+                />
+              </svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+                <path
+                  d="M8 9.5a1.3 1.3 0 100 2.6 1.3 1.3 0 000-2.6zM4.8 6.8a4.5 4.5 0 016.4 0l-1.1 1.1a3 3 0 00-4.2 0L4.8 6.8zM2.2 4.2a8.2 8.2 0 0111.6 0L12.7 5.3a6.7 6.7 0 00-9.4 0L2.2 4.2z"
+                  fill="currentColor"
+                />
+              </svg>
+              <svg width="24" height="12" viewBox="0 0 24 12" fill="none">
+                <rect
+                  x="0.5"
+                  y="0.5"
+                  width="21"
+                  height="11"
+                  rx="2.5"
+                  stroke="currentColor"
+                />
+                <rect
+                  x="2"
+                  y="2"
+                  width="16"
+                  height="8"
+                  rx="1.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="22.5"
+                  y="4"
+                  width="1.5"
+                  height="4"
+                  rx="0.7"
+                  fill="currentColor"
+                />
+              </svg>
+            </div>
+          </div>
+          <div class="my-auto">
+            <h2 class="font-bold text-ink text-[20px]">
+              Masuk ke Servisin Aja
+            </h2>
+            <p class="text-ink/50 text-[13px] mt-1.5 mb-6">
+              Pakai nomor HP kamu untuk masuk atau daftar
+            </p>
+            <label class="text-[12.5px] font-semibold text-ink/60 mb-1.5 block"
+              >Nomor HP</label
+            >
+            <div
+              class="flex items-center rounded-xl border border-line px-3.5 mb-5 bg-surface"
+            >
+              <span
+                class="text-[13px] font-semibold text-ink/60 pr-2 border-r border-line"
+                >+62</span
+              >
+              <input
+                type="tel"
+                value="812 3456 7890"
+                class="tap flex-1 text-[13.5px] px-3 py-3 bg-transparent outline-none text-ink font-medium"
+                readonly
+              />
+            </div>
+            <button
+              class="tap w-full rounded-xl font-bold text-[14px] py-3.5 bg-brand text-white"
+            >
+              Kirim Kode OTP
+            </button>
+            <p
+              class="text-[11.5px] text-ink/40 text-center mt-4 leading-relaxed px-4"
+            >
+              Dengan melanjutkan kamu setuju pada Syarat &amp; Ketentuan serta
+              Kebijakan Privasi Servisin Aja
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= 04. OTP ================= -->
+      <div class="flex flex-col items-center gap-3">
+        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider"
+          >04 · OTP Verification</span
+        >
+        <div class="frame ring-8 ring-black/40 flex flex-col px-6 py-6">
+          <div class="h-11 flex items-center justify-between px-1 text-ink">
+            <span class="text-[13px] font-bold tracking-tight">9:41</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="none">
+                <rect
+                  x="0"
+                  y="7"
+                  width="3"
+                  height="5"
+                  rx="0.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="5"
+                  y="4.5"
+                  width="3"
+                  height="7.5"
+                  rx="0.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="10"
+                  y="2"
+                  width="3"
+                  height="10"
+                  rx="0.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="15"
+                  y="0"
+                  width="3"
+                  height="12"
+                  rx="0.5"
+                  fill="currentColor"
+                  opacity=".9"
+                />
+              </svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+                <path
+                  d="M8 9.5a1.3 1.3 0 100 2.6 1.3 1.3 0 000-2.6zM4.8 6.8a4.5 4.5 0 016.4 0l-1.1 1.1a3 3 0 00-4.2 0L4.8 6.8zM2.2 4.2a8.2 8.2 0 0111.6 0L12.7 5.3a6.7 6.7 0 00-9.4 0L2.2 4.2z"
+                  fill="currentColor"
+                />
+              </svg>
+              <svg width="24" height="12" viewBox="0 0 24 12" fill="none">
+                <rect
+                  x="0.5"
+                  y="0.5"
+                  width="21"
+                  height="11"
+                  rx="2.5"
+                  stroke="currentColor"
+                />
+                <rect
+                  x="2"
+                  y="2"
+                  width="16"
+                  height="8"
+                  rx="1.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="22.5"
+                  y="4"
+                  width="1.5"
+                  height="4"
+                  rx="0.7"
+                  fill="currentColor"
+                />
+              </svg>
+            </div>
+          </div>
+          <div class="my-auto">
+            <button
+              class="tap w-9 h-9 -ml-1.5 mb-4 rounded-full flex items-center justify-center"
+            >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#1A1A1A"
+                stroke-width="2.4"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M15 18l-6-6 6-6" />
+              </svg>
+            </button>
+            <h2 class="font-bold text-ink text-[20px]">Masukkan Kode OTP</h2>
+            <p class="text-ink/50 text-[13px] mt-1.5 mb-6">
+              Kode 4 digit dikirim ke
+              <span class="font-semibold text-ink">+62 812 3456 7890</span>
+            </p>
+            <div class="flex gap-3 mb-6">
+              <div
+                class="tap w-full text-center text-[19px] font-bold rounded-xl border-2 border-brand py-3 text-ink bg-brand-50"
+              >
+                8
+              </div>
+              <div
+                class="tap w-full text-center text-[19px] font-bold rounded-xl border-2 border-brand py-3 text-ink bg-brand-50"
+              >
+                4
+              </div>
+              <div
+                class="tap w-full text-center text-[19px] font-bold rounded-xl border-2 border-brand py-3 text-ink bg-brand-50"
+              >
+                2
+              </div>
+              <div
+                class="tap w-full text-center text-[19px] font-bold rounded-xl border-2 border-brand py-3 text-ink bg-brand-50"
+              >
+                9
+              </div>
+            </div>
+            <button
+              class="tap w-full rounded-xl font-bold text-[14px] py-3.5 bg-brand text-white"
+            >
+              Verifikasi
+            </button>
+            <p class="text-[12.5px] text-ink/40 text-center mt-4">
+              Kirim ulang kode dalam
+              <span class="font-semibold text-ink">30 detik</span>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= 05. HOME ================= -->
+      <div class="flex flex-col items-center gap-3">
+        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider"
+          >05 · Home</span
+        >
+        <div class="frame ring-8 ring-black/40 flex flex-col">
+          <div
+            class="h-11 flex items-center justify-between px-7 text-ink z-10"
+          >
+            <span class="text-[13px] font-bold tracking-tight">9:41</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="none">
+                <rect
+                  x="0"
+                  y="7"
+                  width="3"
+                  height="5"
+                  rx="0.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="5"
+                  y="4.5"
+                  width="3"
+                  height="7.5"
+                  rx="0.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="10"
+                  y="2"
+                  width="3"
+                  height="10"
+                  rx="0.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="15"
+                  y="0"
+                  width="3"
+                  height="12"
+                  rx="0.5"
+                  fill="currentColor"
+                  opacity=".9"
+                />
+              </svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+                <path
+                  d="M8 9.5a1.3 1.3 0 100 2.6 1.3 1.3 0 000-2.6zM4.8 6.8a4.5 4.5 0 016.4 0l-1.1 1.1a3 3 0 00-4.2 0L4.8 6.8zM2.2 4.2a8.2 8.2 0 0111.6 0L12.7 5.3a6.7 6.7 0 00-9.4 0L2.2 4.2z"
+                  fill="currentColor"
+                />
+              </svg>
+              <svg width="24" height="12" viewBox="0 0 24 12" fill="none">
+                <rect
+                  x="0.5"
+                  y="0.5"
+                  width="21"
+                  height="11"
+                  rx="2.5"
+                  stroke="currentColor"
+                />
+                <rect
+                  x="2"
+                  y="2"
+                  width="16"
+                  height="8"
+                  rx="1.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="22.5"
+                  y="4"
+                  width="1.5"
+                  height="4"
+                  rx="0.7"
+                  fill="currentColor"
+                />
+              </svg>
+            </div>
+          </div>
+
+          <div class="px-5 pt-2 pb-3 flex items-center justify-between">
+            <div>
+              <p class="text-[13px] text-ink/50 font-medium">Selamat pagi 👋</p>
+              <h1 class="text-[19px] font-bold text-ink">Halo, Dimas</h1>
+            </div>
+            <div
+              class="w-11 h-11 rounded-full bg-surface flex items-center justify-center relative"
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#1A1A1A"
+                stroke-width="2"
+                stroke-linecap="round"
+              >
+                <path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
+                <path d="M13.7 21a2 2 0 01-3.4 0" />
+              </svg>
+              <span
+                class="absolute top-2 right-2.5 w-2 h-2 bg-brand rounded-full"
+              ></span>
+            </div>
+          </div>
+
+          <div class="flex-1 overflow-y-auto px-5 pb-24">
+            <div
+              class="w-full text-left rounded-xl2 p-5 bg-gradient-to-br from-brand to-brand-dark text-white relative overflow-hidden mt-1 shadow-lg shadow-brand/20"
+            >
+              <span
+                class="absolute -right-6 -bottom-8 w-32 h-32 rounded-full bg-white/10"
+              ></span>
+              <span
+                class="inline-block text-[11px] font-semibold bg-white/20 backdrop-blur px-2.5 py-1 rounded-full mb-3"
+                >🆕 Booking Multi Motor</span
+              >
+              <h2 class="text-[20px] font-bold leading-snug">
+                Servis beberapa motor,<br />satu kali booking
+              </h2>
+              <p class="text-[13px] text-white/85 mt-1.5 mb-4">
+                Atur paket &amp; keluhan tiap motor sendiri-sendiri
+              </p>
+              <span
+                class="inline-flex items-center gap-1.5 bg-white text-brand font-semibold text-[13px] px-4 py-2.5 rounded-lg"
+                >Mulai Booking
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                >
+                  <path d="M5 12h14M13 5l7 7-7 7" />
+                </svg>
+              </span>
+            </div>
+
+            <div class="flex items-center justify-between mt-6 mb-3">
+              <h3 class="text-[15px] font-bold text-ink">Garasi Kamu</h3>
+              <span class="text-[12px] text-brand font-semibold">3 Motor</span>
+            </div>
+            <div class="flex gap-3 overflow-x-auto -mx-5 px-5 pb-1">
+              <div
+                class="min-w-[210px] text-left rounded-xl2 border border-line p-4 bg-white shrink-0"
+              >
+                <div class="flex items-center justify-between mb-3">
+                  <div
+                    class="w-10 h-10 rounded-full bg-surface flex items-center justify-center"
+                  >
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#FF5722"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                    >
+                      <circle cx="5" cy="17" r="3" />
+                      <circle cx="19" cy="17" r="3" />
+                      <path d="M5 17h6l3-7h4M9 10H6l-1 3M14 6h3l2 4" />
+                    </svg>
+                  </div>
+                  <span
+                    class="text-[11px] font-semibold px-2 py-1 rounded-full bg-good/10 text-good"
+                    >Kondisi Baik</span
+                  >
+                </div>
+                <p class="font-bold text-ink text-[14px] leading-tight">
+                  Honda Vario 150
+                </p>
+                <p class="text-[12px] text-ink/50 mt-0.5">B 4567 ABC</p>
+                <p class="text-[11px] text-ink/40 mt-2">
+                  Servis terakhir: 2 bulan lalu
+                </p>
+              </div>
+              <div
+                class="min-w-[210px] text-left rounded-xl2 border border-line p-4 bg-white shrink-0"
+              >
+                <div class="flex items-center justify-between mb-3">
+                  <div
+                    class="w-10 h-10 rounded-full bg-surface flex items-center justify-center"
+                  >
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#FF5722"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                    >
+                      <circle cx="5" cy="17" r="3" />
+                      <circle cx="19" cy="17" r="3" />
+                      <path d="M5 17h6l3-7h4M9 10H6l-1 3M14 6h3l2 4" />
+                    </svg>
+                  </div>
+                  <span
+                    class="text-[11px] font-semibold px-2 py-1 rounded-full bg-warn/10 text-warn"
+                    >Perlu Cek</span
+                  >
+                </div>
+                <p class="font-bold text-ink text-[14px] leading-tight">
+                  Honda Beat Street
+                </p>
+                <p class="text-[12px] text-ink/50 mt-0.5">B 2210 XYZ</p>
+                <p class="text-[11px] text-ink/40 mt-2">
+                  Servis terakhir: 5 bulan lalu
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom Nav -->
+          <nav
+            class="absolute bottom-0 inset-x-0 bg-white border-t border-line pb-4 pt-2.5 px-4 flex justify-between z-30"
+          >
+            <div class="flex flex-col items-center gap-1 w-16 text-brand">
+              <svg
+                width="21"
+                height="21"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M3 11l9-7 9 7" />
+                <path d="M5 10v10h14V10" />
+              </svg>
+              <span class="text-[10.5px] font-semibold">Beranda</span>
+            </div>
+            <div class="flex flex-col items-center gap-1 w-16 text-ink/35">
+              <svg
+                width="21"
+                height="21"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <circle cx="6" cy="17" r="2.5" />
+                <circle cx="17" cy="17" r="2.5" />
+                <path d="M4 17h1l2.5-6h6L16 17h1M8 8h6" />
+              </svg>
+              <span class="text-[10.5px] font-semibold">Garasi</span>
+            </div>
+            <div class="flex flex-col items-center gap-1 w-16 text-ink/35">
+              <svg
+                width="21"
+                height="21"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <circle cx="12" cy="12" r="8.5" />
+                <path d="M12 7v5l3.5 2" />
+              </svg>
+              <span class="text-[10.5px] font-semibold">Riwayat</span>
+            </div>
+            <div class="flex flex-col items-center gap-1 w-16 text-ink/35">
+              <svg
+                width="21"
+                height="21"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <circle cx="12" cy="8" r="3.5" />
+                <path d="M4.5 20c1.5-4 5-5.5 7.5-5.5S18 16 19.5 20" />
+              </svg>
+              <span class="text-[10.5px] font-semibold">Akun</span>
+            </div>
+          </nav>
+        </div>
+      </div>
+
+      <!-- ================= 06. GARAGE ================= -->
+      <div class="flex flex-col items-center gap-3">
+        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider"
+          >06 · Garage</span
+        >
+        <div class="frame ring-8 ring-black/40 flex flex-col">
+          <div
+            class="h-11 flex items-center justify-between px-7 text-ink z-10"
+          >
+            <span class="text-[13px] font-bold tracking-tight">9:41</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="none">
+                <rect
+                  x="0"
+                  y="7"
+                  width="3"
+                  height="5"
+                  rx="0.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="5"
+                  y="4.5"
+                  width="3"
+                  height="7.5"
+                  rx="0.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="10"
+                  y="2"
+                  width="3"
+                  height="10"
+                  rx="0.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="15"
+                  y="0"
+                  width="3"
+                  height="12"
+                  rx="0.5"
+                  fill="currentColor"
+                  opacity=".9"
+                />
+              </svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+                <path
+                  d="M8 9.5a1.3 1.3 0 100 2.6 1.3 1.3 0 000-2.6zM4.8 6.8a4.5 4.5 0 016.4 0l-1.1 1.1a3 3 0 00-4.2 0L4.8 6.8zM2.2 4.2a8.2 8.2 0 0111.6 0L12.7 5.3a6.7 6.7 0 00-9.4 0L2.2 4.2z"
+                  fill="currentColor"
+                />
+              </svg>
+              <svg width="24" height="12" viewBox="0 0 24 12" fill="none">
+                <rect
+                  x="0.5"
+                  y="0.5"
+                  width="21"
+                  height="11"
+                  rx="2.5"
+                  stroke="currentColor"
+                />
+                <rect
+                  x="2"
+                  y="2"
+                  width="16"
+                  height="8"
+                  rx="1.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="22.5"
+                  y="4"
+                  width="1.5"
+                  height="4"
+                  rx="0.7"
+                  fill="currentColor"
+                />
+              </svg>
+            </div>
+          </div>
+
+          <div class="px-5 pt-2 pb-3 flex items-center justify-between">
+            <h1 class="text-[19px] font-bold text-ink">Garasi Kamu</h1>
+            <div
+              class="w-10 h-10 rounded-full bg-brand-50 text-brand flex items-center justify-center"
+            >
+              <svg
+                width="15"
+                height="15"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.6"
+              >
+                <path d="M12 5v14M5 12h14" />
+              </svg>
+            </div>
+          </div>
+
+          <div class="flex-1 overflow-y-auto px-5 pb-24 space-y-2.5">
+            <div
+              class="w-full text-left rounded-xl2 border border-line p-3.5 flex items-center gap-3 bg-white"
+            >
+              <div
+                class="w-11 h-11 rounded-full bg-surface flex items-center justify-center shrink-0"
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#FF5722"
+                  stroke-width="2"
+                >
+                  <circle cx="5" cy="17" r="3" />
+                  <circle cx="19" cy="17" r="3" />
+                  <path d="M5 17h6l3-7h4M9 10H6l-1 3M14 6h3l2 4" />
+                </svg>
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="font-bold text-ink text-[14px] truncate">
+                  Honda Vario 150
+                </p>
+                <p class="text-[12px] text-ink/50">B 4567 ABC</p>
+              </div>
+              <span
+                class="text-[11px] font-semibold px-2 py-1 rounded-full shrink-0 bg-good/10 text-good"
+                >Baik</span
+              >
+            </div>
+            <div
+              class="w-full text-left rounded-xl2 border border-line p-3.5 flex items-center gap-3 bg-white"
+            >
+              <div
+                class="w-11 h-11 rounded-full bg-surface flex items-center justify-center shrink-0"
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#FF5722"
+                  stroke-width="2"
+                >
+                  <circle cx="5" cy="17" r="3" />
+                  <circle cx="19" cy="17" r="3" />
+                  <path d="M5 17h6l3-7h4M9 10H6l-1 3M14 6h3l2 4" />
+                </svg>
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="font-bold text-ink text-[14px] truncate">
+                  Honda Beat Street
+                </p>
+                <p class="text-[12px] text-ink/50">B 2210 XYZ</p>
+              </div>
+              <span
+                class="text-[11px] font-semibold px-2 py-1 rounded-full shrink-0 bg-warn/10 text-warn"
+                >Cek</span
+              >
+            </div>
+            <div
+              class="w-full text-left rounded-xl2 border border-line p-3.5 flex items-center gap-3 bg-white"
+            >
+              <div
+                class="w-11 h-11 rounded-full bg-surface flex items-center justify-center shrink-0"
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#FF5722"
+                  stroke-width="2"
+                >
+                  <circle cx="5" cy="17" r="3" />
+                  <circle cx="19" cy="17" r="3" />
+                  <path d="M5 17h6l3-7h4M9 10H6l-1 3M14 6h3l2 4" />
+                </svg>
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="font-bold text-ink text-[14px] truncate">
+                  Honda PCX 160
+                </p>
+                <p class="text-[12px] text-ink/50">B 8890 DEF</p>
+              </div>
+              <span
+                class="text-[11px] font-semibold px-2 py-1 rounded-full shrink-0 bg-good/10 text-good"
+                >Baik</span
+              >
+            </div>
+          </div>
+
+          <nav
+            class="absolute bottom-0 inset-x-0 bg-white border-t border-line pb-4 pt-2.5 px-4 flex justify-between z-30"
+          >
+            <div class="flex flex-col items-center gap-1 w-16 text-ink/35">
+              <svg
+                width="21"
+                height="21"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M3 11l9-7 9 7" />
+                <path d="M5 10v10h14V10" />
+              </svg>
+              <span class="text-[10.5px] font-semibold">Beranda</span>
+            </div>
+            <div class="flex flex-col items-center gap-1 w-16 text-brand">
+              <svg
+                width="21"
+                height="21"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <circle cx="6" cy="17" r="2.5" />
+                <circle cx="17" cy="17" r="2.5" />
+                <path d="M4 17h1l2.5-6h6L16 17h1M8 8h6" />
+              </svg>
+              <span class="text-[10.5px] font-semibold">Garasi</span>
+            </div>
+            <div class="flex flex-col items-center gap-1 w-16 text-ink/35">
+              <svg
+                width="21"
+                height="21"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <circle cx="12" cy="12" r="8.5" />
+                <path d="M12 7v5l3.5 2" />
+              </svg>
+              <span class="text-[10.5px] font-semibold">Riwayat</span>
+            </div>
+            <div class="flex flex-col items-center gap-1 w-16 text-ink/35">
+              <svg
+                width="21"
+                height="21"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <circle cx="12" cy="8" r="3.5" />
+                <path d="M4.5 20c1.5-4 5-5.5 7.5-5.5S18 16 19.5 20" />
+              </svg>
+              <span class="text-[10.5px] font-semibold">Akun</span>
+            </div>
+          </nav>
+        </div>
+      </div>
+
+      <!-- ================= 07. HISTORY ================= -->
+      <div class="flex flex-col items-center gap-3">
+        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider"
+          >07 · History</span
+        >
+        <div class="frame ring-8 ring-black/40 flex flex-col">
+          <div
+            class="h-11 flex items-center justify-between px-7 text-ink z-10"
+          >
+            <span class="text-[13px] font-bold tracking-tight">9:41</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="none">
+                <rect
+                  x="0"
+                  y="7"
+                  width="3"
+                  height="5"
+                  rx="0.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="5"
+                  y="4.5"
+                  width="3"
+                  height="7.5"
+                  rx="0.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="10"
+                  y="2"
+                  width="3"
+                  height="10"
+                  rx="0.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="15"
+                  y="0"
+                  width="3"
+                  height="12"
+                  rx="0.5"
+                  fill="currentColor"
+                  opacity=".9"
+                />
+              </svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+                <path
+                  d="M8 9.5a1.3 1.3 0 100 2.6 1.3 1.3 0 000-2.6zM4.8 6.8a4.5 4.5 0 016.4 0l-1.1 1.1a3 3 0 00-4.2 0L4.8 6.8zM2.2 4.2a8.2 8.2 0 0111.6 0L12.7 5.3a6.7 6.7 0 00-9.4 0L2.2 4.2z"
+                  fill="currentColor"
+                />
+              </svg>
+              <svg width="24" height="12" viewBox="0 0 24 12" fill="none">
+                <rect
+                  x="0.5"
+                  y="0.5"
+                  width="21"
+                  height="11"
+                  rx="2.5"
+                  stroke="currentColor"
+                />
+                <rect
+                  x="2"
+                  y="2"
+                  width="16"
+                  height="8"
+                  rx="1.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="22.5"
+                  y="4"
+                  width="1.5"
+                  height="4"
+                  rx="0.7"
+                  fill="currentColor"
+                />
+              </svg>
+            </div>
+          </div>
+
+          <div class="px-5 pt-2 pb-3">
+            <h1 class="text-[19px] font-bold text-ink mb-3">Riwayat Booking</h1>
+            <div class="flex gap-2">
+              <button
+                class="px-3.5 py-2 rounded-full text-[12.5px] font-semibold border-2 border-brand bg-brand-50 text-ink"
+              >
+                Aktif
+              </button>
+              <button
+                class="px-3.5 py-2 rounded-full text-[12.5px] font-semibold border-2 border-line text-ink/50"
+              >
+                Selesai
+              </button>
+            </div>
+          </div>
+
+          <div class="flex-1 overflow-y-auto px-5 pb-24 space-y-2.5">
+            <div class="rounded-xl2 border border-line p-3.5 bg-white">
+              <div class="flex justify-between items-start mb-1.5">
+                <p class="font-bold text-ink text-[13.5px]">SA-20260925-7765</p>
+                <span
+                  class="text-[11px] font-semibold px-2 py-1 rounded-full bg-info/10 text-info"
+                  >Aktif</span
+                >
+              </div>
+              <p class="text-[12px] text-ink/50">1 motor · 25 Sep, 11:00</p>
+            </div>
+          </div>
+
+          <nav
+            class="absolute bottom-0 inset-x-0 bg-white border-t border-line pb-4 pt-2.5 px-4 flex justify-between z-30"
+          >
+            <div class="flex flex-col items-center gap-1 w-16 text-ink/35">
+              <svg
+                width="21"
+                height="21"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M3 11l9-7 9 7" />
+                <path d="M5 10v10h14V10" />
+              </svg>
+              <span class="text-[10.5px] font-semibold">Beranda</span>
+            </div>
+            <div class="flex flex-col items-center gap-1 w-16 text-ink/35">
+              <svg
+                width="21"
+                height="21"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <circle cx="6" cy="17" r="2.5" />
+                <circle cx="17" cy="17" r="2.5" />
+                <path d="M4 17h1l2.5-6h6L16 17h1M8 8h6" />
+              </svg>
+              <span class="text-[10.5px] font-semibold">Garasi</span>
+            </div>
+            <div class="flex flex-col items-center gap-1 w-16 text-brand">
+              <svg
+                width="21"
+                height="21"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <circle cx="12" cy="12" r="8.5" />
+                <path d="M12 7v5l3.5 2" />
+              </svg>
+              <span class="text-[10.5px] font-semibold">Riwayat</span>
+            </div>
+            <div class="flex flex-col items-center gap-1 w-16 text-ink/35">
+              <svg
+                width="21"
+                height="21"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <circle cx="12" cy="8" r="3.5" />
+                <path d="M4.5 20c1.5-4 5-5.5 7.5-5.5S18 16 19.5 20" />
+              </svg>
+              <span class="text-[10.5px] font-semibold">Akun</span>
+            </div>
+          </nav>
+        </div>
+      </div>
+
+      <!-- ================= 08. ACCOUNT ================= -->
+      <div class="flex flex-col items-center gap-3">
+        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider"
+          >08 · Account</span
+        >
+        <div class="frame ring-8 ring-black/40 flex flex-col">
+          <div
+            class="h-11 flex items-center justify-between px-7 text-ink z-10"
+          >
+            <span class="text-[13px] font-bold tracking-tight">9:41</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="none">
+                <rect
+                  x="0"
+                  y="7"
+                  width="3"
+                  height="5"
+                  rx="0.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="5"
+                  y="4.5"
+                  width="3"
+                  height="7.5"
+                  rx="0.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="10"
+                  y="2"
+                  width="3"
+                  height="10"
+                  rx="0.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="15"
+                  y="0"
+                  width="3"
+                  height="12"
+                  rx="0.5"
+                  fill="currentColor"
+                  opacity=".9"
+                />
+              </svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+                <path
+                  d="M8 9.5a1.3 1.3 0 100 2.6 1.3 1.3 0 000-2.6zM4.8 6.8a4.5 4.5 0 016.4 0l-1.1 1.1a3 3 0 00-4.2 0L4.8 6.8zM2.2 4.2a8.2 8.2 0 0111.6 0L12.7 5.3a6.7 6.7 0 00-9.4 0L2.2 4.2z"
+                  fill="currentColor"
+                />
+              </svg>
+              <svg width="24" height="12" viewBox="0 0 24 12" fill="none">
+                <rect
+                  x="0.5"
+                  y="0.5"
+                  width="21"
+                  height="11"
+                  rx="2.5"
+                  stroke="currentColor"
+                />
+                <rect
+                  x="2"
+                  y="2"
+                  width="16"
+                  height="8"
+                  rx="1.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="22.5"
+                  y="4"
+                  width="1.5"
+                  height="4"
+                  rx="0.7"
+                  fill="currentColor"
+                />
+              </svg>
+            </div>
+          </div>
+
+          <div class="px-5 pt-2 pb-4 flex items-center gap-3">
+            <div
+              class="w-14 h-14 rounded-full bg-brand text-white flex items-center justify-center font-bold text-[18px]"
+            >
+              D
+            </div>
+            <div>
+              <p class="font-bold text-ink text-[15px]">Dimas Pratama</p>
+              <p class="text-[12.5px] text-ink/50">+62 812 3456 7890</p>
+            </div>
+          </div>
+
+          <div class="flex-1 overflow-y-auto px-5 pb-24 space-y-2">
+            <div
+              class="w-full flex items-center gap-3 rounded-xl2 border border-line px-4 py-3.5 bg-white text-left"
+            >
+              <span class="text-ink/60"
+                ><svg
+                  width="17"
+                  height="17"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
+                  <path d="M13.7 21a2 2 0 01-3.4 0" /></svg
+              ></span>
+              <span class="flex-1 font-semibold text-ink text-[13.5px]"
+                >Notifikasi</span
+              >
+              <span class="text-ink/30"
+                ><svg
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.4"
+                >
+                  <path d="M9 18l6-6-6-6" /></svg
+              ></span>
+            </div>
+            <div
+              class="w-full flex items-center gap-3 rounded-xl2 border border-line px-4 py-3.5 bg-white text-left"
+            >
+              <span class="text-ink/60"
+                ><svg
+                  width="17"
+                  height="17"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 1116 0z" />
+                  <circle cx="12" cy="10" r="3" /></svg
+              ></span>
+              <span class="flex-1 font-semibold text-ink text-[13.5px]"
+                >Alamat Tersimpan</span
+              >
+              <span class="text-ink/30"
+                ><svg
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.4"
+                >
+                  <path d="M9 18l6-6-6-6" /></svg
+              ></span>
+            </div>
+            <div
+              class="w-full flex items-center gap-3 rounded-xl2 border border-line px-4 py-3.5 bg-white text-left"
+            >
+              <span class="text-ink/60"
+                ><svg
+                  width="17"
+                  height="17"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    d="M14.7 6.3a4 4 0 10-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 005.4-5.4l-2.8 2.8-2-2 2.8-2.8z"
+                  /></svg
+              ></span>
+              <span class="flex-1 font-semibold text-ink text-[13.5px]"
+                >Pusat Bantuan</span
+              >
+              <span class="text-ink/30"
+                ><svg
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.4"
+                >
+                  <path d="M9 18l6-6-6-6" /></svg
+              ></span>
+            </div>
+            <button
+              class="w-full flex items-center justify-center rounded-xl2 border border-line px-4 py-3.5 bg-white text-brand font-bold text-[13.5px] mt-4"
+            >
+              Keluar
+            </button>
+          </div>
+
+          <nav
+            class="absolute bottom-0 inset-x-0 bg-white border-t border-line pb-4 pt-2.5 px-4 flex justify-between z-30"
+          >
+            <div class="flex flex-col items-center gap-1 w-16 text-ink/35">
+              <svg
+                width="21"
+                height="21"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M3 11l9-7 9 7" />
+                <path d="M5 10v10h14V10" />
+              </svg>
+              <span class="text-[10.5px] font-semibold">Beranda</span>
+            </div>
+            <div class="flex flex-col items-center gap-1 w-16 text-ink/35">
+              <svg
+                width="21"
+                height="21"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <circle cx="6" cy="17" r="2.5" />
+                <circle cx="17" cy="17" r="2.5" />
+                <path d="M4 17h1l2.5-6h6L16 17h1M8 8h6" />
+              </svg>
+              <span class="text-[10.5px] font-semibold">Garasi</span>
+            </div>
+            <div class="flex flex-col items-center gap-1 w-16 text-ink/35">
+              <svg
+                width="21"
+                height="21"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <circle cx="12" cy="12" r="8.5" />
+                <path d="M12 7v5l3.5 2" />
+              </svg>
+              <span class="text-[10.5px] font-semibold">Riwayat</span>
+            </div>
+            <div class="flex flex-col items-center gap-1 w-16 text-brand">
+              <svg
+                width="21"
+                height="21"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <circle cx="12" cy="8" r="3.5" />
+                <path d="M4.5 20c1.5-4 5-5.5 7.5-5.5S18 16 19.5 20" />
+              </svg>
+              <span class="text-[10.5px] font-semibold">Akun</span>
+            </div>
+          </nav>
+        </div>
+      </div>
+
+      <!-- ================= 09. NOTIFICATIONS ================= -->
+      <div class="flex flex-col items-center gap-3">
+        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider"
+          >09 · Notifications</span
+        >
+        <div class="frame ring-8 ring-black/40 flex flex-col">
+          <div
+            class="h-11 flex items-center justify-between px-7 text-ink z-10"
+          >
+            <span class="text-[13px] font-bold tracking-tight">9:41</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="none">
+                <rect
+                  x="0"
+                  y="7"
+                  width="3"
+                  height="5"
+                  rx="0.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="5"
+                  y="4.5"
+                  width="3"
+                  height="7.5"
+                  rx="0.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="10"
+                  y="2"
+                  width="3"
+                  height="10"
+                  rx="0.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="15"
+                  y="0"
+                  width="3"
+                  height="12"
+                  rx="0.5"
+                  fill="currentColor"
+                  opacity=".9"
+                />
+              </svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+                <path
+                  d="M8 9.5a1.3 1.3 0 100 2.6 1.3 1.3 0 000-2.6zM4.8 6.8a4.5 4.5 0 016.4 0l-1.1 1.1a3 3 0 00-4.2 0L4.8 6.8zM2.2 4.2a8.2 8.2 0 0111.6 0L12.7 5.3a6.7 6.7 0 00-9.4 0L2.2 4.2z"
+                  fill="currentColor"
+                />
+              </svg>
+              <svg width="24" height="12" viewBox="0 0 24 12" fill="none">
+                <rect
+                  x="0.5"
+                  y="0.5"
+                  width="21"
+                  height="11"
+                  rx="2.5"
+                  stroke="currentColor"
+                />
+                <rect
+                  x="2"
+                  y="2"
+                  width="16"
+                  height="8"
+                  rx="1.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="22.5"
+                  y="4"
+                  width="1.5"
+                  height="4"
+                  rx="0.7"
+                  fill="currentColor"
+                />
+              </svg>
+            </div>
+          </div>
+
+          <div
+            class="bg-white px-5 py-3 border-b border-line flex items-center gap-3"
+          >
+            <button
+              class="w-9 h-9 -ml-1.5 rounded-full flex items-center justify-center"
+            >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#1A1A1A"
+                stroke-width="2.4"
+              >
+                <path d="M15 18l-6-6 6-6" />
+              </svg>
+            </button>
+            <h2 class="font-bold text-ink text-[16px]">Notifikasi</h2>
+          </div>
+
+          <div class="flex-1 overflow-y-auto px-5 pb-8 pt-3 space-y-2.5">
+            <div
+              class="rounded-xl2 border border-line p-3.5 bg-white flex gap-3"
+            >
+              <div
+                class="w-9 h-9 rounded-full bg-brand-50 flex items-center justify-center shrink-0 text-brand"
+              >
+                <svg
+                  width="17"
+                  height="17"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
+                  <path d="M13.7 21a2 2 0 01-3.4 0" />
+                </svg>
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="font-semibold text-ink text-[13px]">
+                  Booking Dikonfirmasi
+                </p>
+                <p class="text-[12px] text-ink/50 mt-0.5">
+                  Servis 2 motor kamu terjadwal besok jam 09:30.
+                </p>
+                <p class="text-[11px] text-ink/35 mt-1">10 menit lalu</p>
+              </div>
+              <span class="w-2 h-2 rounded-full bg-brand shrink-0 mt-1"></span>
+            </div>
+
+            <div
+              class="rounded-xl2 border border-line p-3.5 bg-white flex gap-3"
+            >
+              <div
+                class="w-9 h-9 rounded-full bg-brand-50 flex items-center justify-center shrink-0 text-brand"
+              >
+                <svg
+                  width="17"
+                  height="17"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
+                  <path d="M13.7 21a2 2 0 01-3.4 0" />
+                </svg>
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="font-semibold text-ink text-[13px]">
+                  Promo Servis Berkala
+                </p>
+                <p class="text-[12px] text-ink/50 mt-0.5">
+                  Diskon 20% ganti oli untuk booking multi-motor.
+                </p>
+                <p class="text-[11px] text-ink/35 mt-1">2 jam lalu</p>
+              </div>
+              <span class="w-2 h-2 rounded-full bg-brand shrink-0 mt-1"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= 10. ADD VEHICLE ================= -->
+      <div class="flex flex-col items-center gap-3">
+        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider"
+          >10 · Add Vehicle</span
+        >
+        <div class="frame ring-8 ring-black/40 flex flex-col">
+          <div
+            class="h-11 flex items-center justify-between px-7 text-ink z-10"
+          >
+            <span class="text-[13px] font-bold tracking-tight">9:41</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="none">
+                <rect
+                  x="0"
+                  y="7"
+                  width="3"
+                  height="5"
+                  rx="0.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="5"
+                  y="4.5"
+                  width="3"
+                  height="7.5"
+                  rx="0.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="10"
+                  y="2"
+                  width="3"
+                  height="10"
+                  rx="0.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="15"
+                  y="0"
+                  width="3"
+                  height="12"
+                  rx="0.5"
+                  fill="currentColor"
+                  opacity=".9"
+                />
+              </svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+                <path
+                  d="M8 9.5a1.3 1.3 0 100 2.6 1.3 1.3 0 000-2.6zM4.8 6.8a4.5 4.5 0 016.4 0l-1.1 1.1a3 3 0 00-4.2 0L4.8 6.8zM2.2 4.2a8.2 8.2 0 0111.6 0L12.7 5.3a6.7 6.7 0 00-9.4 0L2.2 4.2z"
+                  fill="currentColor"
+                />
+              </svg>
+              <svg width="24" height="12" viewBox="0 0 24 12" fill="none">
+                <rect
+                  x="0.5"
+                  y="0.5"
+                  width="21"
+                  height="11"
+                  rx="2.5"
+                  stroke="currentColor"
+                />
+                <rect
+                  x="2"
+                  y="2"
+                  width="16"
+                  height="8"
+                  rx="1.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="22.5"
+                  y="4"
+                  width="1.5"
+                  height="4"
+                  rx="0.7"
+                  fill="currentColor"
+                />
+              </svg>
+            </div>
+          </div>
+
+          <div
+            class="bg-white px-5 py-3 border-b border-line flex items-center gap-3"
+          >
+            <button
+              class="w-9 h-9 -ml-1.5 rounded-full flex items-center justify-center"
+            >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#1A1A1A"
+                stroke-width="2.4"
+              >
+                <path d="M15 18l-6-6 6-6" />
+              </svg>
+            </button>
+            <h2 class="font-bold text-ink text-[16px]">Tambah Motor</h2>
+          </div>
+
+          <div class="flex-1 overflow-y-auto px-5 pt-3 pb-8 space-y-3">
+            <div>
+              <label
+                class="text-[12.5px] font-semibold text-ink/60 mb-1.5 block"
+                >Nama Motor</label
+              ><input
+                value="Yamaha NMAX 155"
+                class="tap w-full text-[13px] rounded-lg border border-line px-3 py-2.5 bg-surface outline-none text-ink font-medium"
+                readonly
+              />
+            </div>
+            <div>
+              <label
+                class="text-[12.5px] font-semibold text-ink/60 mb-1.5 block"
+                >Plat Nomor</label
+              ><input
+                value="B 1122 QAS"
+                class="tap w-full text-[13px] rounded-lg border border-line px-3 py-2.5 bg-surface outline-none text-ink font-medium"
+                readonly
+              />
+            </div>
+            <button
+              class="tap w-full rounded-xl font-bold text-[14px] py-3.5 bg-brand text-white mt-4"
+            >
+              Simpan Motor
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= 11. VEHICLE DETAIL ================= -->
+      <div class="flex flex-col items-center gap-3">
+        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider"
+          >11 · Vehicle Detail</span
+        >
+        <div class="frame ring-8 ring-black/40 flex flex-col">
+          <div
+            class="h-11 flex items-center justify-between px-7 text-ink z-10"
+          >
+            <span class="text-[13px] font-bold tracking-tight">9:41</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="none">
+                <rect
+                  x="0"
+                  y="7"
+                  width="3"
+                  height="5"
+                  rx="0.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="5"
+                  y="4.5"
+                  width="3"
+                  height="7.5"
+                  rx="0.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="10"
+                  y="2"
+                  width="3"
+                  height="10"
+                  rx="0.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="15"
+                  y="0"
+                  width="3"
+                  height="12"
+                  rx="0.5"
+                  fill="currentColor"
+                  opacity=".9"
+                />
+              </svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+                <path
+                  d="M8 9.5a1.3 1.3 0 100 2.6 1.3 1.3 0 000-2.6zM4.8 6.8a4.5 4.5 0 016.4 0l-1.1 1.1a3 3 0 00-4.2 0L4.8 6.8zM2.2 4.2a8.2 8.2 0 0111.6 0L12.7 5.3a6.7 6.7 0 00-9.4 0L2.2 4.2z"
+                  fill="currentColor"
+                />
+              </svg>
+              <svg width="24" height="12" viewBox="0 0 24 12" fill="none">
+                <rect
+                  x="0.5"
+                  y="0.5"
+                  width="21"
+                  height="11"
+                  rx="2.5"
+                  stroke="currentColor"
+                />
+                <rect
+                  x="2"
+                  y="2"
+                  width="16"
+                  height="8"
+                  rx="1.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="22.5"
+                  y="4"
+                  width="1.5"
+                  height="4"
+                  rx="0.7"
+                  fill="currentColor"
+                />
+              </svg>
+            </div>
+          </div>
+
+          <div
+            class="bg-white px-5 py-3 border-b border-line flex items-center gap-3"
+          >
+            <button
+              class="w-9 h-9 -ml-1.5 rounded-full flex items-center justify-center"
+            >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#1A1A1A"
+                stroke-width="2.4"
+              >
+                <path d="M15 18l-6-6 6-6" />
+              </svg>
+            </button>
+            <h2 class="font-bold text-ink text-[16px]">Detail Motor</h2>
+          </div>
+
+          <div class="flex-1 overflow-y-auto px-5 pt-3 pb-28 space-y-4">
+            <div class="rounded-xl2 bg-surface p-4 flex items-center gap-3">
+              <div
+                class="w-12 h-12 rounded-full bg-white flex items-center justify-center"
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#FF5722"
+                  stroke-width="2"
+                >
+                  <circle cx="5" cy="17" r="3" />
+                  <circle cx="19" cy="17" r="3" />
+                  <path d="M5 17h6l3-7h4M9 10H6l-1 3M14 6h3l2 4" />
+                </svg>
+              </div>
+              <div>
+                <p class="font-bold text-ink text-[14.5px]">Honda Vario 150</p>
+                <p class="text-[12px] text-ink/50">B 4567 ABC</p>
+              </div>
+            </div>
+            <div>
+              <p class="font-bold text-ink text-[14px] mb-2">Info Dokumen</p>
+              <div
+                class="rounded-xl2 border border-line p-3.5 flex justify-between text-[12.5px]"
+              >
+                <span class="text-ink/50">STNK Berlaku Hingga</span
+                ><span class="font-semibold text-ink">Mar 2027</span>
+              </div>
+            </div>
+            <div>
+              <p class="font-bold text-ink text-[14px] mb-2">Riwayat Servis</p>
+              <div class="rounded-xl2 border border-line divide-y divide-line">
+                <div class="p-3.5 flex justify-between text-[12.5px]">
+                  <span class="text-ink">Servis Berkala</span
+                  ><span class="text-ink/50">2 bulan lalu</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="absolute bottom-0 inset-x-0 bg-white border-t border-line px-5 pt-3 pb-6"
+          >
+            <button
+              class="tap w-full rounded-xl font-bold text-[14px] py-3.5 bg-brand text-white"
+            >
+              Booking Servis Motor Ini
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= 12. SELECT VEHICLES (STEP 1) ================= -->
+      <div class="flex flex-col items-center gap-3">
+        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider"
+          >12 · Step 1: Select Vehicles</span
+        >
+        <div class="frame ring-8 ring-black/40 flex flex-col">
+          <div
+            class="h-11 flex items-center justify-between px-7 text-ink z-10"
+          >
+            <span class="text-[13px] font-bold tracking-tight">9:41</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="none">
+                <rect
+                  x="0"
+                  y="7"
+                  width="3"
+                  height="5"
+                  rx="0.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="5"
+                  y="4.5"
+                  width="3"
+                  height="7.5"
+                  rx="0.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="10"
+                  y="2"
+                  width="3"
+                  height="10"
+                  rx="0.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="15"
+                  y="0"
+                  width="3"
+                  height="12"
+                  rx="0.5"
+                  fill="currentColor"
+                  opacity=".9"
+                />
+              </svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+                <path
+                  d="M8 9.5a1.3 1.3 0 100 2.6 1.3 1.3 0 000-2.6zM4.8 6.8a4.5 4.5 0 016.4 0l-1.1 1.1a3 3 0 00-4.2 0L4.8 6.8zM2.2 4.2a8.2 8.2 0 0111.6 0L12.7 5.3a6.7 6.7 0 00-9.4 0L2.2 4.2z"
+                  fill="currentColor"
+                />
+              </svg>
+              <svg width="24" height="12" viewBox="0 0 24 12" fill="none">
+                <rect
+                  x="0.5"
+                  y="0.5"
+                  width="21"
+                  height="11"
+                  rx="2.5"
+                  stroke="currentColor"
+                />
+                <rect
+                  x="2"
+                  y="2"
+                  width="16"
+                  height="8"
+                  rx="1.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="22.5"
+                  y="4"
+                  width="1.5"
+                  height="4"
+                  rx="0.7"
+                  fill="currentColor"
+                />
+              </svg>
+            </div>
+          </div>
+
+          <div class="bg-white px-5 pt-3 pb-3 border-b border-line">
+            <div class="flex items-center gap-3 mb-3">
+              <button
+                class="w-9 h-9 -ml-1.5 rounded-full flex items-center justify-center"
+              >
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#1A1A1A"
+                  stroke-width="2.4"
+                >
+                  <path d="M15 18l-6-6 6-6" />
+                </svg>
+              </button>
+              <h2 class="font-bold text-ink text-[16px]">Pilih Motor</h2>
+              <span class="ml-auto text-[12px] font-semibold text-ink/40"
+                >1/3</span
+              >
+            </div>
+            <div class="flex gap-1.5">
+              <div class="h-1.5 flex-1 rounded-full bg-brand"></div>
+              <div class="h-1.5 flex-1 rounded-full bg-line"></div>
+              <div class="h-1.5 flex-1 rounded-full bg-line"></div>
+            </div>
+          </div>
+
+          <div class="flex-1 overflow-y-auto px-5 pb-28 pt-3 space-y-2.5">
+            <!-- Selected item -->
+            <div
+              class="w-full text-left rounded-xl2 border-2 p-3.5 flex items-center gap-3 border-brand bg-brand-50"
+            >
+              <div
+                class="w-11 h-11 rounded-full bg-surface flex items-center justify-center shrink-0"
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#FF5722"
+                  stroke-width="2"
+                >
+                  <circle cx="5" cy="17" r="3" />
+                  <circle cx="19" cy="17" r="3" />
+                  <path d="M5 17h6l3-7h4M9 10H6l-1 3M14 6h3l2 4" />
+                </svg>
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="font-bold text-ink text-[14px] truncate">
+                  Honda Vario 150
+                </p>
+                <p class="text-[12px] text-ink/50">
+                  B 4567 ABC · Servis terakhir 2 bulan lalu
+                </p>
+              </div>
+              <div
+                class="w-6 h-6 rounded-full border-2 bg-brand border-brand flex items-center justify-center shrink-0"
+              >
+                <svg
+                  width="13"
+                  height="13"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="white"
+                  stroke-width="3.5"
+                >
+                  <path d="M5 12l5 5L20 7" />
+                </svg>
+              </div>
+            </div>
+
+            <!-- Selected item -->
+            <div
+              class="w-full text-left rounded-xl2 border-2 p-3.5 flex items-center gap-3 border-brand bg-brand-50"
+            >
+              <div
+                class="w-11 h-11 rounded-full bg-surface flex items-center justify-center shrink-0"
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#FF5722"
+                  stroke-width="2"
+                >
+                  <circle cx="5" cy="17" r="3" />
+                  <circle cx="19" cy="17" r="3" />
+                  <path d="M5 17h6l3-7h4M9 10H6l-1 3M14 6h3l2 4" />
+                </svg>
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="font-bold text-ink text-[14px] truncate">
+                  Honda Beat Street
+                </p>
+                <p class="text-[12px] text-ink/50">
+                  B 2210 XYZ · Servis terakhir 5 bulan lalu
+                </p>
+              </div>
+              <div
+                class="w-6 h-6 rounded-full border-2 bg-brand border-brand flex items-center justify-center shrink-0"
+              >
+                <svg
+                  width="13"
+                  height="13"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="white"
+                  stroke-width="3.5"
+                >
+                  <path d="M5 12l5 5L20 7" />
+                </svg>
+              </div>
+            </div>
+
+            <!-- Unselected item -->
+            <div
+              class="w-full text-left rounded-xl2 border-2 p-3.5 flex items-center gap-3 border-line bg-white"
+            >
+              <div
+                class="w-11 h-11 rounded-full bg-surface flex items-center justify-center shrink-0"
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#FF5722"
+                  stroke-width="2"
+                >
+                  <circle cx="5" cy="17" r="3" />
+                  <circle cx="19" cy="17" r="3" />
+                  <path d="M5 17h6l3-7h4M9 10H6l-1 3M14 6h3l2 4" />
+                </svg>
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="font-bold text-ink text-[14px] truncate">
+                  Honda PCX 160
+                </p>
+                <p class="text-[12px] text-ink/50">
+                  B 8890 DEF · Servis terakhir 1 minggu lalu
+                </p>
+              </div>
+              <div
+                class="w-6 h-6 rounded-full border-2 border-line flex items-center justify-center shrink-0"
+              ></div>
+            </div>
+
+            <button
+              class="tap w-full rounded-xl2 border-2 border-dashed border-line text-ink/50 py-3.5 flex items-center justify-center gap-2 font-semibold text-[13px]"
+            >
+              <svg
+                width="15"
+                height="15"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.6"
+              >
+                <path d="M12 5v14M5 12h14" />
+              </svg>
+              Tambah Motor Sementara
+            </button>
+          </div>
+
+          <div
+            class="absolute bottom-0 inset-x-0 bg-white border-t border-line px-5 pt-3 pb-6"
+          >
+            <div class="flex items-center justify-between mb-2.5">
+              <p class="text-[13px] text-ink/60">
+                <span class="font-bold text-ink">2</span> motor dipilih
+              </p>
+            </div>
+            <button
+              class="tap w-full rounded-xl font-bold text-[14px] py-3.5 bg-brand text-white"
+            >
+              Lanjut: Atur Servis
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= 13. SERVICE CONFIG (STEP 2) ================= -->
+      <div class="flex flex-col items-center gap-3">
+        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider"
+          >13 · Step 2: Service Config</span
+        >
+        <div class="frame ring-8 ring-black/40 flex flex-col">
+          <div
+            class="h-11 flex items-center justify-between px-7 text-ink z-10"
+          >
+            <span class="text-[13px] font-bold tracking-tight">9:41</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="none">
+                <rect
+                  x="0"
+                  y="7"
+                  width="3"
+                  height="5"
+                  rx="0.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="5"
+                  y="4.5"
+                  width="3"
+                  height="7.5"
+                  rx="0.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="10"
+                  y="2"
+                  width="3"
+                  height="10"
+                  rx="0.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="15"
+                  y="0"
+                  width="3"
+                  height="12"
+                  rx="0.5"
+                  fill="currentColor"
+                  opacity=".9"
+                />
+              </svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+                <path
+                  d="M8 9.5a1.3 1.3 0 100 2.6 1.3 1.3 0 000-2.6zM4.8 6.8a4.5 4.5 0 016.4 0l-1.1 1.1a3 3 0 00-4.2 0L4.8 6.8zM2.2 4.2a8.2 8.2 0 0111.6 0L12.7 5.3a6.7 6.7 0 00-9.4 0L2.2 4.2z"
+                  fill="currentColor"
+                />
+              </svg>
+              <svg width="24" height="12" viewBox="0 0 24 12" fill="none">
+                <rect
+                  x="0.5"
+                  y="0.5"
+                  width="21"
+                  height="11"
+                  rx="2.5"
+                  stroke="currentColor"
+                />
+                <rect
+                  x="2"
+                  y="2"
+                  width="16"
+                  height="8"
+                  rx="1.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="22.5"
+                  y="4"
+                  width="1.5"
+                  height="4"
+                  rx="0.7"
+                  fill="currentColor"
+                />
+              </svg>
+            </div>
+          </div>
+
+          <div class="bg-white px-5 pt-3 pb-3 border-b border-line">
+            <div class="flex items-center gap-3 mb-3">
+              <button
+                class="w-9 h-9 -ml-1.5 rounded-full flex items-center justify-center"
+              >
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#1A1A1A"
+                  stroke-width="2.4"
+                >
+                  <path d="M15 18l-6-6 6-6" />
+                </svg>
+              </button>
+              <h2 class="font-bold text-ink text-[16px]">Atur Servis</h2>
+              <span class="ml-auto text-[12px] font-semibold text-ink/40"
+                >2/3</span
+              >
+            </div>
+            <div class="flex gap-1.5">
+              <div class="h-1.5 flex-1 rounded-full bg-brand"></div>
+              <div class="h-1.5 flex-1 rounded-full bg-brand"></div>
+              <div class="h-1.5 flex-1 rounded-full bg-line"></div>
+            </div>
+          </div>
+
+          <div class="flex gap-2 px-5 pt-3 pb-1 overflow-x-auto shrink-0">
+            <button
+              class="shrink-0 px-4 py-2 rounded-full text-[13px] font-semibold border-2 bg-ink text-white border-ink"
+            >
+              Honda Vario
+            </button>
+            <button
+              class="shrink-0 px-4 py-2 rounded-full text-[13px] font-semibold border-2 border-line text-ink/50"
+            >
+              Honda Beat
+            </button>
+          </div>
+
+          <div class="flex-1 overflow-y-auto px-5 pb-32 pt-3 space-y-4">
+            <div class="rounded-xl2 bg-surface p-3.5 flex items-center gap-3">
+              <div
+                class="w-10 h-10 rounded-full bg-white flex items-center justify-center"
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#FF5722"
+                  stroke-width="2"
+                >
+                  <circle cx="5" cy="17" r="3" />
+                  <circle cx="19" cy="17" r="3" />
+                  <path d="M5 17h6l3-7h4M9 10H6l-1 3M14 6h3l2 4" />
+                </svg>
+              </div>
+              <div>
+                <p class="font-bold text-ink text-[13.5px]">Honda Vario 150</p>
+                <p class="text-[11.5px] text-ink/50">B 4567 ABC</p>
+              </div>
+            </div>
+
+            <div>
+              <p class="font-bold text-ink text-[14px] mb-2.5">
+                Pilih Paket Servis
+              </p>
+              <div class="space-y-2">
+                <div
+                  class="w-full text-left rounded-xl2 border-2 p-3.5 flex items-start gap-3 border-brand bg-brand-50"
+                >
+                  <div
+                    class="w-5 h-5 rounded-full border-2 border-brand flex items-center justify-center shrink-0 mt-0.5"
+                  >
+                    <div class="w-2.5 h-2.5 rounded-full bg-brand"></div>
+                  </div>
+                  <div class="flex-1">
+                    <p class="font-semibold text-ink text-[13.5px]">
+                      Servis Berkala
+                    </p>
+                    <p class="text-[12px] text-ink/50 mt-0.5">
+                      Ganti oli + cek rutin 17 titik
+                    </p>
+                  </div>
+                  <p class="font-bold text-ink text-[13px]">Rp85.000</p>
+                </div>
+                <div
+                  class="w-full text-left rounded-xl2 border-2 p-3.5 flex items-start gap-3 border-line"
+                >
+                  <div
+                    class="w-5 h-5 rounded-full border-2 border-line shrink-0 mt-0.5"
+                  ></div>
+                  <div class="flex-1">
+                    <p class="font-semibold text-ink text-[13.5px]">
+                      Heavy Service
+                    </p>
+                    <p class="text-[12px] text-ink/50 mt-0.5">
+                      Overhaul + kalibrasi + part utama
+                    </p>
+                  </div>
+                  <p class="font-bold text-ink text-[13px]">Rp250.000</p>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <p class="font-bold text-ink text-[14px] mb-2.5">
+                Oli &amp; Spare Part
+              </p>
+              <div class="flex flex-wrap gap-2">
+                <div
+                  class="px-3.5 py-2.5 rounded-xl border-2 border-line text-left"
+                >
+                  <p class="text-[12.5px] font-semibold text-ink">
+                    Tanpa Tambahan
+                  </p>
+                  <p class="text-[11.5px] text-ink/50">+Rp0</p>
+                </div>
+                <div
+                  class="px-3.5 py-2.5 rounded-xl border-2 border-brand bg-brand-50 text-left"
+                >
+                  <p class="text-[12.5px] font-semibold text-ink">
+                    Shell Advance 0.8L
+                  </p>
+                  <p class="text-[11.5px] text-ink/50">+Rp65.000</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="absolute bottom-0 inset-x-0 bg-white border-t border-line px-5 pt-3 pb-6"
+          >
+            <div class="flex justify-between items-center mb-2.5">
+              <p class="text-[12.5px] text-ink/50">Total 2 motor</p>
+              <p class="font-bold text-ink text-[16px]">Rp235.000</p>
+            </div>
+            <button
+              class="tap w-full rounded-xl font-bold text-[14px] py-3.5 bg-brand text-white"
+            >
+              Lanjut: Jadwal
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= 14. SCHEDULE & SUMMARY (STEP 3) ================= -->
+      <div class="flex flex-col items-center gap-3">
+        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider"
+          >14 · Step 3: Schedule &amp; Summary</span
+        >
+        <div class="frame ring-8 ring-black/40 flex flex-col">
+          <div
+            class="h-11 flex items-center justify-between px-7 text-ink z-10"
+          >
+            <span class="text-[13px] font-bold tracking-tight">9:41</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="none">
+                <rect
+                  x="0"
+                  y="7"
+                  width="3"
+                  height="5"
+                  rx="0.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="5"
+                  y="4.5"
+                  width="3"
+                  height="7.5"
+                  rx="0.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="10"
+                  y="2"
+                  width="3"
+                  height="10"
+                  rx="0.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="15"
+                  y="0"
+                  width="3"
+                  height="12"
+                  rx="0.5"
+                  fill="currentColor"
+                  opacity=".9"
+                />
+              </svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+                <path
+                  d="M8 9.5a1.3 1.3 0 100 2.6 1.3 1.3 0 000-2.6zM4.8 6.8a4.5 4.5 0 016.4 0l-1.1 1.1a3 3 0 00-4.2 0L4.8 6.8zM2.2 4.2a8.2 8.2 0 0111.6 0L12.7 5.3a6.7 6.7 0 00-9.4 0L2.2 4.2z"
+                  fill="currentColor"
+                />
+              </svg>
+              <svg width="24" height="12" viewBox="0 0 24 12" fill="none">
+                <rect
+                  x="0.5"
+                  y="0.5"
+                  width="21"
+                  height="11"
+                  rx="2.5"
+                  stroke="currentColor"
+                />
+                <rect
+                  x="2"
+                  y="2"
+                  width="16"
+                  height="8"
+                  rx="1.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="22.5"
+                  y="4"
+                  width="1.5"
+                  height="4"
+                  rx="0.7"
+                  fill="currentColor"
+                />
+              </svg>
+            </div>
+          </div>
+
+          <div class="bg-white px-5 pt-3 pb-3 border-b border-line">
+            <div class="flex items-center gap-3 mb-3">
+              <button
+                class="w-9 h-9 -ml-1.5 rounded-full flex items-center justify-center"
+              >
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#1A1A1A"
+                  stroke-width="2.4"
+                >
+                  <path d="M15 18l-6-6 6-6" />
+                </svg>
+              </button>
+              <h2 class="font-bold text-ink text-[16px]">
+                Jadwal &amp; Ringkasan
+              </h2>
+              <span class="ml-auto text-[12px] font-semibold text-ink/40"
+                >3/3</span
+              >
+            </div>
+            <div class="flex gap-1.5">
+              <div class="h-1.5 flex-1 rounded-full bg-brand"></div>
+              <div class="h-1.5 flex-1 rounded-full bg-brand"></div>
+              <div class="h-1.5 flex-1 rounded-full bg-brand"></div>
+            </div>
+          </div>
+
+          <div class="flex-1 overflow-y-auto px-5 pb-32 pt-3 space-y-4">
+            <div>
+              <p class="font-bold text-ink text-[14px] mb-2.5">Pilih Cabang</p>
+              <div class="flex gap-2 overflow-x-auto">
+                <button
+                  class="shrink-0 px-3.5 py-2.5 rounded-xl border-2 border-brand bg-brand-50 text-ink text-[12.5px] font-semibold"
+                >
+                  Servisin Aja - Kemang
+                </button>
+                <button
+                  class="shrink-0 px-3.5 py-2.5 rounded-xl border-2 border-line text-ink/60 text-[12.5px] font-semibold"
+                >
+                  BSD
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <p class="font-bold text-ink text-[14px] mb-2.5">Pilih Tanggal</p>
+              <div class="flex gap-2 overflow-x-auto">
+                <div
+                  class="shrink-0 w-14 py-2.5 rounded-xl border-2 border-line text-ink flex flex-col items-center"
+                >
+                  <span class="text-[11px] text-ink/40">Rab</span
+                  ><span class="font-bold text-[15px]">23</span>
+                </div>
+                <div
+                  class="shrink-0 w-14 py-2.5 rounded-xl border-2 border-brand bg-brand text-white flex flex-col items-center"
+                >
+                  <span class="text-[11px] text-white/80">Kam</span
+                  ><span class="font-bold text-[15px]">24</span>
+                </div>
+                <div
+                  class="shrink-0 w-14 py-2.5 rounded-xl border-2 border-line text-ink flex flex-col items-center"
+                >
+                  <span class="text-[11px] text-ink/40">Jum</span
+                  ><span class="font-bold text-[15px]">25</span>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <p class="font-bold text-ink text-[14px] mb-2.5">Pilih Jam</p>
+              <div class="grid grid-cols-3 gap-2">
+                <div
+                  class="py-2.5 rounded-xl border-2 border-line text-ink/60 text-center text-[13px] font-semibold"
+                >
+                  08:00
+                </div>
+                <div
+                  class="py-2.5 rounded-xl border-2 border-brand bg-brand-50 text-ink text-center text-[13px] font-semibold"
+                >
+                  09:30
+                </div>
+                <div
+                  class="py-2.5 rounded-xl border-2 border-line text-ink/60 text-center text-[13px] font-semibold"
+                >
+                  11:00
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <p class="font-bold text-ink text-[14px] mb-2.5">
+                Ringkasan Invoice
+              </p>
+              <div
+                class="rounded-xl2 border border-line divide-y divide-line overflow-hidden"
+              >
+                <div class="p-3.5 flex justify-between items-start bg-white">
+                  <div>
+                    <p class="font-semibold text-ink text-[13px]">
+                      Honda Vario 150
+                    </p>
+                    <p class="text-[11.5px] text-ink/50 mt-0.5">
+                      Servis Berkala · Shell Advance 0.8L
+                    </p>
+                  </div>
+                  <p class="font-semibold text-ink text-[13px]">Rp150.000</p>
+                </div>
+                <div class="p-3.5 flex justify-between items-start bg-white">
+                  <div>
+                    <p class="font-semibold text-ink text-[13px]">
+                      Honda Beat Street
+                    </p>
+                    <p class="text-[11.5px] text-ink/50 mt-0.5">
+                      Servis Berkala · Tanpa Tambahan
+                    </p>
+                  </div>
+                  <p class="font-semibold text-ink text-[13px]">Rp85.000</p>
+                </div>
+                <div class="p-3.5 flex justify-between items-center bg-surface">
+                  <p class="font-bold text-ink text-[13.5px]">
+                    Total Pembayaran
+                  </p>
+                  <p class="font-bold text-brand text-[16px]">Rp235.000</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="absolute bottom-0 inset-x-0 bg-white border-t border-line px-5 pt-3 pb-6"
+          >
+            <button
+              class="tap w-full rounded-xl font-bold text-[14px] py-3.5 bg-brand text-white"
+            >
+              Konfirmasi Booking
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= 15. SUCCESS ================= -->
+      <div class="flex flex-col items-center gap-3">
+        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider"
+          >15 · Success &amp; Digital Ticket</span
+        >
+        <div
+          class="frame ring-8 ring-black/40 flex flex-col items-center px-6 pb-8 overflow-y-auto"
+        >
+          <div
+            class="h-11 flex items-center justify-between w-full text-ink z-10"
+          >
+            <span class="text-[13px] font-bold tracking-tight">9:41</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="none">
+                <rect
+                  x="0"
+                  y="7"
+                  width="3"
+                  height="5"
+                  rx="0.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="5"
+                  y="4.5"
+                  width="3"
+                  height="7.5"
+                  rx="0.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="10"
+                  y="2"
+                  width="3"
+                  height="10"
+                  rx="0.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="15"
+                  y="0"
+                  width="3"
+                  height="12"
+                  rx="0.5"
+                  fill="currentColor"
+                  opacity=".9"
+                />
+              </svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+                <path
+                  d="M8 9.5a1.3 1.3 0 100 2.6 1.3 1.3 0 000-2.6zM4.8 6.8a4.5 4.5 0 016.4 0l-1.1 1.1a3 3 0 00-4.2 0L4.8 6.8zM2.2 4.2a8.2 8.2 0 0111.6 0L12.7 5.3a6.7 6.7 0 00-9.4 0L2.2 4.2z"
+                  fill="currentColor"
+                />
+              </svg>
+              <svg width="24" height="12" viewBox="0 0 24 12" fill="none">
+                <rect
+                  x="0.5"
+                  y="0.5"
+                  width="21"
+                  height="11"
+                  rx="2.5"
+                  stroke="currentColor"
+                />
+                <rect
+                  x="2"
+                  y="2"
+                  width="16"
+                  height="8"
+                  rx="1.5"
+                  fill="currentColor"
+                />
+                <rect
+                  x="22.5"
+                  y="4"
+                  width="1.5"
+                  height="4"
+                  rx="0.7"
+                  fill="currentColor"
+                />
+              </svg>
+            </div>
+          </div>
+
+          <div
+            class="w-16 h-16 rounded-full bg-good/10 flex items-center justify-center mt-4 mb-4 shrink-0"
+          >
+            <svg
+              width="30"
+              height="30"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#22C55E"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M5 12l5 5L20 7" />
+            </svg>
+          </div>
+          <h2 class="font-bold text-ink text-[19px]">Booking Berhasil!</h2>
+          <p class="text-[13px] text-ink/50 mt-1 text-center">
+            Tiket digital kamu sudah siap,<br />tunjukkan ke petugas saat tiba
+          </p>
+
+          <div
+            class="w-full rounded-xl2 border-2 border-dashed border-line mt-6 p-5 bg-surface"
+          >
+            <!-- QR Code Preview Grid -->
+            <div class="grid grid-cols-5 gap-1 w-28 h-28 mx-auto mb-4">
+              <div class="qr-cell rounded-[2px]"></div>
+              <div class="qr-cell rounded-[2px]"></div>
+              <div class="qr-cell rounded-[2px]"></div>
+              <div class="qr-cell rounded-[2px]"></div>
+              <div class="qr-cell rounded-[2px]"></div>
+              <div class="qr-cell rounded-[2px]"></div>
+              <div class="bg-transparent rounded-[2px]"></div>
+              <div class="qr-cell rounded-[2px]"></div>
+              <div class="bg-transparent rounded-[2px]"></div>
+              <div class="qr-cell rounded-[2px]"></div>
+              <div class="qr-cell rounded-[2px]"></div>
+              <div class="qr-cell rounded-[2px]"></div>
+              <div class="bg-transparent rounded-[2px]"></div>
+              <div class="qr-cell rounded-[2px]"></div>
+              <div class="qr-cell rounded-[2px]"></div>
+              <div class="qr-cell rounded-[2px]"></div>
+              <div class="bg-transparent rounded-[2px]"></div>
+              <div class="qr-cell rounded-[2px]"></div>
+              <div class="bg-transparent rounded-[2px]"></div>
+              <div class="qr-cell rounded-[2px]"></div>
+              <div class="qr-cell rounded-[2px]"></div>
+              <div class="qr-cell rounded-[2px]"></div>
+              <div class="qr-cell rounded-[2px]"></div>
+              <div class="qr-cell rounded-[2px]"></div>
+              <div class="qr-cell rounded-[2px]"></div>
+            </div>
+            <p class="text-center font-bold text-ink text-[15px] tracking-wide">
+              SA-20260924-8841
+            </p>
+            <div class="flex justify-center gap-1.5 mt-2">
+              <span
+                class="text-[11.5px] bg-ink text-white px-2.5 py-1 rounded-full font-semibold"
+                >2 Motor</span
+              >
+            </div>
+            <div
+              class="mt-4 pt-4 border-t border-line/70 space-y-1.5 text-[12.5px] text-ink/60"
+            >
+              <p class="flex justify-between">
+                <span>Cabang</span
+                ><span class="font-semibold text-ink"
+                  >Servisin Aja - Kemang</span
+                >
+              </p>
+              <p class="flex justify-between">
+                <span>Jadwal</span
+                ><span class="font-semibold text-ink">Kam, 24 Sep · 09:30</span>
+              </p>
+              <p class="flex justify-between">
+                <span>Total Biaya</span
+                ><span class="font-semibold text-ink">Rp235.000</span>
+              </p>
+            </div>
+          </div>
+
+          <button
+            class="tap w-full rounded-xl font-bold text-[14px] py-3.5 bg-ink text-white mt-8"
+          >
+            Kembali ke Beranda
+          </button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
