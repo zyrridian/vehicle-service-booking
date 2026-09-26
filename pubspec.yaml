@@ -1,6 +1,6 @@
 name: vehicle_service_booking
 description: "A new Flutter project."
-publish_to: 'none'
+publish_to: "none"
 version: 0.1.0
 
 environment:
@@ -14,6 +14,7 @@ dependencies:
   lucide_icons: ^0.257.0
   flutter_bloc: ^9.1.1
   equatable: ^3.0.0
+  flutter_native_splash: ^2.4.7
 
 dev_dependencies:
   flutter_test:
