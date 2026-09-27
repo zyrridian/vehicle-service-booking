@@ -1,129 +1,256 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
+import 'dart:async';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../main_layout/pages/main_layout_page.dart';
+import 'login_success_page.dart';
 
-class OtpVerificationPage extends StatelessWidget {
-  const OtpVerificationPage({super.key});
+class OtpVerificationPage extends StatefulWidget {
+  final String phoneNumber;
+  const OtpVerificationPage({
+    super.key,
+    this.phoneNumber = '+62 812 3456 7890',
+  });
+
+  @override
+  State<OtpVerificationPage> createState() => _OtpVerificationPageState();
+}
+
+class _OtpVerificationPageState extends State<OtpVerificationPage> {
+  int _counter = 30;
+  Timer? _timer;
+
+  late TapGestureRecognizer _editRecognizer;
+  late TapGestureRecognizer _resendRecognizer;
+
+  final TextEditingController _otpController = TextEditingController();
+  final FocusNode _otpFocus = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    _startTimer();
+
+    _editRecognizer = TapGestureRecognizer()
+      ..onTap = () => Navigator.of(context).pop();
+
+    _resendRecognizer = TapGestureRecognizer()
+      ..onTap = () {
+        if (_counter == 0) {
+          setState(() {
+            _counter = 30;
+          });
+          _startTimer();
+        }
+      };
+
+    _otpController.addListener(() {
+      setState(() {});
+    });
+  }
+
+  void _startTimer() {
+    _timer?.cancel();
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_counter > 0) {
+        setState(() {
+          _counter--;
+        });
+      } else {
+        timer.cancel();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _editRecognizer.dispose();
+    _resendRecognizer.dispose();
+    _otpController.dispose();
+    _otpFocus.dispose();
+    super.dispose();
+  }
+
+  void _verifyOtp() {
+    Navigator.of(context).pushAndRemoveUntil(
+      PageRouteBuilder(
+        transitionDuration: const Duration(milliseconds: 500),
+        pageBuilder: (context, animation, secondaryAnimation) => const LoginSuccessPage(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(opacity: animation, child: child);
+        },
+      ),
+      (route) => false,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
+      resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(LucideIcons.chevronLeft, color: AppColors.ink),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0),
+          padding: const EdgeInsets.symmetric(horizontal: 24.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Spacer(),
-              Transform.translate(
-                offset: const Offset(-6, 0),
-                child: GestureDetector(
-                  onTap: () => Navigator.of(context).pop(),
-                  child: Container(
-                    width: 36,
-                    height: 36,
-                    margin: const EdgeInsets.only(bottom: 16),
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                    ),
-                    alignment: Alignment.center,
-                    child: const Icon(LucideIcons.chevronLeft, color: AppColors.ink, size: 24),
-                  ),
-                ),
+              const SizedBox(height: 48),
+              const Hero(
+                tag: 'app_logo',
+                child: SizedBox.shrink(),
               ),
               const Text(
-                'Masukkan Kode OTP',
+                'Enter Verification Code',
                 style: TextStyle(
-                  fontSize: 20,
+                  fontSize: 22,
                   fontWeight: FontWeight.bold,
                   color: AppColors.ink,
                 ),
               ),
-              const SizedBox(height: 6),
+              const SizedBox(height: 8),
               RichText(
                 text: TextSpan(
                   style: TextStyle(
-                    fontSize: 13,
-                    color: AppColors.ink.withOpacity(0.5),
-                    fontFamily: 'Plus Jakarta Sans',
+                    fontSize: 14,
+                    color: AppColors.ink.withValues(alpha: 0.5),
                   ),
-                  children: const [
-                    TextSpan(text: 'Kode 4 digit dikirim ke\n'),
+                  children: [
+                    TextSpan(text: 'We sent a code to ${widget.phoneNumber} '),
                     TextSpan(
-                      text: '+62 812 3456 7890',
-                      style: TextStyle(fontWeight: FontWeight.w600, color: AppColors.ink),
+                      text: '(Edit)',
+                      style: const TextStyle(
+                        color: AppColors.brand,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      recognizer: _editRecognizer,
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 24),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  _buildOtpBox('8'),
-                  _buildOtpBox('4'),
-                  _buildOtpBox('2'),
-                  _buildOtpBox('9'),
-                ],
-              ),
-              const SizedBox(height: 24),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(builder: (_) => const MainLayoutPage()),
-                      (route) => false,
-                    );
-                  },
-                  child: const Text('Verifikasi'),
+              const SizedBox(height: 48),
+              GestureDetector(
+                onTap: () => _otpFocus.requestFocus(),
+                child: Stack(
+                  children: [
+                    Opacity(
+                      opacity: 0,
+                      child: TextField(
+                        controller: _otpController,
+                        focusNode: _otpFocus,
+                        keyboardType: TextInputType.number,
+                        maxLength: 6,
+                        autofocus: true,
+                        decoration: const InputDecoration(counterText: ''),
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        for (int i = 0; i < 6; i++)
+                          Expanded(
+                            child: Padding(
+                              padding: EdgeInsets.only(
+                                left: i == 0 ? 0 : 4.0,
+                                right: i == 5 ? 0 : 4.0,
+                              ),
+                              child: Container(
+                                height: 56,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: _otpController.text.length > i
+                                        ? AppColors.brand
+                                        : (_otpController.text.length == i && _otpFocus.hasFocus)
+                                            ? AppColors.brand.withValues(alpha: 0.5)
+                                            : AppColors.line,
+                                    width: 1.5,
+                                  ),
+                                ),
+                                alignment: Alignment.center,
+                                child: Text(
+                                  _otpController.text.length > i ? _otpController.text[i] : '',
+                                  style: const TextStyle(
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.ink,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 48),
+              SizedBox(
+                width: double.infinity,
+                height: 48,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.brand,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                    elevation: 0,
+                  ),
+                  onPressed: _otpController.text.length == 6 ? _verifyOtp : null,
+                  child: const Text(
+                    'Verify',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
               Center(
                 child: RichText(
                   text: TextSpan(
                     style: TextStyle(
-                      fontSize: 12.5,
-                      color: AppColors.ink.withOpacity(0.4),
-                      fontFamily: 'Plus Jakarta Sans',
+                      fontSize: 14,
+                      color: AppColors.ink.withValues(alpha: 0.5),
                     ),
-                    children: const [
-                      TextSpan(text: 'Kirim ulang kode dalam '),
-                      TextSpan(
-                        text: '30 detik',
-                        style: TextStyle(fontWeight: FontWeight.w600, color: AppColors.ink),
-                      ),
-                    ],
+                    children: _counter > 0
+                        ? [
+                            const TextSpan(text: 'Resend code in '),
+                            TextSpan(
+                              text: '${_counter}s',
+                              style: const TextStyle(
+                                color: AppColors.brand,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ]
+                        : [
+                            const TextSpan(text: "Didn't receive the code? "),
+                            TextSpan(
+                              text: 'Resend Code',
+                              style: const TextStyle(
+                                color: AppColors.brand,
+                                fontWeight: FontWeight.w600,
+                              ),
+                              recognizer: _resendRecognizer,
+                            ),
+                          ],
                   ),
                 ),
               ),
               const Spacer(),
             ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildOtpBox(String digit) {
-    return Expanded(
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 6),
-        padding: const EdgeInsets.symmetric(vertical: 12),
-        decoration: BoxDecoration(
-          color: AppColors.brand50,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: AppColors.brand, width: 2),
-        ),
-        alignment: Alignment.center,
-        child: Text(
-          digit,
-          style: const TextStyle(
-            fontSize: 19,
-            fontWeight: FontWeight.bold,
-            color: AppColors.ink,
           ),
         ),
       ),

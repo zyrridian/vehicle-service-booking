@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-  static const Color brand = Color(0xFFFF5722);
-  static const Color brandDark = Color(0xFFE64A19);
+  static const Color brand = Color(0xFFFE6900);
+  static const Color brandDark = Color(0xFFFF1E02);
   static const Color brand50 = Color(0xFFFFF1EC);
 
   static const Color ink = Color(0xFF1A1A1A);
