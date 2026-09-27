@@ -3,8 +3,23 @@ import 'package:lucide_icons/lucide_icons.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../auth/pages/login_page.dart';
 
-class OnboardingPage extends StatelessWidget {
+import 'package:flutter_native_splash/flutter_native_splash.dart';
+
+class OnboardingPage extends StatefulWidget {
   const OnboardingPage({super.key});
+
+  @override
+  State<OnboardingPage> createState() => _OnboardingPageState();
+}
+
+class _OnboardingPageState extends State<OnboardingPage> {
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(seconds: 2), () {
+      FlutterNativeSplash.remove();
+    });
+  }
 
   void _goToLogin(BuildContext context) {
     Navigator.of(context).pushReplacement(
