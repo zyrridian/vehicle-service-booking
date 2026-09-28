@@ -32,7 +32,24 @@ import 'data/repositories/booking_repository_impl.dart';
 import 'domain/usecases/booking_usecases.dart';
 import 'presentation/booking/bloc/booking_bloc.dart';
 
+import 'data/datasources/remote/garage_remote_datasource.dart';
+import 'data/repositories/garage_repository_impl.dart';
+import 'domain/usecases/garage_usecases.dart';
+import 'presentation/garage/bloc/garage_bloc.dart';
+
 class Injection {
+  static GarageBloc provideGarageBloc() {
+    final remoteDataSource = GarageRemoteDataSourceImpl();
+    final repository = GarageRepositoryImpl(remoteDataSource);
+    return GarageBloc(
+      getGarageVehiclesUseCase: GetGarageVehiclesUseCase(repository),
+      getVehicleDetailUseCase: GetVehicleDetailUseCase(repository),
+      addVehicleUseCase: AddVehicleUseCase(repository),
+      editVehicleUseCase: EditVehicleUseCase(repository),
+      deleteVehicleUseCase: DeleteVehicleUseCase(repository),
+    );
+  }
+
   static BookingBloc provideBookingBloc() {
     final remoteDataSource = BookingRemoteDataSourceImpl();
     final repository = BookingRepositoryImpl(remoteDataSource);
