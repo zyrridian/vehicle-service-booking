@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:intl/intl.dart';
 import '../../../core/theme/app_colors.dart';
+import '../bloc/booking_bloc.dart';
 import 'booking_success_page.dart';
 
 class BookingScheduleSummaryPage extends StatefulWidget {
@@ -12,116 +15,178 @@ class BookingScheduleSummaryPage extends StatefulWidget {
 
 class _BookingScheduleSummaryPageState extends State<BookingScheduleSummaryPage> {
   int _selectedBranch = 0;
-  int _selectedDate = 1;
-  int _selectedTime = 1;
 
   @override
   Widget build(BuildContext context) {
+    final today = DateTime.now();
+    final dates = List.generate(7, (i) => today.add(Duration(days: i)));
+
     return Scaffold(
       body: SafeArea(
         child: Column(
           children: [
             _buildHeader(context),
             Expanded(
-              child: ListView(
-                padding: const EdgeInsets.fromLTRB(20, 12, 20, 100),
-                children: [
-                  const Text('Pilih Cabang', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.ink)),
-                  const SizedBox(height: 10),
-                  SizedBox(
-                    height: 44,
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      children: [
-                        _buildBranchBtn(0, 'Servisin Aja - Kemang'),
-                        const SizedBox(width: 8),
-                        _buildBranchBtn(1, 'BSD'),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  
-                  const Text('Pilih Tanggal', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.ink)),
-                  const SizedBox(height: 10),
-                  SizedBox(
-                    height: 64,
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      children: [
-                        _buildDateBtn(0, 'Rab', '23'),
-                        const SizedBox(width: 8),
-                        _buildDateBtn(1, 'Kam', '24'),
-                        const SizedBox(width: 8),
-                        _buildDateBtn(2, 'Jum', '25'),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  
-                  const Text('Pilih Jam', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.ink)),
-                  const SizedBox(height: 10),
-                  Row(
-                    children: [
-                      Expanded(child: _buildTimeBtn(0, '08:00')),
-                      const SizedBox(width: 8),
-                      Expanded(child: _buildTimeBtn(1, '09:30')),
-                      const SizedBox(width: 8),
-                      Expanded(child: _buildTimeBtn(2, '11:00')),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-                  
-                  const Text('Ringkasan Invoice', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.ink)),
-                  const SizedBox(height: 10),
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: AppColors.line),
-                    ),
-                    child: Column(
-                      children: [
-                        _buildInvoiceItem('Honda Vario 150', 'Servis Berkala · Shell Advance 0.8L', 'Rp150.000'),
-                        const Divider(height: 1, color: AppColors.line),
-                        _buildInvoiceItem('Honda Beat Street', 'Servis Berkala · Tanpa Tambahan', 'Rp85.000'),
-                        const Divider(height: 1, color: AppColors.line),
-                        Container(
-                          padding: const EdgeInsets.all(14),
-                          decoration: const BoxDecoration(
-                            color: AppColors.surface,
-                            borderRadius: BorderRadius.only(bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20)),
-                          ),
-                          child: const Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text('Total Pembayaran', style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.bold, color: AppColors.ink)),
-                              Text('Rp235.000', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.brand)),
-                            ],
-                          ),
+              child: BlocConsumer<BookingBloc, BookingState>(
+                listener: (context, state) {
+                  if (state.confirmedBookingId != null && state.selectedDate != null && state.selectedTimeSlot != null) {
+                    Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(
+                        builder: (_) => BookingSuccessPage(
+                          bookingId: state.confirmedBookingId!,
+                          vehicleCount: state.selectedVehicleIds.length,
+                          date: state.selectedDate!,
+                          time: state.selectedTimeSlot!,
+                          totalPrice: state.totalPrice,
                         ),
-                      ],
-                    ),
-                  ),
-                ],
+                      ),
+                      (route) => false,
+                    );
+                  }
+                  if (state.errorMessage != null && !state.isSubmitting) {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
+                  }
+                },
+                builder: (context, state) {
+                  final total = state.totalPrice;
+                  
+                  return ListView(
+                    padding: const EdgeInsets.fromLTRB(20, 12, 20, 100),
+                    children: [
+                      const Text('Pilih Cabang', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.ink)),
+                      const SizedBox(height: 10),
+                      SizedBox(
+                        height: 44,
+                        child: ListView(
+                          scrollDirection: Axis.horizontal,
+                          children: [
+                            _buildBranchBtn(0, 'Servisin Aja - Kemang'),
+                            const SizedBox(width: 8),
+                            _buildBranchBtn(1, 'BSD'),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      
+                      const Text('Pilih Tanggal', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.ink)),
+                      const SizedBox(height: 10),
+                      SizedBox(
+                        height: 64,
+                        child: ListView(
+                          scrollDirection: Axis.horizontal,
+                          children: dates.map((d) {
+                            final isSelected = state.selectedDate?.day == d.day && state.selectedDate?.month == d.month;
+                            return Padding(
+                              padding: const EdgeInsets.only(right: 8),
+                              child: _buildDateBtn(
+                                context,
+                                date: d,
+                                isSelected: isSelected,
+                                onTap: () => context.read<BookingBloc>().add(SelectDateEvent(d)),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      
+                      const Text('Pilih Jam', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.ink)),
+                      const SizedBox(height: 10),
+                      if (state.selectedDate == null)
+                        const Text('Pilih tanggal untuk melihat jadwal', style: TextStyle(color: Colors.grey))
+                      else if (state.availableTimeSlots == null || state.availableTimeSlots!.isEmpty)
+                        const Center(child: CircularProgressIndicator(color: AppColors.brand))
+                      else
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: state.availableTimeSlots!.map((slot) {
+                            final isSelected = state.selectedTimeSlot == slot.time;
+                            return _buildTimeBtn(
+                              time: slot.time,
+                              isSelected: isSelected,
+                              isAvailable: slot.isAvailable,
+                              onTap: slot.isAvailable ? () => context.read<BookingBloc>().add(SelectTimeSlotEvent(slot.time)) : null,
+                            );
+                          }).toList(),
+                        ),
+                      const SizedBox(height: 24),
+                      
+                      const Text('Ringkasan Invoice', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.ink)),
+                      const SizedBox(height: 10),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(color: AppColors.line),
+                        ),
+                        child: Column(
+                          children: [
+                            ...state.selectedVehicleIds.map((vId) {
+                              final vehicle = state.myVehicles?.firstWhere((v) => v.id == vId);
+                              final sIds = state.selectedServiceIds[vId] ?? {};
+                              final services = state.availableServices[vId] ?? [];
+                              final selectedServices = services.where((s) => sIds.contains(s.id)).toList();
+                              
+                              if (vehicle == null || selectedServices.isEmpty) return const SizedBox.shrink();
+                              
+                              final desc = selectedServices.map((s) => s.name).join(' · ');
+                              final price = selectedServices.fold(0.0, (sum, s) => sum + s.price);
+                              
+                              return Column(
+                                children: [
+                                  _buildInvoiceItem(vehicle.name, desc, NumberFormat.currency(locale: 'id_ID', symbol: 'Rp', decimalDigits: 0).format(price)),
+                                  const Divider(height: 1, color: AppColors.line),
+                                ],
+                              );
+                            }),
+                            Container(
+                              padding: const EdgeInsets.all(14),
+                              decoration: const BoxDecoration(
+                                color: AppColors.surface,
+                                borderRadius: BorderRadius.only(bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20)),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text('Total Pembayaran', style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.bold, color: AppColors.ink)),
+                                  Text(NumberFormat.currency(locale: 'id_ID', symbol: 'Rp', decimalDigits: 0).format(total), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.brand)),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  );
+                },
               ),
             ),
           ],
         ),
       ),
-      bottomSheet: Container(
-        padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          border: Border(top: BorderSide(color: AppColors.line)),
-        ),
-        child: SizedBox(
-          width: double.infinity,
-          child: ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (_) => const BookingSuccessPage()));
-            },
-            child: const Text('Konfirmasi Booking'),
-          ),
-        ),
+      bottomSheet: BlocBuilder<BookingBloc, BookingState>(
+        builder: (context, state) {
+          final isReady = state.selectedDate != null && state.selectedTimeSlot != null;
+          
+          return Container(
+            padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              border: Border(top: BorderSide(color: AppColors.line)),
+            ),
+            child: SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: isReady && !state.isSubmitting
+                    ? () {
+                        context.read<BookingBloc>().add(SubmitBookingEvent('Notes...'));
+                      }
+                    : null,
+                child: state.isSubmitting ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white)) : const Text('Konfirmasi Booking'),
+              ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -193,10 +258,11 @@ class _BookingScheduleSummaryPageState extends State<BookingScheduleSummaryPage>
     );
   }
 
-  Widget _buildDateBtn(int index, String day, String date) {
-    final isSelected = _selectedDate == index;
+  Widget _buildDateBtn(BuildContext context, {required DateTime date, required bool isSelected, required VoidCallback onTap}) {
+    final dayStr = DateFormat('E').format(date);
+    final dateStr = DateFormat('dd').format(date);
     return GestureDetector(
-      onTap: () => setState(() => _selectedDate = index),
+      onTap: onTap,
       child: Container(
         width: 56,
         decoration: BoxDecoration(
@@ -207,24 +273,38 @@ class _BookingScheduleSummaryPageState extends State<BookingScheduleSummaryPage>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(day, style: TextStyle(fontSize: 11, color: isSelected ? Colors.white.withOpacity(0.8) : AppColors.ink.withOpacity(0.4))),
-            Text(date, style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: isSelected ? Colors.white : AppColors.ink)),
+            Text(dayStr, style: TextStyle(fontSize: 11, color: isSelected ? Colors.white.withOpacity(0.8) : AppColors.ink.withOpacity(0.4))),
+            Text(dateStr, style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: isSelected ? Colors.white : AppColors.ink)),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildTimeBtn(int index, String time) {
-    final isSelected = _selectedTime == index;
+  Widget _buildTimeBtn({required String time, required bool isSelected, required bool isAvailable, required VoidCallback? onTap}) {
+    Color bgColor = Colors.transparent;
+    Color borderColor = AppColors.line;
+    Color textColor = AppColors.ink.withOpacity(0.6);
+
+    if (isSelected) {
+      bgColor = AppColors.brand50;
+      borderColor = AppColors.brand;
+      textColor = AppColors.ink;
+    } else if (!isAvailable) {
+      bgColor = AppColors.surface;
+      borderColor = AppColors.line;
+      textColor = AppColors.ink.withOpacity(0.3);
+    }
+
     return GestureDetector(
-      onTap: () => setState(() => _selectedTime = index),
+      onTap: onTap,
       child: Container(
+        width: 100,
         padding: const EdgeInsets.symmetric(vertical: 10),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.brand50 : Colors.transparent,
+          color: bgColor,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: isSelected ? AppColors.brand : AppColors.line, width: 2),
+          border: Border.all(color: borderColor, width: 2),
         ),
         alignment: Alignment.center,
         child: Text(
@@ -232,7 +312,7 @@ class _BookingScheduleSummaryPageState extends State<BookingScheduleSummaryPage>
           style: TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.w600,
-            color: isSelected ? AppColors.ink : AppColors.ink.withOpacity(0.6),
+            color: textColor,
           ),
         ),
       ),

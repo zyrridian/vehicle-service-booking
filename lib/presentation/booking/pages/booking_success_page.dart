@@ -1,13 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:intl/intl.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../main_layout/pages/main_layout_page.dart';
 
 class BookingSuccessPage extends StatelessWidget {
-  const BookingSuccessPage({super.key});
+  final String bookingId;
+  final int vehicleCount;
+  final DateTime date;
+  final String time;
+  final double totalPrice;
+
+  const BookingSuccessPage({
+    super.key,
+    required this.bookingId,
+    required this.vehicleCount,
+    required this.date,
+    required this.time,
+    required this.totalPrice,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final dateStr = DateFormat('E, dd MMM').format(date);
+    
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -45,7 +61,7 @@ class BookingSuccessPage extends StatelessWidget {
                   children: [
                     _buildFakeQr(),
                     const SizedBox(height: 16),
-                    const Text('SA-20260924-8841', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, letterSpacing: 1.0, color: AppColors.ink)),
+                    Text(bookingId, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, letterSpacing: 1.0, color: AppColors.ink)),
                     const SizedBox(height: 8),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -53,16 +69,16 @@ class BookingSuccessPage extends StatelessWidget {
                         color: AppColors.ink,
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: const Text('2 Motor', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.bold, color: Colors.white)),
+                      child: Text('$vehicleCount Motor', style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.bold, color: Colors.white)),
                     ),
                     const SizedBox(height: 16),
                     const Divider(color: AppColors.line, height: 1),
                     const SizedBox(height: 16),
                     _buildDetailRow('Cabang', 'Servisin Aja - Kemang'),
                     const SizedBox(height: 6),
-                    _buildDetailRow('Jadwal', 'Kam, 24 Sep · 09:30'),
+                    _buildDetailRow('Jadwal', '$dateStr · $time'),
                     const SizedBox(height: 6),
-                    _buildDetailRow('Total Biaya', 'Rp235.000'),
+                    _buildDetailRow('Total Biaya', NumberFormat.currency(locale: 'id_ID', symbol: 'Rp', decimalDigits: 0).format(totalPrice)),
                   ],
                 ),
               ),

@@ -27,7 +27,24 @@ import 'domain/usecases/get_settings_usecase.dart';
 import 'domain/usecases/update_language_usecase.dart';
 import 'presentation/settings/bloc/settings_bloc.dart';
 
+import 'data/datasources/remote/booking_remote_datasource.dart';
+import 'data/repositories/booking_repository_impl.dart';
+import 'domain/usecases/booking_usecases.dart';
+import 'presentation/booking/bloc/booking_bloc.dart';
+
 class Injection {
+  static BookingBloc provideBookingBloc() {
+    final remoteDataSource = BookingRemoteDataSourceImpl();
+    final repository = BookingRepositoryImpl(remoteDataSource);
+    return BookingBloc(
+      getMyVehiclesUseCase: GetMyVehiclesUseCase(repository),
+      getAvailableServicesUseCase: GetAvailableServicesUseCase(repository),
+      getAvailableTimeSlotsUseCase: GetAvailableTimeSlotsUseCase(repository),
+      createBookingUseCase: CreateBookingUseCase(repository),
+      addTemporaryVehicleUseCase: AddTemporaryVehicleUseCase(repository),
+    );
+  }
+
   static AuthBloc provideAuthBloc() {
     final remoteDataSource = AuthRemoteDataSourceImpl();
     final localDataSource = AuthLocalDataSourceImpl();

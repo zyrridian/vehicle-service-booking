@@ -1,21 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:intl/intl.dart';
 import '../../../core/theme/app_colors.dart';
+import '../bloc/booking_bloc.dart';
 import 'booking_schedule_summary_page.dart';
 
-class BookingServiceConfigPage extends StatefulWidget {
+class BookingServiceConfigPage extends StatelessWidget {
   const BookingServiceConfigPage({super.key});
-
-  @override
-  State<BookingServiceConfigPage> createState() => _BookingServiceConfigPageState();
-}
-
-class _BookingServiceConfigPageState extends State<BookingServiceConfigPage> {
-  int _selectedTabIndex = 0;
-  
-  // Dummy state for selections
-  int _packageSelected = 0; // 0 = Berkala, 1 = Heavy
-  int _oilSelected = 1; // 0 = Tanpa, 1 = Shell
 
   @override
   Widget build(BuildContext context) {
@@ -24,64 +16,149 @@ class _BookingServiceConfigPageState extends State<BookingServiceConfigPage> {
         child: Column(
           children: [
             _buildHeader(context),
-            _buildTabs(),
             Expanded(
-              child: ListView(
-                padding: const EdgeInsets.fromLTRB(20, 12, 20, 100),
-                children: [
-                  _buildVehicleHeader(),
-                  const SizedBox(height: 16),
-                  const Text('Pilih Paket Servis', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.ink)),
-                  const SizedBox(height: 10),
-                  _buildPackageOption(0, 'Servis Berkala', 'Ganti oli + cek rutin 17 titik', 'Rp85.000'),
-                  const SizedBox(height: 8),
-                  _buildPackageOption(1, 'Heavy Service', 'Overhaul + kalibrasi + part utama', 'Rp250.000'),
-                  const SizedBox(height: 16),
-                  const Text('Oli & Spare Part', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.ink)),
-                  const SizedBox(height: 10),
-                  Row(
-                    children: [
-                      Expanded(child: _buildOilOption(0, 'Tanpa Tambahan', '+Rp0')),
-                      const SizedBox(width: 8),
-                      Expanded(child: _buildOilOption(1, 'Shell Advance 0.8L', '+Rp65.000')),
-                    ],
-                  ),
-                ],
+              child: BlocBuilder<BookingBloc, BookingState>(
+                builder: (context, state) {
+                  final selectedVehicles = state.myVehicles?.where((v) => state.selectedVehicleIds.contains(v.id)).toList() ?? [];
+
+                  return ListView.builder(
+                    padding: const EdgeInsets.fromLTRB(20, 12, 20, 100),
+                    itemCount: selectedVehicles.length,
+                    itemBuilder: (context, index) {
+                      final vehicle = selectedVehicles[index];
+                      final availableServices = state.availableServices[vehicle.id] ?? [];
+                      final selectedServiceIds = state.selectedServiceIds[vehicle.id] ?? {};
+
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 24),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                const Icon(LucideIcons.wrench, color: AppColors.brand, size: 20),
+                                const SizedBox(width: 8),
+                                Text(vehicle.name, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.ink)),
+                                const SizedBox(width: 8),
+                                Text(vehicle.plate, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.ink.withValues(alpha: 0.5))),
+                              ],
+                            ),
+                            const SizedBox(height: 12),
+                            if (availableServices.isEmpty)
+                              const Padding(
+                                padding: EdgeInsets.all(16.0),
+                                child: Center(child: CircularProgressIndicator(color: AppColors.brand)),
+                              )
+                            else
+                              ...availableServices.map((service) {
+                                final isSelected = selectedServiceIds.contains(service.id);
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 10),
+                                  child: _buildServiceOption(
+                                    context: context,
+                                    vehicleId: vehicle.id,
+                                    serviceId: service.id,
+                                    title: service.name,
+                                    price: NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0).format(service.price),
+                                    duration: '${service.durationMinutes} mnt',
+                                    isSelected: isSelected,
+                                  ),
+                                );
+                              }),
+                            const SizedBox(height: 8),
+                            if (state.vehicleNotes[vehicle.id] != null && state.vehicleNotes[vehicle.id]!.isNotEmpty)
+                              Container(
+                                padding: const EdgeInsets.all(12),
+                                margin: const EdgeInsets.only(bottom: 8),
+                                decoration: BoxDecoration(
+                                  color: AppColors.surface,
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(color: AppColors.line),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          const Text('Keluhan / Catatan', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.ink)),
+                                          const SizedBox(height: 4),
+                                          Text(state.vehicleNotes[vehicle.id]!, style: TextStyle(fontSize: 13, color: AppColors.ink.withValues(alpha: 0.7))),
+                                        ],
+                                      ),
+                                    ),
+                                    IconButton(
+                                      icon: const Icon(LucideIcons.edit2, size: 16, color: AppColors.brand),
+                                      onPressed: () => _showNotesDialog(context, vehicle.id, state.vehicleNotes[vehicle.id]),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            else
+                              GestureDetector(
+                                onTap: () => _showNotesDialog(context, vehicle.id, null),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                  child: Text('+ Tambah Keluhan / Layanan Lain', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.brand.withValues(alpha: 0.8))),
+                                ),
+                              ),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                },
               ),
             ),
           ],
         ),
       ),
-      bottomSheet: Container(
-        padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          border: Border(top: BorderSide(color: AppColors.line)),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(bottom: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('Total 2 motor', style: TextStyle(fontSize: 12.5, color: AppColors.ink.withOpacity(0.5))),
-                  const Text('Rp235.000', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.ink)),
-                ],
-              ),
+      bottomSheet: BlocBuilder<BookingBloc, BookingState>(
+        builder: (context, state) {
+          final total = state.totalPrice;
+          final isReady = state.selectedServiceIds.values.any((s) => s.isNotEmpty);
+
+          return Container(
+            padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              border: Border(top: BorderSide(color: AppColors.line)),
             ),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (_) => const BookingScheduleSummaryPage()));
-                },
-                child: const Text('Lanjut: Jadwal'),
-              ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Estimasi Biaya', style: TextStyle(fontSize: 13, color: AppColors.ink.withValues(alpha: 0.6))),
+                    Text(NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0).format(total), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.ink)),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: isReady
+                        ? () {
+                            context.read<BookingBloc>().add(SelectDateEvent(DateTime.now()));
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) => BlocProvider.value(
+                                  value: context.read<BookingBloc>(),
+                                  child: const BookingScheduleSummaryPage(),
+                                ),
+                              ),
+                            );
+                          }
+                        : null,
+                    child: const Text('Lanjut: Pilih Jadwal'),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
@@ -109,9 +186,9 @@ class _BookingServiceConfigPageState extends State<BookingServiceConfigPage> {
                 ),
               ),
               const SizedBox(width: 12),
-              const Text('Atur Servis', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.ink)),
+              const Text('Atur Layanan', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.ink)),
               const Spacer(),
-              Text('2/3', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.ink.withOpacity(0.4))),
+              Text('2/3', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.ink.withValues(alpha: 0.4))),
             ],
           ),
           const SizedBox(height: 12),
@@ -129,138 +206,107 @@ class _BookingServiceConfigPageState extends State<BookingServiceConfigPage> {
     );
   }
 
-  Widget _buildTabs() {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(20, 12, 20, 4),
-      height: 56,
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        children: [
-          _buildTabBtn(0, 'Honda Vario'),
-          const SizedBox(width: 8),
-          _buildTabBtn(1, 'Honda Beat'),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTabBtn(int index, String label) {
-    final isSelected = _selectedTabIndex == index;
+  Widget _buildServiceOption({required BuildContext context, required String vehicleId, required String serviceId, required String title, required String price, required String duration, required bool isSelected}) {
     return GestureDetector(
-      onTap: () => setState(() => _selectedTabIndex = index),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        decoration: BoxDecoration(
-          color: isSelected ? AppColors.ink : Colors.transparent,
-          borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: isSelected ? AppColors.ink : AppColors.line, width: 2),
-        ),
-        alignment: Alignment.center,
-        child: Text(
-          label,
-          style: TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w600,
-            color: isSelected ? Colors.white : AppColors.ink.withOpacity(0.5),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildVehicleHeader() {
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 40,
-            height: 40,
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(LucideIcons.wrench, color: AppColors.brand, size: 20),
-          ),
-          const SizedBox(width: 12),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text('Honda Vario 150', style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.bold, color: AppColors.ink)),
-              Text('B 4567 ABC', style: TextStyle(fontSize: 11.5, color: AppColors.ink.withOpacity(0.5))),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPackageOption(int index, String title, String desc, String price) {
-    final isSelected = _packageSelected == index;
-    return GestureDetector(
-      onTap: () => setState(() => _packageSelected = index),
+      onTap: () {
+        context.read<BookingBloc>().add(ToggleServiceEvent(vehicleId, serviceId));
+      },
       child: Container(
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
           color: isSelected ? AppColors.brand50 : Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: isSelected ? AppColors.brand : AppColors.line, width: 2),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: isSelected ? AppColors.brand : AppColors.line),
         ),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
               width: 20,
               height: 20,
-              margin: const EdgeInsets.only(top: 2),
               decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: isSelected ? AppColors.brand : AppColors.line, width: 2),
+                color: isSelected ? AppColors.brand : Colors.white,
+                borderRadius: BorderRadius.circular(6),
+                border: Border.all(color: isSelected ? AppColors.brand : AppColors.line, width: 1.5),
               ),
-              alignment: Alignment.center,
-              child: isSelected ? Container(width: 10, height: 10, decoration: const BoxDecoration(color: AppColors.brand, shape: BoxShape.circle)) : null,
+              child: isSelected ? const Icon(LucideIcons.check, color: Colors.white, size: 14) : null,
             ),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title, style: const TextStyle(fontSize: 13.5, fontWeight: FontWeight.w600, color: AppColors.ink)),
-                  const SizedBox(height: 2),
-                  Text(desc, style: TextStyle(fontSize: 12, color: AppColors.ink.withOpacity(0.5))),
+                  Text(title, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.ink)),
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      Text(price, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.brand.withValues(alpha: 0.8))),
+                      const SizedBox(width: 12),
+                      Row(
+                        children: [
+                          Icon(LucideIcons.clock, size: 12, color: AppColors.ink.withValues(alpha: 0.4)),
+                          const SizedBox(width: 4),
+                          Text(duration, style: TextStyle(fontSize: 12, color: AppColors.ink.withValues(alpha: 0.5))),
+                        ],
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),
-            Text(price, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: AppColors.ink)),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildOilOption(int index, String title, String price) {
-    final isSelected = _oilSelected == index;
-    return GestureDetector(
-      onTap: () => setState(() => _oilSelected = index),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-        decoration: BoxDecoration(
-          color: isSelected ? AppColors.brand50 : Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: isSelected ? AppColors.brand : AppColors.line, width: 2),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(title, style: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600, color: AppColors.ink)),
-            Text(price, style: TextStyle(fontSize: 11.5, color: AppColors.ink.withOpacity(0.5))),
-          ],
-        ),
-      ),
+  void _showNotesDialog(BuildContext context, String vehicleId, String? currentNotes) {
+    final controller = TextEditingController(text: currentNotes);
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+      builder: (ctx) {
+        return Padding(
+          padding: EdgeInsets.fromLTRB(24, 24, 24, MediaQuery.of(ctx).viewInsets.bottom + 24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text('Tambah Keluhan', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.ink)),
+                  IconButton(icon: const Icon(LucideIcons.x, size: 20), onPressed: () => Navigator.of(ctx).pop()),
+                ],
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: controller,
+                maxLines: 3,
+                decoration: InputDecoration(
+                  hintText: 'Cth: Rem depan terasa blong, atau minta ganti ban sekalian.',
+                  hintStyle: TextStyle(color: AppColors.ink.withValues(alpha: 0.4)),
+                  filled: true,
+                  fillColor: AppColors.surface,
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+                ),
+              ),
+              const SizedBox(height: 24),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    context.read<BookingBloc>().add(UpdateVehicleNotesEvent(vehicleId, controller.text));
+                    Navigator.of(ctx).pop();
+                  },
+                  child: const Text('Simpan'),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

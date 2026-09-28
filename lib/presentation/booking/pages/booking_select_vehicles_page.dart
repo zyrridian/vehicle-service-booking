@@ -1,111 +1,137 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../injection.dart';
+import '../bloc/booking_bloc.dart';
 import 'booking_service_config_page.dart';
 
-class BookingSelectVehiclesPage extends StatefulWidget {
+class BookingSelectVehiclesPage extends StatelessWidget {
   const BookingSelectVehiclesPage({super.key});
 
   @override
-  State<BookingSelectVehiclesPage> createState() => _BookingSelectVehiclesPageState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => Injection.provideBookingBloc()..add(FetchVehiclesEvent()),
+      child: const _BookingSelectVehiclesView(),
+    );
+  }
 }
 
-class _BookingSelectVehiclesPageState extends State<BookingSelectVehiclesPage> {
-  bool _varioSelected = true;
-  bool _beatSelected = true;
-  bool _pcxSelected = false;
+class _BookingSelectVehiclesView extends StatelessWidget {
+  const _BookingSelectVehiclesView();
 
   @override
   Widget build(BuildContext context) {
-    int selectedCount = (_varioSelected ? 1 : 0) + (_beatSelected ? 1 : 0) + (_pcxSelected ? 1 : 0);
-
     return Scaffold(
       body: SafeArea(
         child: Column(
           children: [
             _buildHeader(context),
             Expanded(
-              child: ListView(
-                padding: const EdgeInsets.fromLTRB(20, 12, 20, 100),
-                children: [
-                  _buildSelectableVehicle(
-                    name: 'Honda Vario 150',
-                    desc: 'B 4567 ABC · Servis terakhir 2 bulan lalu',
-                    isSelected: _varioSelected,
-                    onTap: () => setState(() => _varioSelected = !_varioSelected),
-                  ),
-                  const SizedBox(height: 10),
-                  _buildSelectableVehicle(
-                    name: 'Honda Beat Street',
-                    desc: 'B 2210 XYZ · Servis terakhir 5 bulan lalu',
-                    isSelected: _beatSelected,
-                    onTap: () => setState(() => _beatSelected = !_beatSelected),
-                  ),
-                  const SizedBox(height: 10),
-                  _buildSelectableVehicle(
-                    name: 'Honda PCX 160',
-                    desc: 'B 8890 DEF · Servis terakhir 1 minggu lalu',
-                    isSelected: _pcxSelected,
-                    onTap: () => setState(() => _pcxSelected = !_pcxSelected),
-                  ),
-                  const SizedBox(height: 16),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: AppColors.line, width: 2, style: BorderStyle.solid), // Dashboard dash not natively supported easily without custom painter, using solid for now
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(LucideIcons.plus, color: AppColors.ink.withOpacity(0.5), size: 15),
-                        const SizedBox(width: 8),
-                        Text('Tambah Motor Sementara', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.ink.withOpacity(0.5))),
-                      ],
-                    ),
-                  ),
-                ],
+              child: BlocBuilder<BookingBloc, BookingState>(
+                builder: (context, state) {
+                  if (state.isLoading && state.myVehicles == null) {
+                    return const Center(child: CircularProgressIndicator(color: AppColors.brand));
+                  }
+                  
+                  final vehicles = state.myVehicles ?? [];
+                  if (vehicles.isEmpty) {
+                    return const Center(child: Text('No vehicles found.'));
+                  }
+
+                  return ListView(
+                    padding: const EdgeInsets.fromLTRB(20, 12, 20, 100),
+                    children: [
+                      ...vehicles.map((v) {
+                        final isSelected = state.selectedVehicleIds.contains(v.id);
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: _buildSelectableVehicle(
+                            name: v.name,
+                            desc: '${v.plate} · Servis terakhir ${v.lastService}',
+                            isSelected: isSelected,
+                            onTap: () => context.read<BookingBloc>().add(ToggleVehicleEvent(v.id)),
+                          ),
+                        );
+                      }),
+                      const SizedBox(height: 16),
+                      GestureDetector(
+                        onTap: () {
+                          _showAddTemporaryVehicleDialog(context);
+                        },
+                        child: Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(color: AppColors.line, width: 2, style: BorderStyle.solid),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(LucideIcons.plus, color: AppColors.ink.withOpacity(0.5), size: 15),
+                              const SizedBox(width: 8),
+                              Text('Tambah Motor Sementara', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.ink.withOpacity(0.5))),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
               ),
             ),
           ],
         ),
       ),
-      bottomSheet: Container(
-        padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          border: Border(top: BorderSide(color: AppColors.line)),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(bottom: 10),
-              child: RichText(
-                text: TextSpan(
-                  style: TextStyle(fontSize: 13, color: AppColors.ink.withOpacity(0.6), fontFamily: 'Plus Jakarta Sans'),
-                  children: [
-                    TextSpan(text: '$selectedCount', style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.ink)),
-                    const TextSpan(text: ' motor dipilih'),
-                  ],
+      bottomSheet: BlocBuilder<BookingBloc, BookingState>(
+        builder: (context, state) {
+          final selectedCount = state.selectedVehicleIds.length;
+          return Container(
+            padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              border: Border(top: BorderSide(color: AppColors.line)),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: RichText(
+                    text: TextSpan(
+                      style: TextStyle(fontSize: 13, color: AppColors.ink.withOpacity(0.6), fontFamily: 'Plus Jakarta Sans'),
+                      children: [
+                        TextSpan(text: '$selectedCount', style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.ink)),
+                        const TextSpan(text: ' motor dipilih'),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: selectedCount > 0
+                        ? () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) => BlocProvider.value(
+                                  value: context.read<BookingBloc>(),
+                                  child: const BookingServiceConfigPage(),
+                                ),
+                              ),
+                            );
+                          }
+                        : null,
+                    child: const Text('Lanjut: Atur Servis'),
+                  ),
+                ),
+              ],
             ),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: selectedCount > 0
-                    ? () {
-                        Navigator.of(context).push(MaterialPageRoute(builder: (_) => const BookingServiceConfigPage()));
-                      }
-                    : null,
-                child: const Text('Lanjut: Atur Servis'),
-              ),
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
@@ -198,6 +224,75 @@ class _BookingSelectVehiclesPageState extends State<BookingSelectVehiclesPage> {
           ],
         ),
       ),
+    );
+  }
+
+  void _showAddTemporaryVehicleDialog(BuildContext context) {
+    final nameController = TextEditingController();
+    final plateController = TextEditingController();
+    
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+      builder: (ctx) {
+        return Padding(
+          padding: EdgeInsets.fromLTRB(24, 24, 24, MediaQuery.of(ctx).viewInsets.bottom + 24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text('Tambah Motor Sementara', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.ink)),
+                  IconButton(icon: const Icon(LucideIcons.x, size: 20), onPressed: () => Navigator.of(ctx).pop()),
+                ],
+              ),
+              const SizedBox(height: 16),
+              const Text('Nama Motor', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: AppColors.ink)),
+              const SizedBox(height: 8),
+              TextField(
+                controller: nameController,
+                decoration: InputDecoration(
+                  hintText: 'Cth: Honda Supra X 125',
+                  hintStyle: TextStyle(color: AppColors.ink.withOpacity(0.4)),
+                  filled: true,
+                  fillColor: AppColors.surface,
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+                ),
+              ),
+              const SizedBox(height: 16),
+              const Text('Plat Nomor', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: AppColors.ink)),
+              const SizedBox(height: 8),
+              TextField(
+                controller: plateController,
+                decoration: InputDecoration(
+                  hintText: 'Cth: B 1234 ABC',
+                  hintStyle: TextStyle(color: AppColors.ink.withOpacity(0.4)),
+                  filled: true,
+                  fillColor: AppColors.surface,
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+                ),
+              ),
+              const SizedBox(height: 24),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    if (nameController.text.isNotEmpty && plateController.text.isNotEmpty) {
+                      context.read<BookingBloc>().add(AddTemporaryVehicleEvent(nameController.text, plateController.text));
+                      Navigator.of(ctx).pop();
+                    }
+                  },
+                  child: const Text('Simpan'),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

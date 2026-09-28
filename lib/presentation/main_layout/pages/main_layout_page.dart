@@ -5,6 +5,7 @@ import '../../home/pages/home_page.dart';
 import '../../garage/pages/garage_page.dart';
 import '../../history/pages/history_page.dart';
 import '../../account/pages/account_page.dart';
+import '../../booking/pages/booking_select_vehicles_page.dart';
 
 class MainLayoutPage extends StatefulWidget {
   const MainLayoutPage({super.key});
@@ -40,7 +41,11 @@ class _MainLayoutPageState extends State<MainLayoutPage> {
           width: 60,
           height: 60,
           child: FloatingActionButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const BookingSelectVehiclesPage()),
+              );
+            },
             elevation: 0,
             backgroundColor: AppColors.brand,
             shape: const CircleBorder(),
