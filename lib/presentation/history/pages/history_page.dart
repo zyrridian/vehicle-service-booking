@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../invoice/pages/invoice_detail_page.dart';
+import '../../review/pages/review_page.dart';
+import '../../tracking/pages/mechanic_tracking_page.dart';
 
 class HistoryPage extends StatefulWidget {
   const HistoryPage({super.key});
@@ -106,10 +109,8 @@ class _HistoryPageState extends State<HistoryPage> {
                   });
                 },
                 children: [
-                  _buildList(_activeBookings, 'No Active Bookings',
-                      'You don\'t have any active service bookings right now.'),
-                  _buildList(_completedBookings, 'No Completed Bookings',
-                      'You haven\'t completed any service bookings yet.'),
+                  _buildList(_activeBookings, 'No Active Bookings', 'You don\'t have any active service bookings right now.', isActive: true),
+                  _buildList(_completedBookings, 'No Completed Bookings', 'You haven\'t completed any service bookings yet.'),
                 ],
               ),
             ),
@@ -119,8 +120,7 @@ class _HistoryPageState extends State<HistoryPage> {
     );
   }
 
-  Widget _buildList(List<Map<String, dynamic>> bookings, String emptyTitle,
-      String emptyMessage) {
+  Widget _buildList(List<Map<String, dynamic>> bookings, String emptyTitle, String emptyMessage, {bool isActive = false}) {
     if (bookings.isEmpty) {
       return _buildEmptyState(emptyTitle, emptyMessage);
     }
@@ -140,6 +140,7 @@ class _HistoryPageState extends State<HistoryPage> {
           status: b['status'],
           statusColor: b['statusColor'],
           imageUrl: b['imageUrl'],
+          isActive: isActive,
         );
       },
     );
@@ -206,13 +207,13 @@ class _HistoryPageState extends State<HistoryPage> {
     required String status,
     required Color statusColor,
     required String imageUrl,
+    bool isActive = false,
   }) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.line),
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(24),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -221,7 +222,7 @@ class _HistoryPageState extends State<HistoryPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ClipRRect(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(12),
                 child: Image.network(
                   imageUrl,
                   width: 48,
@@ -232,8 +233,7 @@ class _HistoryPageState extends State<HistoryPage> {
                       width: 48,
                       height: 48,
                       color: Colors.grey[200],
-                      child: const Icon(LucideIcons.bike,
-                          color: Colors.grey, size: 24),
+                      child: const Icon(LucideIcons.bike, color: Colors.grey, size: 24),
                     );
                   },
                 ),
@@ -243,16 +243,9 @@ class _HistoryPageState extends State<HistoryPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(vehicleName,
-                        style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.ink)),
+                    Text(vehicleName, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.ink)),
                     const SizedBox(height: 2),
-                    Text(bookingId,
-                        style: TextStyle(
-                            fontSize: 12,
-                            color: AppColors.ink.withValues(alpha: 0.5))),
+                    Text(bookingId, style: TextStyle(fontSize: 12, color: AppColors.ink.withValues(alpha: 0.5))),
                   ],
                 ),
               ),
@@ -262,13 +255,7 @@ class _HistoryPageState extends State<HistoryPage> {
                   color: statusColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Text(
-                  status,
-                  style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                      color: statusColor),
-                ),
+                child: Text(status, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: statusColor)),
               ),
             ],
           ),
@@ -279,21 +266,35 @@ class _HistoryPageState extends State<HistoryPage> {
           const SizedBox(height: 6),
           _buildInfoRow(LucideIcons.mapPin, location),
           const SizedBox(height: 16),
-          const Divider(height: 1, color: AppColors.line),
+          Divider(height: 1, color: AppColors.ink.withValues(alpha: 0.1)),
           const SizedBox(height: 16),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Total: $total',
-                  style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.ink)),
-              const Text('View Details',
-                  style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.brand)),
+              Text('Total: $total', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.ink)),
+              if (isActive)
+                GestureDetector(
+                  onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => MechanicTrackingPage(bookingId: bookingId))),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(color: AppColors.brand, borderRadius: BorderRadius.circular(20)),
+                    child: const Text('Track Mechanic', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.white)),
+                  ),
+                )
+              else
+                Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => ReviewPage(bookingId: bookingId, workshopName: location, vehicleName: vehicleName))),
+                      child: const Text('Rate', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.brand)),
+                    ),
+                    const SizedBox(width: 16),
+                    GestureDetector(
+                      onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => InvoiceDetailPage(bookingId: bookingId))),
+                      child: const Text('Invoice', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.brand)),
+                    ),
+                  ],
+                ),
             ],
           ),
         ],

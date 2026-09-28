@@ -3,6 +3,8 @@ import 'package:lucide_icons/lucide_icons.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../notifications/pages/notifications_page.dart';
 import '../../booking/pages/booking_select_vehicles_page.dart';
+import '../../workshop/pages/workshop_list_page.dart';
+import '../../tracking/pages/mechanic_tracking_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -10,59 +12,22 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.only(bottom: 24),
+          padding: const EdgeInsets.only(bottom: 32),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildHeader(context),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: _buildBanner(context),
-              ),
               const SizedBox(height: 24),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Garasi Kamu',
-                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: AppColors.ink),
-                    ),
-                    const Text(
-                      '3 Motor',
-                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.brand),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 12),
-              SizedBox(
-                height: 140,
-                child: ListView(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  scrollDirection: Axis.horizontal,
-                  children: [
-                    _buildGarageItem(
-                      'Honda Vario 150',
-                      'B 4567 ABC',
-                      '2 bulan lalu',
-                      'Kondisi Baik',
-                      AppColors.good,
-                    ),
-                    const SizedBox(width: 12),
-                    _buildGarageItem(
-                      'Honda Beat Street',
-                      'B 2210 XYZ',
-                      '5 bulan lalu',
-                      'Perlu Cek',
-                      AppColors.warn,
-                    ),
-                  ],
-                ),
-              ),
+              _buildBanner(context),
+              const SizedBox(height: 24),
+              _buildActiveBookingSection(context),
+              const SizedBox(height: 24),
+              _buildNearbyWorkshopsSection(context),
+              const SizedBox(height: 24),
+              _buildGarageSection(context),
             ],
           ),
         ),
@@ -72,27 +37,57 @@ class HomePage extends StatelessWidget {
 
   Widget _buildHeader(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 8, 20, 12),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          const CircleAvatar(
+            radius: 22,
+            backgroundColor: AppColors.surface,
+            backgroundImage: NetworkImage(
+                'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=200&auto=format&fit=crop'),
+          ),
+          const SizedBox(width: 12),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Selamat pagi 👋', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: AppColors.ink.withOpacity(0.5))),
-              const Text('Halo, Dimas', style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold, color: AppColors.ink)),
+              Text(
+                'Good Morning,',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: AppColors.ink.withValues(alpha: 0.5),
+                ),
+              ),
+              const SizedBox(height: 2),
+              const Row(
+                children: [
+                  Text(
+                    'Alex Carter',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.ink,
+                    ),
+                  ),
+                  SizedBox(width: 4),
+                  Text('👑', style: TextStyle(fontSize: 14)),
+                ],
+              ),
             ],
           ),
+          const Spacer(),
           GestureDetector(
             onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (_) => const NotificationsPage()));
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const NotificationsPage()),
+              );
             },
             child: Container(
-              width: 44,
-              height: 44,
-              decoration: const BoxDecoration(
-                color: AppColors.surface,
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: Colors.white,
                 shape: BoxShape.circle,
+                border: Border.all(color: AppColors.line),
               ),
               child: Stack(
                 alignment: Alignment.center,
@@ -100,12 +95,12 @@ class HomePage extends StatelessWidget {
                   const Icon(LucideIcons.bell, color: AppColors.ink, size: 20),
                   Positioned(
                     top: 10,
-                    right: 12,
+                    right: 11,
                     child: Container(
                       width: 8,
                       height: 8,
                       decoration: const BoxDecoration(
-                        color: AppColors.brand,
+                        color: Colors.red,
                         shape: BoxShape.circle,
                       ),
                     ),
@@ -120,101 +115,430 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _buildBanner(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [AppColors.brand, AppColors.brandDark],
-        ),
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.brand.withOpacity(0.2),
-            blurRadius: 16,
-            offset: const Offset(0, 8),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: AppColors.brand,
+          borderRadius: BorderRadius.circular(24),
+          image: const DecorationImage(
+            image: NetworkImage(
+              'https://images.unsplash.com/photo-1558981806-ec527fa84c39?q=80&w=600&auto=format&fit=crop',
+            ),
+            fit: BoxFit.cover,
+            alignment: Alignment.centerRight,
           ),
-        ],
-      ),
-      child: Stack(
-        children: [
-          Positioned(
-            right: -32,
-            bottom: -32,
-            child: Container(
-              width: 128,
-              height: 128,
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.1),
-                shape: BoxShape.circle,
-              ),
+        ),
+        child: Container(
+          padding: const EdgeInsets.all(24),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(24),
+            gradient: LinearGradient(
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
+              stops: const [0.0, 0.5, 1.0],
+              colors: [
+                AppColors.brand.withValues(alpha: 0.95),
+                AppColors.brand.withValues(alpha: 0.6),
+                Colors.transparent,
+              ],
             ),
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: Row(
             children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: const Text(
-                  '🆕 Booking Multi Motor',
-                  style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: Colors.white),
-                ),
-              ),
-              const SizedBox(height: 12),
-              const Text(
-                'Servis beberapa motor,\nsatu kali booking',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white, height: 1.2),
-              ),
-              const SizedBox(height: 6),
-              Text(
-                'Atur paket & keluhan tiap motor sendiri-sendiri',
-                style: TextStyle(fontSize: 13, color: Colors.white.withOpacity(0.85)),
-              ),
-              const SizedBox(height: 16),
-              GestureDetector(
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (_) => const BookingSelectVehiclesPage()));
-                },
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Text(
-                        'Mulai Booking',
-                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.brand),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'SPECIAL OFFER',
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1,
+                        color: Colors.white.withValues(alpha: 0.9),
                       ),
-                      const SizedBox(width: 6),
-                      const Icon(LucideIcons.arrowRight, color: AppColors.brand, size: 16),
-                    ],
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Get 20% Off',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w900,
+                        color: Colors.white,
+                        height: 1.2,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'On your first service',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white.withValues(alpha: 0.9),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (_) => const BookingSelectVehiclesPage(),
+                        ));
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 18, vertical: 12),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                        child: const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              'Book Now',
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w800,
+                                color: AppColors.brand,
+                              ),
+                            ),
+                            SizedBox(width: 6),
+                            Icon(LucideIcons.arrowRight,
+                                size: 16, color: AppColors.brand),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 80),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildActiveBookingSection(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'Active Bookings',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.ink,
+                ),
+              ),
+              GestureDetector(
+                onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                    builder: (_) => const MechanicTrackingPage(
+                        bookingId: 'SA-20260925-7765'))),
+                child: const Text(
+                  'See All →',
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.ink,
                   ),
                 ),
               ),
             ],
+          ),
+          const SizedBox(height: 16),
+          GestureDetector(
+            onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                builder: (_) => const MechanicTrackingPage(
+                    bookingId: 'SA-20260925-7765'))),
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: AppColors.surface,
+                borderRadius: BorderRadius.circular(24),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    width: 80,
+                    height: 80,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: const Center(
+                      child: Icon(LucideIcons.navigation,
+                          color: AppColors.brand, size: 32),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Honda Vario 150',
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.ink,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          'Oil Change & Tune Up',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: AppColors.ink.withValues(alpha: 0.6),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: const Row(
+                                children: [
+                                  Icon(LucideIcons.clock,
+                                      size: 12, color: AppColors.ink),
+                                  SizedBox(width: 4),
+                                  Text(
+                                    '~45 mins',
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w600,
+                                      color: AppColors.ink,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const Spacer(),
+                            Container(
+                              width: 32,
+                              height: 32,
+                              decoration: const BoxDecoration(
+                                color: AppColors.brand,
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(LucideIcons.arrowRight,
+                                  color: Colors.white, size: 16),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildGarageItem(String name, String plate, String lastService, String status, Color statusColor) {
+  Widget _buildNearbyWorkshopsSection(BuildContext context) {
+    final workshops = [
+      _WorkshopPreview(
+          name: 'AHASS Bintang Motor',
+          rating: 4.8,
+          distance: '1.2 km',
+          isOpen: true,
+          imageUrl:
+              'https://images.unsplash.com/photo-1625047509248-ec889cbff17f?q=80&w=200&auto=format&fit=crop'),
+      _WorkshopPreview(
+          name: 'Bengkel SiTepat',
+          rating: 4.6,
+          distance: '2.1 km',
+          isOpen: true,
+          imageUrl:
+              'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?q=80&w=200&auto=format&fit=crop'),
+    ];
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'Nearby Workshops',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.ink,
+                ),
+              ),
+              GestureDetector(
+                onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                    builder: (_) => const WorkshopListPage())),
+                child: const Text(
+                  'See All →',
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.ink,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Column(
+            children: workshops.map((w) {
+              return GestureDetector(
+                onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                    builder: (_) => const WorkshopListPage())),
+                child: Container(
+                  margin: const EdgeInsets.only(bottom: 12),
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: AppColors.surface,
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  child: Row(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(16),
+                        child: Image.network(
+                          w.imageUrl,
+                          width: 80,
+                          height: 80,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) =>
+                              Container(width: 80, height: 80, color: Colors.grey, child: const Icon(LucideIcons.imageOff)),
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              w.name,
+                              style: const TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.ink,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              'Official · ${w.distance}',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: AppColors.ink.withValues(alpha: 0.6),
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                            Row(
+                              children: [
+                                const Icon(LucideIcons.star,
+                                    size: 14, color: Color(0xFFFFC107)),
+                                const SizedBox(width: 4),
+                                Text(
+                                  '${w.rating}',
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.ink,
+                                  ),
+                                ),
+                                const Spacer(),
+                                Container(
+                                  width: 32,
+                                  height: 32,
+                                  decoration: const BoxDecoration(
+                                    color: AppColors.brand,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: const Icon(LucideIcons.arrowRight,
+                                      color: Colors.white, size: 16),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildGarageSection(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'Your Garage',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.ink,
+                ),
+              ),
+              const Text(
+                'See All →',
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.ink,
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 16),
+        SizedBox(
+          height: 120,
+          child: ListView(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            scrollDirection: Axis.horizontal,
+            children: [
+              _buildGarageItem('Honda Vario 150', 'B 4567 ABC', '2 mos ago'),
+              const SizedBox(width: 12),
+              _buildGarageItem('Honda Beat Street', 'B 2210 XYZ', '5 mos ago'),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildGarageItem(String name, String plate, String lastService) {
     return Container(
-      width: 210,
+      width: 220,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.line),
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(24),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -223,35 +547,69 @@ class HomePage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
-                width: 40,
-                height: 40,
+                width: 36,
+                height: 36,
                 decoration: const BoxDecoration(
-                  color: AppColors.surface,
+                  color: Colors.white,
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(LucideIcons.wrench, color: AppColors.brand, size: 20),
+                child: const Icon(LucideIcons.bike,
+                    color: AppColors.ink, size: 18),
               ),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: statusColor.withOpacity(0.1),
+                  color: Colors.white,
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Text(
-                  status,
-                  style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: statusColor),
+                child: const Text(
+                  'Good Condition',
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.ink,
+                  ),
                 ),
               ),
             ],
           ),
           const Spacer(),
-          Text(name, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.ink)),
-          const SizedBox(height: 2),
-          Text(plate, style: TextStyle(fontSize: 12, color: AppColors.ink.withOpacity(0.5))),
-          const SizedBox(height: 8),
-          Text('Servis terakhir: $lastService', style: TextStyle(fontSize: 11, color: AppColors.ink.withOpacity(0.4))),
+          Text(
+            name,
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: AppColors.ink,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          const SizedBox(height: 4),
+          Text(
+            '$plate · Service: $lastService',
+            style: TextStyle(
+              fontSize: 11,
+              color: AppColors.ink.withValues(alpha: 0.6),
+            ),
+          ),
         ],
       ),
     );
   }
+}
+
+class _WorkshopPreview {
+  final String name;
+  final double rating;
+  final String distance;
+  final bool isOpen;
+  final String imageUrl;
+
+  _WorkshopPreview({
+    required this.name,
+    required this.rating,
+    required this.distance,
+    required this.isOpen,
+    required this.imageUrl,
+  });
 }

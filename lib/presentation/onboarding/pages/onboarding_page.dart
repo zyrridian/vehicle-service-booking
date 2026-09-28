@@ -98,7 +98,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
         width: 56,
         height: 56,
         decoration: const BoxDecoration(
-          color: AppColors.line, // light grey
+          color: AppColors.line,
           shape: BoxShape.circle,
         ),
         child: const Icon(
@@ -113,7 +113,6 @@ class _OnboardingPageState extends State<OnboardingPage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        // LEFT COMPONENT
         AnimatedSwitcher(
           duration: const Duration(milliseconds: 300),
           child: _currentPage == 2
@@ -121,22 +120,19 @@ class _OnboardingPageState extends State<OnboardingPage> {
               : Container(key: const ValueKey('dots'), child: _buildDots()),
         ),
 
-        // RIGHT COMPONENT
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Back button on right for page 1
             AnimatedContainer(
               duration: const Duration(milliseconds: 300),
               width: _currentPage == 1 ? 56 : 0,
               margin: EdgeInsets.only(right: _currentPage == 1 ? 16 : 0),
-              child: ClipRRect( // To prevent overflow during animation
+              child: ClipRRect( 
                 borderRadius: BorderRadius.circular(28),
                 child: _currentPage == 1 ? _buildBackButton() : const SizedBox.shrink(),
               ),
             ),
             
-            // Next / Get Started button
             AnimatedContainer(
               duration: const Duration(milliseconds: 300),
               curve: Curves.easeInOut,
@@ -193,7 +189,6 @@ class _OnboardingPageState extends State<OnboardingPage> {
       body: SafeArea(
         child: Column(
           children: [
-            // Top row with Skip button
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0),
               child: Align(
@@ -212,7 +207,6 @@ class _OnboardingPageState extends State<OnboardingPage> {
               ),
             ),
             
-            // PageView for content
             Expanded(
               child: PageView.builder(
                 controller: _pageController,
@@ -229,7 +223,6 @@ class _OnboardingPageState extends State<OnboardingPage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        // Image
                         Expanded(
                           child: Center(
                             child: SvgPicture.asset(
@@ -239,7 +232,6 @@ class _OnboardingPageState extends State<OnboardingPage> {
                           ),
                         ),
                         const SizedBox(height: 32),
-                        // Title
                         Text(
                           page.title,
                           textAlign: TextAlign.center,
@@ -250,13 +242,12 @@ class _OnboardingPageState extends State<OnboardingPage> {
                           ),
                         ),
                         const SizedBox(height: 16),
-                        // Subtitle
                         Text(
                           page.subtitle,
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 14,
-                            color: AppColors.ink.withOpacity(0.5),
+                            color: AppColors.ink.withValues(alpha: 0.5),
                             height: 1.5,
                           ),
                         ),
@@ -268,7 +259,6 @@ class _OnboardingPageState extends State<OnboardingPage> {
               ),
             ),
             
-            // Bottom Navigation Row
             Padding(
               padding: const EdgeInsets.fromLTRB(24, 0, 24, 32),
               child: _buildBottomNav(),

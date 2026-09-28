@@ -26,6 +26,7 @@ class _LanguageView extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
+        surfaceTintColor: Colors.transparent,
         elevation: 0,
         scrolledUnderElevation: 0,
         leading: IconButton(
@@ -62,16 +63,16 @@ class _LanguageView extends StatelessWidget {
         context.read<SettingsBloc>().add(ChangeLanguageRequested(value));
       },
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.brand.withValues(alpha: 0.05) : Colors.white,
-          border: Border.all(color: isSelected ? AppColors.brand : AppColors.line),
-          borderRadius: BorderRadius.circular(12),
+          color: isSelected ? AppColors.brand.withValues(alpha: 0.05) : AppColors.surface,
+          border: Border.all(color: isSelected ? AppColors.brand : Colors.transparent, width: 2.0),
+          borderRadius: BorderRadius.circular(24),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(title, style: TextStyle(fontSize: 16, fontWeight: isSelected ? FontWeight.bold : FontWeight.normal, color: isSelected ? AppColors.brand : AppColors.ink)),
+            Text(title, style: TextStyle(fontSize: 16, fontWeight: isSelected ? FontWeight.bold : FontWeight.w500, color: isSelected ? AppColors.brand : AppColors.ink)),
             if (isSelected) const Icon(LucideIcons.checkCircle2, color: AppColors.brand, size: 20),
           ],
         ),

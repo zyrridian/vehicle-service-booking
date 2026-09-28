@@ -29,6 +29,7 @@ class _SavedAddressesView extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
+        surfaceTintColor: Colors.transparent,
         elevation: 0,
         scrolledUnderElevation: 0,
         leading: IconButton(
@@ -57,14 +58,11 @@ class _SavedAddressesView extends StatelessWidget {
               final addr = addresses[index];
               return Container(
                 margin: const EdgeInsets.only(bottom: 16),
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: addr.isDefault ? AppColors.brand : AppColors.line, width: addr.isDefault ? 1.5 : 1.0),
-                  boxShadow: [
-                    BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 8, offset: const Offset(0, 2)),
-                  ],
+                  color: addr.isDefault ? AppColors.brand.withValues(alpha: 0.05) : AppColors.surface,
+                  borderRadius: BorderRadius.circular(24),
+                  border: Border.all(color: addr.isDefault ? AppColors.brand : Colors.transparent, width: 2.0),
                 ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -139,7 +137,7 @@ class _SavedAddressesView extends StatelessWidget {
                     backgroundColor: AppColors.brand,
                     foregroundColor: Colors.white,
                     elevation: 0,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
                   ),
                 );
               }

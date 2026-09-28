@@ -25,6 +25,7 @@ class BookingSuccessPage extends StatelessWidget {
     final dateStr = DateFormat('E, dd MMM').format(date);
     
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
@@ -41,21 +42,20 @@ class BookingSuccessPage extends StatelessWidget {
                 child: const Icon(LucideIcons.check, color: AppColors.good, size: 30),
               ),
               const SizedBox(height: 16),
-              const Text('Booking Berhasil!', style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold, color: AppColors.ink)),
+              const Text('Booking Successful!', style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold, color: AppColors.ink)),
               const SizedBox(height: 4),
               Text(
-                'Tiket digital kamu sudah siap,\ntunjukkan ke petugas saat tiba',
+                'Your digital ticket is ready,\nshow it to the staff when you arrive',
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 13, color: AppColors.ink.withOpacity(0.5)),
               ),
               const SizedBox(height: 24),
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.all(20),
+                padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
                   color: AppColors.surface,
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: AppColors.line),
+                  borderRadius: BorderRadius.circular(24),
                 ),
                 child: Column(
                   children: [
@@ -69,22 +69,23 @@ class BookingSuccessPage extends StatelessWidget {
                         color: AppColors.ink,
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: Text('$vehicleCount Motor', style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.bold, color: Colors.white)),
+                      child: Text('$vehicleCount Vehicle(s)', style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.bold, color: Colors.white)),
                     ),
                     const SizedBox(height: 16),
-                    const Divider(color: AppColors.line, height: 1),
+                    Divider(color: AppColors.ink.withOpacity(0.1), height: 1),
                     const SizedBox(height: 16),
-                    _buildDetailRow('Cabang', 'Servisin Aja - Kemang'),
+                    _buildDetailRow('Branch', 'Servisin Aja - Kemang'),
                     const SizedBox(height: 6),
-                    _buildDetailRow('Jadwal', '$dateStr · $time'),
+                    _buildDetailRow('Schedule', '$dateStr · $time'),
                     const SizedBox(height: 6),
-                    _buildDetailRow('Total Biaya', NumberFormat.currency(locale: 'id_ID', symbol: 'Rp', decimalDigits: 0).format(totalPrice)),
+                    _buildDetailRow('Total Cost', NumberFormat.currency(locale: 'id_ID', symbol: 'Rp', decimalDigits: 0).format(totalPrice)),
                   ],
                 ),
               ),
               const Spacer(),
               SizedBox(
                 width: double.infinity,
+                height: 50,
                 child: ElevatedButton(
                   onPressed: () {
                     Navigator.of(context).pushAndRemoveUntil(
@@ -94,8 +95,11 @@ class BookingSuccessPage extends StatelessWidget {
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.ink,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                    elevation: 0,
                   ),
-                  child: const Text('Kembali ke Beranda'),
+                  child: const Text('Back to Home', style: TextStyle(fontWeight: FontWeight.bold)),
                 ),
               ),
             ],

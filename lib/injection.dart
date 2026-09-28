@@ -37,6 +37,26 @@ import 'data/repositories/garage_repository_impl.dart';
 import 'domain/usecases/garage_usecases.dart';
 import 'presentation/garage/bloc/garage_bloc.dart';
 
+import 'data/datasources/remote/workshop_remote_datasource.dart';
+import 'data/repositories/workshop_repository_impl.dart';
+import 'domain/usecases/workshop_usecases.dart';
+import 'presentation/workshop/bloc/workshop_bloc.dart';
+
+import 'data/datasources/remote/tracking_remote_datasource.dart';
+import 'data/repositories/tracking_repository_impl.dart';
+import 'domain/usecases/tracking_usecases.dart';
+import 'presentation/tracking/bloc/tracking_bloc.dart';
+
+import 'data/datasources/remote/invoice_remote_datasource.dart';
+import 'data/repositories/invoice_repository_impl.dart';
+import 'domain/usecases/invoice_usecases.dart';
+import 'presentation/invoice/bloc/invoice_bloc.dart';
+
+import 'data/datasources/remote/review_remote_datasource.dart';
+import 'data/repositories/review_repository_impl.dart';
+import 'domain/usecases/review_usecases.dart';
+import 'presentation/review/bloc/review_bloc.dart';
+
 class Injection {
   static GarageBloc provideGarageBloc() {
     final remoteDataSource = GarageRemoteDataSourceImpl();
@@ -47,6 +67,40 @@ class Injection {
       addVehicleUseCase: AddVehicleUseCase(repository),
       editVehicleUseCase: EditVehicleUseCase(repository),
       deleteVehicleUseCase: DeleteVehicleUseCase(repository),
+    );
+  }
+
+  static WorkshopBloc provideWorkshopBloc() {
+    final remoteDataSource = WorkshopRemoteDataSourceImpl();
+    final repository = WorkshopRepositoryImpl(remoteDataSource);
+    return WorkshopBloc(
+      getWorkshopsUseCase: GetWorkshopsUseCase(repository),
+      getWorkshopDetailUseCase: GetWorkshopDetailUseCase(repository),
+    );
+  }
+
+  static TrackingBloc provideTrackingBloc() {
+    final remoteDataSource = TrackingRemoteDataSourceImpl();
+    final repository = TrackingRepositoryImpl(remoteDataSource);
+    return TrackingBloc(
+      getBookingTrackingUseCase: GetBookingTrackingUseCase(repository),
+    );
+  }
+
+  static InvoiceBloc provideInvoiceBloc() {
+    final remoteDataSource = InvoiceRemoteDataSourceImpl();
+    final repository = InvoiceRepositoryImpl(remoteDataSource);
+    return InvoiceBloc(
+      getInvoiceUseCase: GetInvoiceUseCase(repository),
+    );
+  }
+
+  static ReviewBloc provideReviewBloc() {
+    final remoteDataSource = ReviewRemoteDataSourceImpl();
+    final repository = ReviewRepositoryImpl(remoteDataSource);
+    return ReviewBloc(
+      submitReviewUseCase: SubmitReviewUseCase(repository),
+      getReviewsUseCase: GetReviewsUseCase(repository),
     );
   }
 

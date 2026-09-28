@@ -80,6 +80,7 @@ class _AddVehiclePageState extends State<AddVehiclePage> {
         backgroundColor: Colors.white,
         appBar: AppBar(
           backgroundColor: Colors.white,
+          surfaceTintColor: Colors.transparent,
           elevation: 0,
           scrolledUnderElevation: 0,
           leading: IconButton(
@@ -137,7 +138,7 @@ class _AddVehiclePageState extends State<AddVehiclePage> {
                                   type: _selectedVehicleType ?? '',
                                   capacity: _capacityController.text,
                                   year: _yearController.text,
-                                  nextService: widget.vehicleToEdit?.nextService ?? 'Belum dijadwalkan',
+                                  nextService: widget.vehicleToEdit?.nextService ?? 'Not scheduled',
                                   status: widget.vehicleToEdit?.status ?? 'Good',
                                   imageUrl: _imageUrlController.text.isNotEmpty 
                                       ? _imageUrlController.text 
@@ -154,7 +155,7 @@ class _AddVehiclePageState extends State<AddVehiclePage> {
                         backgroundColor: AppColors.brand,
                         foregroundColor: Colors.white,
                         elevation: 0,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
                       ),
                       child: state.isSubmitting
                           ? const SizedBox(width: 24, height: 24, child: CircularProgressIndicator(color: Colors.white))
@@ -181,21 +182,21 @@ class _AddVehiclePageState extends State<AddVehiclePage> {
         hintStyle: TextStyle(color: AppColors.ink.withValues(alpha: 0.4), fontSize: 15),
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         filled: true,
-        fillColor: Colors.white,
+        fillColor: AppColors.surface,
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.line),
+          borderRadius: BorderRadius.circular(16),
+          borderSide: const BorderSide(color: Colors.transparent),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(16),
           borderSide: const BorderSide(color: AppColors.brand, width: 2),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(16),
           borderSide: const BorderSide(color: Colors.redAccent),
         ),
         focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(16),
           borderSide: const BorderSide(color: Colors.redAccent, width: 2),
         ),
       ),
@@ -212,21 +213,21 @@ class _AddVehiclePageState extends State<AddVehiclePage> {
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         filled: true,
-        fillColor: Colors.white,
+        fillColor: AppColors.surface,
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.line),
+          borderRadius: BorderRadius.circular(16),
+          borderSide: const BorderSide(color: Colors.transparent),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(16),
           borderSide: const BorderSide(color: AppColors.brand, width: 2),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(16),
           borderSide: const BorderSide(color: Colors.redAccent),
         ),
         focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(16),
           borderSide: const BorderSide(color: Colors.redAccent, width: 2),
         ),
       ),

@@ -192,11 +192,10 @@ class _GaragePageView extends StatelessWidget {
         ));
       },
       child: Container(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.line),
+          color: AppColors.surface,
+          borderRadius: BorderRadius.circular(24),
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,

@@ -68,12 +68,11 @@ class BookingServiceConfigPage extends StatelessWidget {
                             const SizedBox(height: 8),
                             if (state.vehicleNotes[vehicle.id] != null && state.vehicleNotes[vehicle.id]!.isNotEmpty)
                               Container(
-                                padding: const EdgeInsets.all(12),
+                                padding: const EdgeInsets.all(16),
                                 margin: const EdgeInsets.only(bottom: 8),
                                 decoration: BoxDecoration(
                                   color: AppColors.surface,
-                                  borderRadius: BorderRadius.circular(12),
-                                  border: Border.all(color: AppColors.line),
+                                  borderRadius: BorderRadius.circular(24),
                                 ),
                                 child: Row(
                                   children: [
@@ -81,7 +80,7 @@ class BookingServiceConfigPage extends StatelessWidget {
                                       child: Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          const Text('Keluhan / Catatan', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.ink)),
+                                          const Text('Notes / Complaints', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.ink)),
                                           const SizedBox(height: 4),
                                           Text(state.vehicleNotes[vehicle.id]!, style: TextStyle(fontSize: 13, color: AppColors.ink.withValues(alpha: 0.7))),
                                         ],
@@ -99,7 +98,7 @@ class BookingServiceConfigPage extends StatelessWidget {
                                 onTap: () => _showNotesDialog(context, vehicle.id, null),
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(vertical: 8.0),
-                                  child: Text('+ Tambah Keluhan / Layanan Lain', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.brand.withValues(alpha: 0.8))),
+                                  child: Text('+ Add Notes / Other Services', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.brand.withValues(alpha: 0.8))),
                                 ),
                               ),
                           ],
@@ -122,7 +121,6 @@ class BookingServiceConfigPage extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
             decoration: const BoxDecoration(
               color: Colors.white,
-              border: Border(top: BorderSide(color: AppColors.line)),
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -131,7 +129,7 @@ class BookingServiceConfigPage extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Estimasi Biaya', style: TextStyle(fontSize: 13, color: AppColors.ink.withValues(alpha: 0.6))),
+                    Text('Estimated Cost', style: TextStyle(fontSize: 13, color: AppColors.ink.withValues(alpha: 0.6))),
                     Text(NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0).format(total), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.ink)),
                   ],
                 ),
@@ -152,7 +150,13 @@ class BookingServiceConfigPage extends StatelessWidget {
                             );
                           }
                         : null,
-                    child: const Text('Lanjut: Pilih Jadwal'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.brand,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                      elevation: 0,
+                    ),
+                    child: const Text('Next: Select Schedule', style: TextStyle(fontWeight: FontWeight.bold)),
                   ),
                 ),
               ],
@@ -168,7 +172,6 @@ class BookingServiceConfigPage extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
       decoration: const BoxDecoration(
         color: Colors.white,
-        border: Border(bottom: BorderSide(color: AppColors.line)),
       ),
       child: Column(
         children: [
@@ -186,7 +189,7 @@ class BookingServiceConfigPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 12),
-              const Text('Atur Layanan', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.ink)),
+              const Text('Configure Service', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.ink)),
               const Spacer(),
               Text('2/3', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.ink.withValues(alpha: 0.4))),
             ],
@@ -212,11 +215,11 @@ class BookingServiceConfigPage extends StatelessWidget {
         context.read<BookingBloc>().add(ToggleServiceEvent(vehicleId, serviceId));
       },
       child: Container(
-        padding: const EdgeInsets.all(14),
+        padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.brand50 : Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: isSelected ? AppColors.brand : AppColors.line),
+          color: isSelected ? AppColors.brand.withValues(alpha: 0.1) : AppColors.surface,
+          borderRadius: BorderRadius.circular(24),
+          border: isSelected ? Border.all(color: AppColors.brand, width: 2) : Border.all(color: Colors.transparent, width: 2),
         ),
         child: Row(
           children: [
@@ -276,7 +279,7 @@ class BookingServiceConfigPage extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text('Tambah Keluhan', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.ink)),
+                  const Text('Add Notes', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.ink)),
                   IconButton(icon: const Icon(LucideIcons.x, size: 20), onPressed: () => Navigator.of(ctx).pop()),
                 ],
               ),
@@ -285,22 +288,29 @@ class BookingServiceConfigPage extends StatelessWidget {
                 controller: controller,
                 maxLines: 3,
                 decoration: InputDecoration(
-                  hintText: 'Cth: Rem depan terasa blong, atau minta ganti ban sekalian.',
+                  hintText: 'e.g., Front brakes feel loose, or need a tire change too.',
                   hintStyle: TextStyle(color: AppColors.ink.withValues(alpha: 0.4)),
                   filled: true,
                   fillColor: AppColors.surface,
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide.none),
                 ),
               ),
               const SizedBox(height: 24),
               SizedBox(
                 width: double.infinity,
+                height: 50,
                 child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.brand,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                    elevation: 0,
+                  ),
                   onPressed: () {
                     context.read<BookingBloc>().add(UpdateVehicleNotesEvent(vehicleId, controller.text));
                     Navigator.of(ctx).pop();
                   },
-                  child: const Text('Simpan'),
+                  child: const Text('Save', style: TextStyle(fontWeight: FontWeight.bold)),
                 ),
               ),
             ],

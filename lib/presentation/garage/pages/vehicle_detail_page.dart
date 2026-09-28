@@ -361,7 +361,7 @@ class _VehicleDetailPageState extends State<VehicleDetailPage> {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
       decoration: BoxDecoration(
-          color: AppColors.surface, borderRadius: BorderRadius.circular(12)),
+          color: AppColors.surface, borderRadius: BorderRadius.circular(16)),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -397,9 +397,8 @@ class _VehicleDetailPageState extends State<VehicleDetailPage> {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
       decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border.all(color: AppColors.line),
-          borderRadius: BorderRadius.circular(12)),
+          color: AppColors.surface,
+          borderRadius: BorderRadius.circular(16)),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -478,15 +477,8 @@ class _VehicleDetailPageState extends State<VehicleDetailPage> {
   Widget _buildBottomBar() {
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: Colors.white,
-        border: const Border(top: BorderSide(color: AppColors.line)),
-        boxShadow: [
-          BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 2,
-              offset: const Offset(0, -2)),
-        ],
       ),
       child: SizedBox(
         width: double.infinity,

@@ -13,6 +13,7 @@ class NotificationsPage extends StatelessWidget {
     return BlocProvider(
       create: (_) => Injection.provideNotificationBloc()..add(FetchNotificationsRequested()),
       child: Scaffold(
+        backgroundColor: Colors.white,
         body: SafeArea(
           child: Column(
             children: [
@@ -36,7 +37,7 @@ class NotificationsPage extends StatelessWidget {
                       itemBuilder: (context, index) {
                         final notif = notifications[index];
                         return Padding(
-                          padding: const EdgeInsets.only(bottom: 10),
+                          padding: const EdgeInsets.only(bottom: 12),
                           child: _buildNotificationItem(
                             title: notif.title,
                             body: notif.body,
@@ -61,7 +62,6 @@ class NotificationsPage extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
       decoration: const BoxDecoration(
         color: Colors.white,
-        border: Border(bottom: BorderSide(color: AppColors.line)),
       ),
       child: Row(
         children: [
@@ -77,7 +77,7 @@ class NotificationsPage extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 12),
-          const Text('Notifikasi', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.ink)),
+          const Text('Notifications', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.ink)),
         ],
       ),
     );
@@ -85,11 +85,10 @@ class NotificationsPage extends StatelessWidget {
 
   Widget _buildNotificationItem({required String title, required String body, required String time, required bool isUnread}) {
     return Container(
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.line),
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(24),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -97,8 +96,8 @@ class NotificationsPage extends StatelessWidget {
           Container(
             width: 36,
             height: 36,
-            decoration: const BoxDecoration(
-              color: AppColors.brand50,
+            decoration: BoxDecoration(
+              color: AppColors.brand.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
             child: const Icon(LucideIcons.bell, color: AppColors.brand, size: 17),
@@ -110,9 +109,9 @@ class NotificationsPage extends StatelessWidget {
               children: [
                 Text(title, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.ink)),
                 const SizedBox(height: 2),
-                Text(body, style: TextStyle(fontSize: 12, color: AppColors.ink.withOpacity(0.5))),
+                Text(body, style: TextStyle(fontSize: 12, color: AppColors.ink.withValues(alpha: 0.5))),
                 const SizedBox(height: 4),
-                Text(time, style: TextStyle(fontSize: 11, color: AppColors.ink.withOpacity(0.35))),
+                Text(time, style: TextStyle(fontSize: 11, color: AppColors.ink.withValues(alpha: 0.35))),
               ],
             ),
           ),

@@ -49,7 +49,7 @@ class _BookingSelectVehiclesView extends StatelessWidget {
                           padding: const EdgeInsets.only(bottom: 10),
                           child: _buildSelectableVehicle(
                             name: v.name,
-                            desc: '${v.plate} · Servis terakhir ${v.lastService}',
+                            desc: '${v.plate} · Last service ${v.lastService}',
                             isSelected: isSelected,
                             onTap: () => context.read<BookingBloc>().add(ToggleVehicleEvent(v.id)),
                           ),
@@ -64,7 +64,7 @@ class _BookingSelectVehiclesView extends StatelessWidget {
                           width: double.infinity,
                           padding: const EdgeInsets.symmetric(vertical: 14),
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
+                            borderRadius: BorderRadius.circular(24),
                             border: Border.all(color: AppColors.line, width: 2, style: BorderStyle.solid),
                           ),
                           child: Row(
@@ -72,7 +72,7 @@ class _BookingSelectVehiclesView extends StatelessWidget {
                             children: [
                               Icon(LucideIcons.plus, color: AppColors.ink.withOpacity(0.5), size: 15),
                               const SizedBox(width: 8),
-                              Text('Tambah Motor Sementara', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.ink.withOpacity(0.5))),
+                              Text('Add Temporary Vehicle', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.ink.withOpacity(0.5))),
                             ],
                           ),
                         ),
@@ -92,7 +92,6 @@ class _BookingSelectVehiclesView extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
             decoration: const BoxDecoration(
               color: Colors.white,
-              border: Border(top: BorderSide(color: AppColors.line)),
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -105,7 +104,7 @@ class _BookingSelectVehiclesView extends StatelessWidget {
                       style: TextStyle(fontSize: 13, color: AppColors.ink.withOpacity(0.6), fontFamily: 'Plus Jakarta Sans'),
                       children: [
                         TextSpan(text: '$selectedCount', style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.ink)),
-                        const TextSpan(text: ' motor dipilih'),
+                        const TextSpan(text: ' vehicles selected'),
                       ],
                     ),
                   ),
@@ -125,7 +124,13 @@ class _BookingSelectVehiclesView extends StatelessWidget {
                             );
                           }
                         : null,
-                    child: const Text('Lanjut: Atur Servis'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.brand,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                      elevation: 0,
+                    ),
+                    child: const Text('Next: Configure Service', style: TextStyle(fontWeight: FontWeight.bold)),
                   ),
                 ),
               ],
@@ -141,7 +146,6 @@ class _BookingSelectVehiclesView extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
       decoration: const BoxDecoration(
         color: Colors.white,
-        border: Border(bottom: BorderSide(color: AppColors.line)),
       ),
       child: Column(
         children: [
@@ -159,7 +163,7 @@ class _BookingSelectVehiclesView extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 12),
-              const Text('Pilih Motor', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.ink)),
+              const Text('Select Vehicle', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.ink)),
               const Spacer(),
               Text('1/3', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.ink.withOpacity(0.4))),
             ],
@@ -183,22 +187,22 @@ class _BookingSelectVehiclesView extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(14),
+        padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.brand50 : Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: isSelected ? AppColors.brand : AppColors.line, width: 2),
+          color: isSelected ? AppColors.brand.withValues(alpha: 0.1) : AppColors.surface,
+          borderRadius: BorderRadius.circular(24),
+          border: isSelected ? Border.all(color: AppColors.brand, width: 2) : Border.all(color: Colors.transparent, width: 2),
         ),
         child: Row(
           children: [
             Container(
               width: 44,
               height: 44,
-              decoration: const BoxDecoration(
-                color: AppColors.surface,
+              decoration: BoxDecoration(
+                color: isSelected ? Colors.white : AppColors.brand.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(LucideIcons.wrench, color: AppColors.brand, size: 20),
+              child: Icon(LucideIcons.wrench, color: AppColors.brand, size: 20),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -215,7 +219,7 @@ class _BookingSelectVehiclesView extends StatelessWidget {
               width: 24,
               height: 24,
               decoration: BoxDecoration(
-                color: isSelected ? AppColors.brand : Colors.transparent,
+                color: isSelected ? AppColors.brand : Colors.white,
                 shape: BoxShape.circle,
                 border: Border.all(color: isSelected ? AppColors.brand : AppColors.line, width: 2),
               ),
@@ -246,47 +250,54 @@ class _BookingSelectVehiclesView extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text('Tambah Motor Sementara', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.ink)),
+                  const Text('Add Temporary Vehicle', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.ink)),
                   IconButton(icon: const Icon(LucideIcons.x, size: 20), onPressed: () => Navigator.of(ctx).pop()),
                 ],
               ),
               const SizedBox(height: 16),
-              const Text('Nama Motor', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: AppColors.ink)),
+              const Text('Vehicle Name', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: AppColors.ink)),
               const SizedBox(height: 8),
               TextField(
                 controller: nameController,
                 decoration: InputDecoration(
-                  hintText: 'Cth: Honda Supra X 125',
+                  hintText: 'e.g., Honda Supra X 125',
                   hintStyle: TextStyle(color: AppColors.ink.withOpacity(0.4)),
                   filled: true,
                   fillColor: AppColors.surface,
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide.none),
                 ),
               ),
               const SizedBox(height: 16),
-              const Text('Plat Nomor', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: AppColors.ink)),
+              const Text('License Plate', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: AppColors.ink)),
               const SizedBox(height: 8),
               TextField(
                 controller: plateController,
                 decoration: InputDecoration(
-                  hintText: 'Cth: B 1234 ABC',
+                  hintText: 'e.g., B 1234 ABC',
                   hintStyle: TextStyle(color: AppColors.ink.withOpacity(0.4)),
                   filled: true,
                   fillColor: AppColors.surface,
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide.none),
                 ),
               ),
               const SizedBox(height: 24),
               SizedBox(
                 width: double.infinity,
+                height: 50,
                 child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.brand,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                    elevation: 0,
+                  ),
                   onPressed: () {
                     if (nameController.text.isNotEmpty && plateController.text.isNotEmpty) {
                       context.read<BookingBloc>().add(AddTemporaryVehicleEvent(nameController.text, plateController.text));
                       Navigator.of(ctx).pop();
                     }
                   },
-                  child: const Text('Simpan'),
+                  child: const Text('Save', style: TextStyle(fontWeight: FontWeight.bold)),
                 ),
               ),
             ],

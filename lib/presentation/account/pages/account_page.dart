@@ -232,11 +232,10 @@ class _AccountView extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: AppColors.line),
+          color: AppColors.surface,
+          borderRadius: BorderRadius.circular(24),
         ),
         child: Row(
           children: [
@@ -272,7 +271,7 @@ class _AccountView extends StatelessWidget {
               return AlertDialog(
                 backgroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16)),
+                    borderRadius: BorderRadius.circular(24)),
                 title: const Text('Logout',
                     style: TextStyle(
                         fontWeight: FontWeight.bold, color: AppColors.ink)),
@@ -299,7 +298,7 @@ class _AccountView extends StatelessWidget {
                       foregroundColor: Colors.white,
                       elevation: 0,
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8)),
+                          borderRadius: BorderRadius.circular(24)),
                     ),
                     child: const Text('Logout',
                         style: TextStyle(fontWeight: FontWeight.bold)),
@@ -313,7 +312,7 @@ class _AccountView extends StatelessWidget {
           foregroundColor: Colors.redAccent,
           side: const BorderSide(color: Colors.redAccent),
           shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
           elevation: 0,
         ),
         child: const Text('Logout',

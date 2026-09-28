@@ -53,7 +53,7 @@ class _BookingScheduleSummaryPageState extends State<BookingScheduleSummaryPage>
                   return ListView(
                     padding: const EdgeInsets.fromLTRB(20, 12, 20, 100),
                     children: [
-                      const Text('Pilih Cabang', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.ink)),
+                      const Text('Select Branch', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.ink)),
                       const SizedBox(height: 10),
                       SizedBox(
                         height: 44,
@@ -68,7 +68,7 @@ class _BookingScheduleSummaryPageState extends State<BookingScheduleSummaryPage>
                       ),
                       const SizedBox(height: 20),
                       
-                      const Text('Pilih Tanggal', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.ink)),
+                      const Text('Select Date', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.ink)),
                       const SizedBox(height: 10),
                       SizedBox(
                         height: 64,
@@ -90,10 +90,10 @@ class _BookingScheduleSummaryPageState extends State<BookingScheduleSummaryPage>
                       ),
                       const SizedBox(height: 20),
                       
-                      const Text('Pilih Jam', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.ink)),
+                      const Text('Select Time', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.ink)),
                       const SizedBox(height: 10),
                       if (state.selectedDate == null)
-                        const Text('Pilih tanggal untuk melihat jadwal', style: TextStyle(color: Colors.grey))
+                        const Text('Select a date to view available schedules', style: TextStyle(color: Colors.grey))
                       else if (state.availableTimeSlots == null || state.availableTimeSlots!.isEmpty)
                         const Center(child: CircularProgressIndicator(color: AppColors.brand))
                       else
@@ -112,13 +112,14 @@ class _BookingScheduleSummaryPageState extends State<BookingScheduleSummaryPage>
                         ),
                       const SizedBox(height: 24),
                       
-                      const Text('Ringkasan Invoice', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.ink)),
+                      const Text('Invoice Summary', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.ink)),
                       const SizedBox(height: 10),
                       Container(
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(color: AppColors.line),
+                          color: AppColors.surface,
+                          borderRadius: BorderRadius.circular(24),
                         ),
+                        clipBehavior: Clip.antiAlias,
                         child: Column(
                           children: [
                             ...state.selectedVehicleIds.map((vId) {
@@ -135,20 +136,20 @@ class _BookingScheduleSummaryPageState extends State<BookingScheduleSummaryPage>
                               return Column(
                                 children: [
                                   _buildInvoiceItem(vehicle.name, desc, NumberFormat.currency(locale: 'id_ID', symbol: 'Rp', decimalDigits: 0).format(price)),
-                                  const Divider(height: 1, color: AppColors.line),
+                                  Divider(height: 1, color: AppColors.ink.withOpacity(0.1)),
                                 ],
                               );
                             }),
                             Container(
-                              padding: const EdgeInsets.all(14),
+                              padding: const EdgeInsets.all(16),
                               decoration: const BoxDecoration(
                                 color: AppColors.surface,
-                                borderRadius: BorderRadius.only(bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20)),
+                                borderRadius: BorderRadius.only(bottomLeft: Radius.circular(24), bottomRight: Radius.circular(24)),
                               ),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const Text('Total Pembayaran', style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.bold, color: AppColors.ink)),
+                                  const Text('Total Payment', style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.bold, color: AppColors.ink)),
                                   Text(NumberFormat.currency(locale: 'id_ID', symbol: 'Rp', decimalDigits: 0).format(total), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.brand)),
                                 ],
                               ),
@@ -172,17 +173,23 @@ class _BookingScheduleSummaryPageState extends State<BookingScheduleSummaryPage>
             padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
             decoration: const BoxDecoration(
               color: Colors.white,
-              border: Border(top: BorderSide(color: AppColors.line)),
             ),
             child: SizedBox(
               width: double.infinity,
+              height: 50,
               child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.brand,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                  elevation: 0,
+                ),
                 onPressed: isReady && !state.isSubmitting
                     ? () {
                         context.read<BookingBloc>().add(SubmitBookingEvent('Notes...'));
                       }
                     : null,
-                child: state.isSubmitting ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white)) : const Text('Konfirmasi Booking'),
+                child: state.isSubmitting ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white)) : const Text('Confirm Booking', style: TextStyle(fontWeight: FontWeight.bold)),
               ),
             ),
           );
@@ -196,7 +203,6 @@ class _BookingScheduleSummaryPageState extends State<BookingScheduleSummaryPage>
       padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
       decoration: const BoxDecoration(
         color: Colors.white,
-        border: Border(bottom: BorderSide(color: AppColors.line)),
       ),
       child: Column(
         children: [
@@ -214,7 +220,7 @@ class _BookingScheduleSummaryPageState extends State<BookingScheduleSummaryPage>
                 ),
               ),
               const SizedBox(width: 12),
-              const Text('Jadwal & Ringkasan', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.ink)),
+              const Text('Schedule & Summary', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.ink)),
               const Spacer(),
               Text('3/3', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.ink.withOpacity(0.4))),
             ],
@@ -241,9 +247,9 @@ class _BookingScheduleSummaryPageState extends State<BookingScheduleSummaryPage>
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.brand50 : Colors.transparent,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: isSelected ? AppColors.brand : AppColors.line, width: 2),
+          color: isSelected ? AppColors.brand.withOpacity(0.1) : AppColors.surface,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: isSelected ? AppColors.brand : Colors.transparent, width: 2),
         ),
         alignment: Alignment.center,
         child: Text(
@@ -266,9 +272,9 @@ class _BookingScheduleSummaryPageState extends State<BookingScheduleSummaryPage>
       child: Container(
         width: 56,
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.brand : Colors.transparent,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: isSelected ? AppColors.brand : AppColors.line, width: 2),
+          color: isSelected ? AppColors.brand : AppColors.surface,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: isSelected ? AppColors.brand : Colors.transparent, width: 2),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -282,17 +288,17 @@ class _BookingScheduleSummaryPageState extends State<BookingScheduleSummaryPage>
   }
 
   Widget _buildTimeBtn({required String time, required bool isSelected, required bool isAvailable, required VoidCallback? onTap}) {
-    Color bgColor = Colors.transparent;
-    Color borderColor = AppColors.line;
+    Color bgColor = AppColors.surface;
+    Color borderColor = Colors.transparent;
     Color textColor = AppColors.ink.withOpacity(0.6);
 
     if (isSelected) {
-      bgColor = AppColors.brand50;
+      bgColor = AppColors.brand.withOpacity(0.1);
       borderColor = AppColors.brand;
       textColor = AppColors.ink;
     } else if (!isAvailable) {
-      bgColor = AppColors.surface;
-      borderColor = AppColors.line;
+      bgColor = Colors.grey[100]!;
+      borderColor = Colors.transparent;
       textColor = AppColors.ink.withOpacity(0.3);
     }
 
@@ -303,7 +309,7 @@ class _BookingScheduleSummaryPageState extends State<BookingScheduleSummaryPage>
         padding: const EdgeInsets.symmetric(vertical: 10),
         decoration: BoxDecoration(
           color: bgColor,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(16),
           border: Border.all(color: borderColor, width: 2),
         ),
         alignment: Alignment.center,
@@ -321,8 +327,8 @@ class _BookingScheduleSummaryPageState extends State<BookingScheduleSummaryPage>
 
   Widget _buildInvoiceItem(String title, String desc, String price) {
     return Container(
-      padding: const EdgeInsets.all(14),
-      color: Colors.white,
+      padding: const EdgeInsets.all(16),
+      color: Colors.transparent,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -330,7 +336,7 @@ class _BookingScheduleSummaryPageState extends State<BookingScheduleSummaryPage>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.ink)),
+                Text(title, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: AppColors.ink)),
                 const SizedBox(height: 2),
                 Text(desc, style: TextStyle(fontSize: 11.5, color: AppColors.ink.withOpacity(0.5))),
               ],

@@ -26,6 +26,7 @@ class _TermsPrivacyView extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
+        surfaceTintColor: Colors.transparent,
         elevation: 0,
         scrolledUnderElevation: 0,
         leading: IconButton(
@@ -43,20 +44,44 @@ class _TermsPrivacyView extends StatelessWidget {
           final settings = state.settings!;
           
           return ListView(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.all(20),
             children: [
-              const Text('Terms of Service', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.ink)),
-              const SizedBox(height: 16),
-              Text(
-                settings.termsText,
-                style: TextStyle(fontSize: 14, height: 1.6, color: AppColors.ink.withValues(alpha: 0.7)),
+              Container(
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  color: AppColors.surface,
+                  borderRadius: BorderRadius.circular(24),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('Terms of Service', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.ink)),
+                    const SizedBox(height: 16),
+                    Text(
+                      settings.termsText,
+                      style: TextStyle(fontSize: 14, height: 1.6, color: AppColors.ink.withValues(alpha: 0.7)),
+                    ),
+                  ],
+                ),
               ),
-              const SizedBox(height: 32),
-              const Text('Privacy Policy', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.ink)),
               const SizedBox(height: 16),
-              Text(
-                settings.privacyText,
-                style: TextStyle(fontSize: 14, height: 1.6, color: AppColors.ink.withValues(alpha: 0.7)),
+              Container(
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  color: AppColors.surface,
+                  borderRadius: BorderRadius.circular(24),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('Privacy Policy', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.ink)),
+                    const SizedBox(height: 16),
+                    Text(
+                      settings.privacyText,
+                      style: TextStyle(fontSize: 14, height: 1.6, color: AppColors.ink.withValues(alpha: 0.7)),
+                    ),
+                  ],
+                ),
               ),
             ],
           );
