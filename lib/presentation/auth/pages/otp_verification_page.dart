@@ -75,11 +75,9 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
   void _verifyOtp() {
     Navigator.of(context).pushAndRemoveUntil(
       PageRouteBuilder(
-        transitionDuration: const Duration(milliseconds: 500),
+        transitionDuration: Duration.zero,
+        reverseTransitionDuration: Duration.zero,
         pageBuilder: (context, animation, secondaryAnimation) => const LoginSuccessPage(),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return FadeTransition(opacity: animation, child: child);
-        },
       ),
       (route) => false,
     );
@@ -201,6 +199,8 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.brand,
                     foregroundColor: Colors.white,
+                    disabledBackgroundColor: AppColors.brand.withValues(alpha: 0.5),
+                    disabledForegroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(24),
                     ),

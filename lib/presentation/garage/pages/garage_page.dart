@@ -4,44 +4,123 @@ import '../../../core/theme/app_colors.dart';
 import 'add_vehicle_page.dart';
 import 'vehicle_detail_page.dart';
 
-class GaragePage extends StatelessWidget {
+class GaragePage extends StatefulWidget {
   const GaragePage({super.key});
+
+  @override
+  State<GaragePage> createState() => _GaragePageState();
+}
+
+class _GaragePageState extends State<GaragePage> {
+  bool _isLoading = false;
+  late List<Map<String, dynamic>> _vehicles;
+
+  @override
+  void initState() {
+    super.initState();
+    _vehicles = _getDummyData();
+  }
+
+  Future<void> _handleRefresh() async {
+    setState(() {
+      _isLoading = true;
+    });
+    await Future.delayed(const Duration(seconds: 1));
+    setState(() {
+      _isLoading = false;
+      _vehicles = _getDummyData();
+    });
+  }
+
+  List<Map<String, dynamic>> _getDummyData() {
+    return [
+      {
+        'name': 'Honda Vario 150',
+        'type': 'Scooter · 150cc',
+        'plate': 'B 4567 ABC',
+        'distance': '14,500 km',
+        'nextService': 'Oct 15, 2026',
+        'status': 'Good',
+        'statusColor': AppColors.good,
+        'imageUrl':
+            'https://images.unsplash.com/photo-1449426468159-d96dbf08f19f?w=300&q=80',
+      },
+      {
+        'name': 'Yamaha NMAX 155',
+        'type': 'Maxi Scooter · 155cc',
+        'plate': 'D 1234 XYZ',
+        'distance': '8,200 km',
+        'nextService': 'Nov 02, 2026',
+        'status': 'Check',
+        'statusColor': AppColors.warn,
+        'imageUrl':
+            'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=300&q=80',
+      },
+      {
+        'name': 'Kawasaki Ninja 250',
+        'type': 'Sport · 250cc',
+        'plate': 'B 9999 KAW',
+        'distance': '21,000 km',
+        'nextService': 'Sep 20, 2026',
+        'status': 'Good',
+        'statusColor': AppColors.good,
+        'imageUrl':
+            'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=300&q=80',
+      },
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
           children: [
             _buildHeader(context),
             Expanded(
-              child: ListView(
-                padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
-                children: [
-                  _buildVehicleTile(
-                    context,
-                    name: 'Honda Vario 150',
-                    plate: 'B 4567 ABC',
-                    status: 'Baik',
-                    statusColor: AppColors.good,
-                  ),
-                  const SizedBox(height: 10),
-                  _buildVehicleTile(
-                    context,
-                    name: 'Honda Beat Street',
-                    plate: 'B 2210 XYZ',
-                    status: 'Cek',
-                    statusColor: AppColors.warn,
-                  ),
-                  const SizedBox(height: 10),
-                  _buildVehicleTile(
-                    context,
-                    name: 'Honda PCX 160',
-                    plate: 'B 8890 DEF',
-                    status: 'Baik',
-                    statusColor: AppColors.good,
-                  ),
-                ],
+              child: RefreshIndicator(
+                onRefresh: _handleRefresh,
+                color: AppColors.brand,
+                child: _vehicles.isEmpty
+                    ? _buildEmptyState()
+                    : ListView.separated(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+                        itemCount: _vehicles.length + 1,
+                        separatorBuilder: (context, index) =>
+                            const SizedBox(height: 12),
+                        itemBuilder: (context, index) {
+                          if (index == _vehicles.length) {
+                            return Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 24.0),
+                              child: Center(
+                                child: Text(
+                                  "No more vehicles in your garage",
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    color: AppColors.ink.withValues(alpha: 0.5),
+                                  ),
+                                ),
+                              ),
+                            );
+                          }
+
+                          final v = _vehicles[index];
+                          return _buildVehicleTile(
+                            context,
+                            name: v['name'],
+                            type: v['type'],
+                            plate: v['plate'],
+                            distance: v['distance'],
+                            nextService: v['nextService'],
+                            status: v['status'],
+                            statusColor: v['statusColor'],
+                            imageUrl: v['imageUrl'],
+                          );
+                        },
+                      ),
               ),
             ),
           ],
@@ -50,25 +129,79 @@ class GaragePage extends StatelessWidget {
     );
   }
 
+  Widget _buildEmptyState() {
+    return ListView(
+      physics: const AlwaysScrollableScrollPhysics(),
+      padding: const EdgeInsets.all(24),
+      children: [
+        const SizedBox(height: 60),
+        Icon(LucideIcons.bike,
+            size: 80, color: AppColors.ink.withValues(alpha: 0.1)),
+        const SizedBox(height: 24),
+        const Text(
+          'Your garage is empty',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+              fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.ink),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          'Add a vehicle to easily track its\nservice history and book appointments.',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+              fontSize: 14,
+              color: AppColors.ink.withValues(alpha: 0.5),
+              height: 1.5),
+        ),
+        const SizedBox(height: 32),
+        Center(
+          child: ElevatedButton.icon(
+            onPressed: () {
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const AddVehiclePage()));
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.brand,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(24)),
+              elevation: 0,
+            ),
+            icon: const Icon(LucideIcons.plus, size: 18),
+            label: const Text('Add Vehicle',
+                style: TextStyle(fontWeight: FontWeight.bold)),
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildHeader(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 8, 20, 12),
+      padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Text('Garasi Kamu', style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold, color: AppColors.ink)),
+          const Text('Your Garage',
+              style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.ink)),
           GestureDetector(
             onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (_) => const AddVehiclePage()));
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const AddVehiclePage()));
             },
             child: Container(
-              width: 40,
-              height: 40,
+              width: 44,
+              height: 44,
               decoration: const BoxDecoration(
-                color: AppColors.brand50,
+                color: AppColors.brand,
                 shape: BoxShape.circle,
               ),
-              child: const Icon(LucideIcons.plus, color: AppColors.brand, size: 20),
+              child:
+                  const Icon(LucideIcons.plus, color: Colors.white, size: 24),
             ),
           ),
         ],
@@ -79,52 +212,136 @@ class GaragePage extends StatelessWidget {
   Widget _buildVehicleTile(
     BuildContext context, {
     required String name,
+    required String type,
     required String plate,
+    required String distance,
+    required String nextService,
     required String status,
     required Color statusColor,
+    required String imageUrl,
   }) {
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(builder: (_) => const VehicleDetailPage()));
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (_) => const VehicleDetailPage()));
       },
       child: Container(
-        padding: const EdgeInsets.all(14),
+        padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(16),
           border: Border.all(color: AppColors.line),
         ),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              width: 44,
-              height: 44,
-              decoration: const BoxDecoration(
-                color: AppColors.surface,
-                shape: BoxShape.circle,
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Image.network(
+                imageUrl,
+                width: 100,
+                height: 100,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    width: 100,
+                    height: 100,
+                    color: Colors.grey[200],
+                    child: const Icon(LucideIcons.bike, color: Colors.grey),
+                  );
+                },
               ),
-              child: const Icon(LucideIcons.wrench, color: AppColors.brand, size: 20),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 16),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(name, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.ink)),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          name,
+                          style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.ink),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: statusColor.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Text(
+                          status,
+                          style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                              color: statusColor),
+                        ),
+                      ),
+                    ],
+                  ),
                   const SizedBox(height: 2),
-                  Text(plate, style: TextStyle(fontSize: 12, color: AppColors.ink.withOpacity(0.5))),
+                  Text(
+                    type,
+                    style: TextStyle(
+                        fontSize: 13,
+                        color: AppColors.ink.withValues(alpha: 0.5)),
+                  ),
+                  const SizedBox(height: 6),
+                  Row(
+                    children: [
+                      Icon(LucideIcons.contact,
+                          size: 14,
+                          color: AppColors.ink.withValues(alpha: 0.6)),
+                      const SizedBox(width: 4),
+                      Text(
+                        plate,
+                        style: TextStyle(
+                            fontSize: 13,
+                            color: AppColors.ink.withValues(alpha: 0.7),
+                            fontWeight: FontWeight.w500),
+                      ),
+                      const SizedBox(width: 12),
+                      Icon(LucideIcons.gauge,
+                          size: 14,
+                          color: AppColors.ink.withValues(alpha: 0.6)),
+                      const SizedBox(width: 4),
+                      Text(
+                        distance,
+                        style: TextStyle(
+                            fontSize: 13,
+                            color: AppColors.ink.withValues(alpha: 0.7),
+                            fontWeight: FontWeight.w500),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+                  Row(
+                    children: [
+                      Text(
+                        'Next Service: ',
+                        style: TextStyle(
+                            fontSize: 13,
+                            color: AppColors.ink.withValues(alpha: 0.5)),
+                      ),
+                      Text(
+                        nextService,
+                        style: const TextStyle(
+                            fontSize: 13,
+                            color: AppColors.ink,
+                            fontWeight: FontWeight.w600),
+                      ),
+                    ],
+                  ),
                 ],
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: statusColor.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Text(
-                status,
-                style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: statusColor),
               ),
             ),
           ],
