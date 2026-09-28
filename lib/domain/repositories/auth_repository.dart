@@ -1,8 +1,6 @@
-﻿import 'package:dartz/dartz.dart';
-import '../../core/errors/failures.dart';
-import '../entities/user.dart';
+import '../entities/user_entity.dart';
 
-/// Contract bridging the domain layer and the data layer for authentication.
 abstract class AuthRepository {
-  Future<Either<Failure, User>> login(String email, String password);
+  Future<void> login(String phone);
+  Future<UserEntity> verifyOtp(String phone, String otp);
 }

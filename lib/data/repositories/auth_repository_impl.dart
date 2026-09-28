@@ -1,27 +1,26 @@
-﻿import 'package:dartz/dartz.dart';
-import '../../core/errors/exceptions.dart';
-import '../../core/errors/failures.dart';
-import '../../domain/entities/user.dart';
+import '../../domain/entities/user_entity.dart';
 import '../../domain/repositories/auth_repository.dart';
+import '../datasources/local/auth_local_datasource.dart';
 import '../datasources/remote/auth_remote_datasource.dart';
 
-/// Concrete implementation of [AuthRepository] orchestrating data flow.
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource remoteDataSource;
+  final AuthLocalDataSource localDataSource;
 
-  AuthRepositoryImpl({required this.remoteDataSource});
+  AuthRepositoryImpl({
+    required this.remoteDataSource,
+    required this.localDataSource,
+  });
 
   @override
-  Future<Either<Failure, User>> login(String email, String password) async {
-    try {
-      final userModel = await remoteDataSource.login(email: email, password: password);
-      return Right(userModel);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message, code: e.statusCode?.toString()));
-    } on NetworkException {
-      return const Left(NetworkFailure());
-    } catch (e) {
-      return Left(ServerFailure(message: e.toString()));
-    }
+  Future<void> login(String phone) async {
+    return await remoteDataSource.login(phone);
+  }
+
+  @override
+  Future<UserEntity> verifyOtp(String phone, String otp) async {
+    final userModel = await remoteDataSource.verifyOtp(phone, otp);
+    await localDataSource.cacheSession(userModel);
+    return userModel;
   }
 }

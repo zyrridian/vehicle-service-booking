@@ -1,26 +1,28 @@
-﻿import '../../domain/entities/user.dart';
+import '../../domain/entities/user_entity.dart';
 
-/// Data transfer object for the [User] entity.
-class UserModel extends User {
-  const UserModel({
+class UserModel extends UserEntity {
+  UserModel({
     required super.id,
-    required super.email,
-    required super.fullName,
+    required super.name,
+    required super.phone,
+    required super.token,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
-      id: json['id'] as String,
-      email: json['email'] as String,
-      fullName: json['full_name'] as String,
+      id: json['id'],
+      name: json['name'],
+      phone: json['phone'],
+      token: json['token'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'email': email,
-      'full_name': fullName,
+      'name': name,
+      'phone': phone,
+      'token': token,
     };
   }
 }

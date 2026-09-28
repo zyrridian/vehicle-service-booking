@@ -1,8 +1,38 @@
-﻿import '../../models/user_model.dart';
+import 'dart:convert';
+import '../../models/user_model.dart';
 
-/// Defines the remote operations necessary for authentication.
 abstract class AuthRemoteDataSource {
-  /// Authenticates a user and returns their profile representation.
-  /// Throws a [ServerException] for all error codes.
-  Future<UserModel> login({required String email, required String password});
+  Future<void> login(String phone);
+  Future<UserModel> verifyOtp(String phone, String otp);
+}
+
+class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
+  @override
+  Future<void> login(String phone) async {
+    await Future.delayed(const Duration(seconds: 1));
+    if (phone.isEmpty) {
+      throw Exception('Phone number cannot be empty');
+    }
+  }
+
+  @override
+  Future<UserModel> verifyOtp(String phone, String otp) async {
+    await Future.delayed(const Duration(seconds: 1));
+
+    if (otp != '123456') {
+      throw Exception('Invalid verification code');
+    }
+
+    const jsonResponse = '''
+    {
+      "id": "USR-99812",
+      "name": "Dimas Pratama",
+      "phone": "+6281234567890",
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.dummy_token"
+    }
+    ''';
+
+    final Map<String, dynamic> decoded = jsonDecode(jsonResponse);
+    return UserModel.fromJson(decoded);
+  }
 }

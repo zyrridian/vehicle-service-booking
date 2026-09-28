@@ -31,19 +31,22 @@ class AccountPage extends StatelessWidget {
                   _buildMenuOption(
                     icon: LucideIcons.mapPin,
                     title: 'Saved Addresses',
-                    onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const SavedAddressesPage())),
+                    onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                        builder: (_) => const SavedAddressesPage())),
                   ),
                   const SizedBox(height: 12),
                   _buildMenuOption(
                     icon: LucideIcons.bell,
                     title: 'Notifications',
-                    onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const NotificationsPage())),
+                    onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                        builder: (_) => const NotificationsPage())),
                   ),
                   const SizedBox(height: 12),
                   _buildMenuOption(
                     icon: LucideIcons.globe,
                     title: 'Language',
-                    onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const LanguagePage())),
+                    onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                        builder: (_) => const LanguagePage())),
                   ),
                   const SizedBox(height: 24),
                   _buildSectionTitle('SUPPORT & ABOUT'),
@@ -51,19 +54,24 @@ class AccountPage extends StatelessWidget {
                   _buildMenuOption(
                     icon: LucideIcons.headphones,
                     title: 'Help Center',
-                    onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const HelpCenterPage())),
+                    onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                        builder: (_) => const HelpCenterPage())),
                   ),
                   const SizedBox(height: 12),
                   _buildMenuOption(
                     icon: LucideIcons.shield,
                     title: 'Terms & Privacy Policy',
-                    onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const TermsPrivacyPage())),
+                    onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                        builder: (_) => const TermsPrivacyPage())),
                   ),
                   const SizedBox(height: 12),
                   _buildMenuOption(
                     icon: LucideIcons.info,
                     title: 'App Version',
-                    trailing: Text('v1.0.0', style: TextStyle(color: AppColors.ink.withValues(alpha: 0.4), fontSize: 13)),
+                    trailing: Text('v1.0.0',
+                        style: TextStyle(
+                            color: AppColors.ink.withValues(alpha: 0.4),
+                            fontSize: 13)),
                   ),
                   const SizedBox(height: 32),
                   _buildLogoutButton(context),
@@ -83,7 +91,8 @@ class AccountPage extends StatelessWidget {
         alignment: Alignment.centerLeft,
         child: Text(
           'Profile',
-          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: AppColors.ink),
+          style: TextStyle(
+              fontSize: 22, fontWeight: FontWeight.bold, color: AppColors.ink),
         ),
       ),
     );
@@ -100,21 +109,33 @@ class AccountPage extends StatelessWidget {
             shape: BoxShape.circle,
           ),
           alignment: Alignment.center,
-          child: const Text('D', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
+          child: const Text('D',
+              style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white)),
         ),
         const SizedBox(width: 16),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('Dimas Pratama', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.ink)),
+              const Text('Dimas Pratama',
+                  style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.ink)),
               const SizedBox(height: 4),
-              Text('+62 812 3456 7890', style: TextStyle(fontSize: 13, color: AppColors.ink.withValues(alpha: 0.6))),
+              Text('+62 812 3456 7890',
+                  style: TextStyle(
+                      fontSize: 13,
+                      color: AppColors.ink.withValues(alpha: 0.6))),
             ],
           ),
         ),
         GestureDetector(
-          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const EditProfilePage())),
+          onTap: () => Navigator.of(context)
+              .push(MaterialPageRoute(builder: (_) => const EditProfilePage())),
           child: const Text(
             'Edit Profile',
             style: TextStyle(
@@ -140,7 +161,11 @@ class AccountPage extends StatelessWidget {
     );
   }
 
-  Widget _buildMenuOption({required IconData icon, required String title, Widget? trailing, VoidCallback? onTap}) {
+  Widget _buildMenuOption(
+      {required IconData icon,
+      required String title,
+      Widget? trailing,
+      VoidCallback? onTap}) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -154,8 +179,13 @@ class AccountPage extends StatelessWidget {
           children: [
             Icon(icon, color: AppColors.ink.withValues(alpha: 0.6), size: 20),
             const SizedBox(width: 16),
-            Expanded(child: Text(title, style: const TextStyle(fontSize: 15, color: AppColors.ink))),
-            trailing ?? Icon(LucideIcons.chevronRight, color: AppColors.ink.withValues(alpha: 0.4), size: 18),
+            Expanded(
+                child: Text(title,
+                    style:
+                        const TextStyle(fontSize: 15, color: AppColors.ink))),
+            trailing ??
+                Icon(LucideIcons.chevronRight,
+                    color: AppColors.ink.withValues(alpha: 0.4), size: 18),
           ],
         ),
       ),
@@ -173,13 +203,20 @@ class AccountPage extends StatelessWidget {
             builder: (BuildContext dialogContext) {
               return AlertDialog(
                 backgroundColor: Colors.white,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                title: const Text('Logout', style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.ink)),
-                content: Text('Are you sure you want to log out?', style: TextStyle(color: AppColors.ink.withValues(alpha: 0.7))),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16)),
+                title: const Text('Logout',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold, color: AppColors.ink)),
+                content: Text('Are you sure you want to log out?',
+                    style:
+                        TextStyle(color: AppColors.ink.withValues(alpha: 0.7))),
                 actions: [
                   TextButton(
                     onPressed: () => Navigator.of(dialogContext).pop(),
-                    child: const Text('Cancel', style: TextStyle(color: AppColors.ink, fontWeight: FontWeight.w600)),
+                    child: const Text('Cancel',
+                        style: TextStyle(
+                            color: AppColors.ink, fontWeight: FontWeight.w600)),
                   ),
                   ElevatedButton(
                     onPressed: () {
@@ -192,9 +229,11 @@ class AccountPage extends StatelessWidget {
                       backgroundColor: Colors.redAccent,
                       foregroundColor: Colors.white,
                       elevation: 0,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8)),
                     ),
-                    child: const Text('Logout', style: TextStyle(fontWeight: FontWeight.bold)),
+                    child: const Text('Logout',
+                        style: TextStyle(fontWeight: FontWeight.bold)),
                   ),
                 ],
               );
@@ -204,10 +243,12 @@ class AccountPage extends StatelessWidget {
         style: OutlinedButton.styleFrom(
           foregroundColor: Colors.redAccent,
           side: const BorderSide(color: Colors.redAccent),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
           elevation: 0,
         ),
-        child: const Text('Logout', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+        child: const Text('Logout',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
       ),
     );
   }

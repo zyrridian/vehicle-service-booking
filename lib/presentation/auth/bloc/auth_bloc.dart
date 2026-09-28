@@ -1,18 +1,19 @@
 ﻿import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:equatable/equatable.dart';
 import '../../../domain/usecases/login_usecase.dart';
-import '../../../domain/entities/user.dart';
+import '../../../domain/usecases/verify_otp_usecase.dart';
+import 'auth_event.dart';
+import 'auth_state.dart';
 
-part 'auth_event.dart';
-part 'auth_state.dart';
-
-/// Manages authentication state transitions using the BLoC pattern.
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final LoginUseCase loginUseCase;
+  final VerifyOtpUseCase verifyOtpUseCase;
 
-  AuthBloc({required this.loginUseCase}) : super(AuthInitial()) {
+  AuthBloc({
+    required this.loginUseCase,
+    required this.verifyOtpUseCase,
+  }) : super(AuthInitial()) {
     on<LoginRequested>(_onLoginRequested);
-    on<LogoutRequested>(_onLogoutRequested);
+    on<VerifyOtpRequested>(_onVerifyOtpRequested);
   }
 
   Future<void> _onLoginRequested(
@@ -20,20 +21,24 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     emit(AuthLoading());
-    final result = await loginUseCase(
-      LoginParams(email: event.email, password: event.password),
-    );
-
-    result.fold(
-      (failure) => emit(AuthFailure(message: failure.message)),
-      (user) => emit(AuthSuccess(user: user)),
-    );
+    try {
+      await loginUseCase.execute(event.phone);
+      emit(AuthLoginSuccess(event.phone));
+    } catch (e) {
+      emit(AuthError(e.toString()));
+    }
   }
 
-  void _onLogoutRequested(
-    LogoutRequested event,
+  Future<void> _onVerifyOtpRequested(
+    VerifyOtpRequested event,
     Emitter<AuthState> emit,
-  ) {
-    emit(AuthInitial());
+  ) async {
+    emit(AuthLoading());
+    try {
+      final user = await verifyOtpUseCase.execute(event.phone, event.otp);
+      emit(AuthOtpSuccess(user));
+    } catch (e) {
+      emit(AuthError(e.toString()));
+    }
   }
 }
