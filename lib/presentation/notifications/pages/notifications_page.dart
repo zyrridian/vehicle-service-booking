@@ -1,38 +1,56 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../injection.dart';
+import '../bloc/notification_bloc.dart';
 
 class NotificationsPage extends StatelessWidget {
   const NotificationsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: [
-            _buildHeader(context),
-            Expanded(
-              child: ListView(
-                padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
-                children: [
-                  _buildNotificationItem(
-                    title: 'Booking Dikonfirmasi',
-                    body: 'Servis 2 motor kamu terjadwal besok jam 09:30.',
-                    time: '10 menit lalu',
-                    isUnread: true,
-                  ),
-                  const SizedBox(height: 10),
-                  _buildNotificationItem(
-                    title: 'Promo Servis Berkala',
-                    body: 'Diskon 20% ganti oli untuk booking multi-motor.',
-                    time: '2 jam lalu',
-                    isUnread: true,
-                  ),
-                ],
+    return BlocProvider(
+      create: (_) => Injection.provideNotificationBloc()..add(FetchNotificationsRequested()),
+      child: Scaffold(
+        body: SafeArea(
+          child: Column(
+            children: [
+              _buildHeader(context),
+              Expanded(
+                child: BlocBuilder<NotificationBloc, NotificationState>(
+                  builder: (context, state) {
+                    if (state.isLoading) {
+                      return const Center(child: CircularProgressIndicator(color: AppColors.brand));
+                    }
+                    if (state.errorMessage != null) {
+                      return Center(child: Text(state.errorMessage!));
+                    }
+                    final notifications = state.notifications ?? [];
+                    if (notifications.isEmpty) {
+                      return const Center(child: Text('No notifications right now.'));
+                    }
+                    return ListView.builder(
+                      padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
+                      itemCount: notifications.length,
+                      itemBuilder: (context, index) {
+                        final notif = notifications[index];
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: _buildNotificationItem(
+                            title: notif.title,
+                            body: notif.body,
+                            time: notif.time,
+                            isUnread: notif.isUnread,
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

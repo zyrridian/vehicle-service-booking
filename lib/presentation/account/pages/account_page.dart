@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../injection.dart';
 import '../../auth/pages/login_page.dart';
+import '../../auth/bloc/auth_bloc.dart';
+import '../../auth/bloc/auth_event.dart';
 import '../../notifications/pages/notifications_page.dart';
+import '../bloc/account_bloc.dart';
+import '../bloc/account_event.dart';
+import '../bloc/account_state.dart';
+import '../../settings/bloc/settings_bloc.dart';
 import 'edit_profile_page.dart';
 import 'saved_addresses_page.dart';
 import 'language_page.dart';
@@ -11,6 +19,18 @@ import 'terms_privacy_page.dart';
 
 class AccountPage extends StatelessWidget {
   const AccountPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => Injection.provideAccountBloc()..add(FetchProfileRequested()),
+      child: const _AccountView(),
+    );
+  }
+}
+
+class _AccountView extends StatelessWidget {
+  const _AccountView();
 
   @override
   Widget build(BuildContext context) {
@@ -65,13 +85,20 @@ class AccountPage extends StatelessWidget {
                         builder: (_) => const TermsPrivacyPage())),
                   ),
                   const SizedBox(height: 12),
-                  _buildMenuOption(
-                    icon: LucideIcons.info,
-                    title: 'App Version',
-                    trailing: Text('v1.0.0',
-                        style: TextStyle(
-                            color: AppColors.ink.withValues(alpha: 0.4),
-                            fontSize: 13)),
+                  BlocProvider(
+                    create: (_) => Injection.provideSettingsBloc()..add(LoadSettingsRequested()),
+                    child: BlocBuilder<SettingsBloc, SettingsState>(
+                      builder: (context, state) {
+                        return _buildMenuOption(
+                          icon: LucideIcons.info,
+                          title: 'App Version',
+                          trailing: Text(state.settings?.appVersion ?? 'Loading...',
+                              style: TextStyle(
+                                  color: AppColors.ink.withValues(alpha: 0.4),
+                                  fontSize: 13)),
+                        );
+                      },
+                    ),
                   ),
                   const SizedBox(height: 32),
                   _buildLogoutButton(context),
@@ -99,53 +126,88 @@ class AccountPage extends StatelessWidget {
   }
 
   Widget _buildProfileSection(BuildContext context) {
-    return Row(
-      children: [
-        Container(
-          width: 56,
-          height: 56,
-          decoration: const BoxDecoration(
-            color: AppColors.brand,
-            shape: BoxShape.circle,
-          ),
-          alignment: Alignment.center,
-          child: const Text('D',
-              style: TextStyle(
+    return BlocBuilder<AccountBloc, AccountState>(
+      builder: (context, state) {
+        if (state.isLoading && state.profile == null) {
+          return const Center(
+            child: Padding(
+              padding: EdgeInsets.all(16.0),
+              child: CircularProgressIndicator(color: AppColors.brand),
+            ),
+          );
+        }
+
+        final profile = state.profile;
+        if (profile == null) {
+          return const Center(child: Text('Failed to load profile.'));
+        }
+
+        return Row(
+          children: [
+            Container(
+              width: 56,
+              height: 56,
+              decoration: const BoxDecoration(
+                color: AppColors.brand,
+                shape: BoxShape.circle,
+              ),
+              alignment: Alignment.center,
+              child: Text(
+                profile.name.isNotEmpty ? profile.name[0].toUpperCase() : 'U',
+                style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: Colors.white)),
-        ),
-        const SizedBox(width: 16),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text('Dimas Pratama',
-                  style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    profile.name,
+                    style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: AppColors.ink)),
-              const SizedBox(height: 4),
-              Text('+62 812 3456 7890',
-                  style: TextStyle(
+                      color: AppColors.ink,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    profile.phone,
+                    style: TextStyle(
                       fontSize: 13,
-                      color: AppColors.ink.withValues(alpha: 0.6))),
-            ],
-          ),
-        ),
-        GestureDetector(
-          onTap: () => Navigator.of(context)
-              .push(MaterialPageRoute(builder: (_) => const EditProfilePage())),
-          child: const Text(
-            'Edit Profile',
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.bold,
-              color: AppColors.brand,
+                      color: AppColors.ink.withValues(alpha: 0.6),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ),
-      ],
+            GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => BlocProvider.value(
+                      value: context.read<AccountBloc>(),
+                      child: const EditProfilePage(),
+                    ),
+                  ),
+                );
+              },
+              child: const Text(
+                'Edit Profile',
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.brand,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -161,11 +223,12 @@ class AccountPage extends StatelessWidget {
     );
   }
 
-  Widget _buildMenuOption(
-      {required IconData icon,
-      required String title,
-      Widget? trailing,
-      VoidCallback? onTap}) {
+  Widget _buildMenuOption({
+    required IconData icon,
+    required String title,
+    Widget? trailing,
+    VoidCallback? onTap,
+  }) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -180,12 +243,17 @@ class AccountPage extends StatelessWidget {
             Icon(icon, color: AppColors.ink.withValues(alpha: 0.6), size: 20),
             const SizedBox(width: 16),
             Expanded(
-                child: Text(title,
-                    style:
-                        const TextStyle(fontSize: 15, color: AppColors.ink))),
+              child: Text(
+                title,
+                style: const TextStyle(fontSize: 15, color: AppColors.ink),
+              ),
+            ),
             trailing ??
-                Icon(LucideIcons.chevronRight,
-                    color: AppColors.ink.withValues(alpha: 0.4), size: 18),
+                Icon(
+                  LucideIcons.chevronRight,
+                  color: AppColors.ink.withValues(alpha: 0.4),
+                  size: 18,
+                ),
           ],
         ),
       ),
@@ -218,14 +286,15 @@ class AccountPage extends StatelessWidget {
                         style: TextStyle(
                             color: AppColors.ink, fontWeight: FontWeight.w600)),
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(builder: (_) => const LoginPage()),
-                        (route) => false,
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
+                    ElevatedButton(
+                      onPressed: () {
+                        context.read<AuthBloc>().add(LogoutRequested());
+                        Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(builder: (_) => const LoginPage()),
+                          (route) => false,
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.redAccent,
                       foregroundColor: Colors.white,
                       elevation: 0,
@@ -253,3 +322,4 @@ class AccountPage extends StatelessWidget {
     );
   }
 }
+

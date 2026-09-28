@@ -19,8 +19,14 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<UserEntity> verifyOtp(String phone, String otp) async {
-    final userModel = await remoteDataSource.verifyOtp(phone, otp);
-    await localDataSource.cacheSession(userModel);
-    return userModel;
+    final user = await remoteDataSource.verifyOtp(phone, otp);
+    await localDataSource.cacheSession(user);
+    return user;
+  }
+
+  @override
+  Future<void> logout() async {
+    await remoteDataSource.logout();
+    await localDataSource.clearSession();
   }
 }

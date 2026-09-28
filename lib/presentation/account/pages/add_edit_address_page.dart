@@ -2,43 +2,43 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../../domain/entities/profile_entity.dart';
+import '../../../domain/entities/address_entity.dart';
 import '../bloc/account_bloc.dart';
 import '../bloc/account_event.dart';
 import '../bloc/account_state.dart';
 
-class EditProfilePage extends StatefulWidget {
-  const EditProfilePage({super.key});
+class AddEditAddressPage extends StatefulWidget {
+  final AddressEntity? addressToEdit;
+  const AddEditAddressPage({super.key, this.addressToEdit});
 
   @override
-  State<EditProfilePage> createState() => _EditProfilePageState();
+  State<AddEditAddressPage> createState() => _AddEditAddressPageState();
 }
 
-class _EditProfilePageState extends State<EditProfilePage> {
+class _AddEditAddressPageState extends State<AddEditAddressPage> {
   final _formKey = GlobalKey<FormState>();
-  late TextEditingController _nameController;
-  late TextEditingController _phoneController;
-  late TextEditingController _emailController;
+  late TextEditingController _labelController;
+  late TextEditingController _addressController;
+  late bool _isDefault;
 
   @override
   void initState() {
     super.initState();
-    final profile = context.read<AccountBloc>().state.profile;
-    _nameController = TextEditingController(text: profile?.name ?? '');
-    _phoneController = TextEditingController(text: profile?.phone ?? '');
-    _emailController = TextEditingController(text: profile?.email ?? '');
+    _labelController = TextEditingController(text: widget.addressToEdit?.label ?? '');
+    _addressController = TextEditingController(text: widget.addressToEdit?.fullAddress ?? '');
+    _isDefault = widget.addressToEdit?.isDefault ?? false;
   }
 
   @override
   void dispose() {
-    _nameController.dispose();
-    _phoneController.dispose();
-    _emailController.dispose();
+    _labelController.dispose();
+    _addressController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final isEditing = widget.addressToEdit != null;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -49,13 +49,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
           icon: const Icon(LucideIcons.chevronLeft, color: AppColors.ink),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: const Text('Edit Profile', style: TextStyle(color: AppColors.ink, fontSize: 18, fontWeight: FontWeight.bold)),
+        title: Text(isEditing ? 'Edit Address' : 'Add New Address', style: const TextStyle(color: AppColors.ink, fontSize: 18, fontWeight: FontWeight.bold)),
         centerTitle: true,
       ),
       body: BlocConsumer<AccountBloc, AccountState>(
         listener: (context, state) {
           if (state.isSuccess) {
-            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Profile updated successfully!')));
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(isEditing ? 'Address updated!' : 'Address added!')));
             Navigator.of(context).pop();
           } else if (state.errorMessage != null) {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
@@ -67,11 +67,25 @@ class _EditProfilePageState extends State<EditProfilePage> {
             child: ListView(
               padding: const EdgeInsets.all(24),
               children: [
-                _buildTextField(label: 'Full Name', controller: _nameController),
+                _buildTextField(label: 'Label (e.g. Home, Office)', controller: _labelController),
                 const SizedBox(height: 20),
-                _buildTextField(label: 'Phone Number', controller: _phoneController, keyboardType: TextInputType.phone),
-                const SizedBox(height: 20),
-                _buildTextField(label: 'Email', controller: _emailController, keyboardType: TextInputType.emailAddress),
+                _buildTextField(label: 'Full Address', controller: _addressController, maxLines: 3),
+                const SizedBox(height: 24),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text('Set as Default Address', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: AppColors.ink)),
+                    Switch(
+                      value: _isDefault,
+                      activeColor: AppColors.brand,
+                      onChanged: (val) {
+                        setState(() {
+                          _isDefault = val;
+                        });
+                      },
+                    ),
+                  ],
+                ),
                 const SizedBox(height: 48),
                 SizedBox(
                   width: double.infinity,
@@ -79,13 +93,17 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   child: ElevatedButton(
                     onPressed: state.isLoading ? null : () {
                       if (_formKey.currentState?.validate() ?? false) {
-                        final updated = ProfileEntity(
-                          id: state.profile?.id ?? 'USR-99812',
-                          name: _nameController.text,
-                          phone: _phoneController.text,
-                          email: _emailController.text,
+                        final address = AddressEntity(
+                          id: isEditing ? widget.addressToEdit!.id : '',
+                          label: _labelController.text,
+                          fullAddress: _addressController.text,
+                          isDefault: _isDefault,
                         );
-                        context.read<AccountBloc>().add(UpdateProfileRequested(updated));
+                        if (isEditing) {
+                          context.read<AccountBloc>().add(UpdateAddressRequested(address));
+                        } else {
+                          context.read<AccountBloc>().add(AddAddressRequested(address));
+                        }
                       }
                     },
                     style: ElevatedButton.styleFrom(
@@ -96,7 +114,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     ),
                     child: state.isLoading 
                         ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                        : const Text('Save Changes', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                        : Text(isEditing ? 'Save Changes' : 'Add Address', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                   ),
                 ),
               ],
@@ -107,7 +125,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     );
   }
 
-  Widget _buildTextField({required String label, required TextEditingController controller, TextInputType? keyboardType}) {
+  Widget _buildTextField({required String label, required TextEditingController controller, int maxLines = 1}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -115,9 +133,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
         const SizedBox(height: 8),
         TextFormField(
           controller: controller,
-          keyboardType: keyboardType,
+          maxLines: maxLines,
           style: const TextStyle(fontSize: 15, color: AppColors.ink),
-          validator: (val) => val == null || val.isEmpty ? 'Required field' : null,
+          validator: (val) => val == null || val.trim().isEmpty ? 'Required field' : null,
           decoration: InputDecoration(
             contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             filled: true,

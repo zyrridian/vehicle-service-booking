@@ -10,3 +10,5 @@ class VerifyOtpRequested extends AuthEvent {
   final String otp;
   VerifyOtpRequested(this.phone, this.otp);
 }
+
+class LogoutRequested extends AuthEvent {}
