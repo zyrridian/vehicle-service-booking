@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../auth/pages/login_page.dart';
+import '../../notifications/pages/notifications_page.dart';
+import 'edit_profile_page.dart';
+import 'saved_addresses_page.dart';
+import 'language_page.dart';
+import 'help_center_page.dart';
+import 'terms_privacy_page.dart';
 
 class AccountPage extends StatelessWidget {
   const AccountPage({super.key});
@@ -9,60 +15,58 @@ class AccountPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
-              child: Row(
-                children: [
-                  Container(
-                    width: 56,
-                    height: 56,
-                    decoration: const BoxDecoration(
-                      color: AppColors.brand,
-                      shape: BoxShape.circle,
-                    ),
-                    alignment: Alignment.center,
-                    child: const Text('D', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
-                  ),
-                  const SizedBox(width: 12),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text('Dimas Pratama', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: AppColors.ink)),
-                      Text('+62 812 3456 7890', style: TextStyle(fontSize: 12.5, color: AppColors.ink.withOpacity(0.5))),
-                    ],
-                  ),
-                ],
-              ),
-            ),
+            _buildHeader(),
             Expanded(
               child: ListView(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+                padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
                 children: [
-                  _buildMenuOption(LucideIcons.bell, 'Notifikasi'),
-                  const SizedBox(height: 8),
-                  _buildMenuOption(LucideIcons.mapPin, 'Alamat Tersimpan'),
-                  const SizedBox(height: 8),
-                  _buildMenuOption(LucideIcons.helpCircle, 'Pusat Bantuan'),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(builder: (_) => const LoginPage()),
-                        (route) => false,
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: AppColors.brand,
-                      side: const BorderSide(color: AppColors.line),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                    ),
-                    child: const Text('Keluar'),
+                  _buildProfileSection(context),
+                  const SizedBox(height: 32),
+                  _buildSectionTitle('ACCOUNT'),
+                  const SizedBox(height: 12),
+                  _buildMenuOption(
+                    icon: LucideIcons.mapPin,
+                    title: 'Saved Addresses',
+                    onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const SavedAddressesPage())),
                   ),
+                  const SizedBox(height: 12),
+                  _buildMenuOption(
+                    icon: LucideIcons.bell,
+                    title: 'Notifications',
+                    onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const NotificationsPage())),
+                  ),
+                  const SizedBox(height: 12),
+                  _buildMenuOption(
+                    icon: LucideIcons.globe,
+                    title: 'Language',
+                    onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const LanguagePage())),
+                  ),
+                  const SizedBox(height: 24),
+                  _buildSectionTitle('SUPPORT & ABOUT'),
+                  const SizedBox(height: 12),
+                  _buildMenuOption(
+                    icon: LucideIcons.headphones,
+                    title: 'Help Center',
+                    onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const HelpCenterPage())),
+                  ),
+                  const SizedBox(height: 12),
+                  _buildMenuOption(
+                    icon: LucideIcons.shield,
+                    title: 'Terms & Privacy Policy',
+                    onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const TermsPrivacyPage())),
+                  ),
+                  const SizedBox(height: 12),
+                  _buildMenuOption(
+                    icon: LucideIcons.info,
+                    title: 'App Version',
+                    trailing: Text('v1.0.0', style: TextStyle(color: AppColors.ink.withValues(alpha: 0.4), fontSize: 13)),
+                  ),
+                  const SizedBox(height: 32),
+                  _buildLogoutButton(context),
                 ],
               ),
             ),
@@ -72,21 +76,138 @@ class AccountPage extends StatelessWidget {
     );
   }
 
-  Widget _buildMenuOption(IconData icon, String title) {
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.line),
+  Widget _buildHeader() {
+    return const Padding(
+      padding: EdgeInsets.fromLTRB(20, 16, 20, 8),
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: Text(
+          'Profile',
+          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: AppColors.ink),
+        ),
       ),
-      child: Row(
-        children: [
-          Icon(icon, color: AppColors.ink.withOpacity(0.6), size: 17),
-          const SizedBox(width: 12),
-          Expanded(child: Text(title, style: const TextStyle(fontSize: 13.5, fontWeight: FontWeight.w600, color: AppColors.ink))),
-          Icon(LucideIcons.chevronRight, color: AppColors.ink.withOpacity(0.3), size: 15),
-        ],
+    );
+  }
+
+  Widget _buildProfileSection(BuildContext context) {
+    return Row(
+      children: [
+        Container(
+          width: 56,
+          height: 56,
+          decoration: const BoxDecoration(
+            color: AppColors.brand,
+            shape: BoxShape.circle,
+          ),
+          alignment: Alignment.center,
+          child: const Text('D', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
+        ),
+        const SizedBox(width: 16),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text('Dimas Pratama', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.ink)),
+              const SizedBox(height: 4),
+              Text('+62 812 3456 7890', style: TextStyle(fontSize: 13, color: AppColors.ink.withValues(alpha: 0.6))),
+            ],
+          ),
+        ),
+        GestureDetector(
+          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const EditProfilePage())),
+          child: const Text(
+            'Edit Profile',
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.bold,
+              color: AppColors.brand,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSectionTitle(String title) {
+    return Text(
+      title,
+      style: TextStyle(
+        fontSize: 12,
+        fontWeight: FontWeight.bold,
+        color: AppColors.ink.withValues(alpha: 0.7),
+        letterSpacing: 0.5,
+      ),
+    );
+  }
+
+  Widget _buildMenuOption({required IconData icon, required String title, Widget? trailing, VoidCallback? onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: AppColors.line),
+        ),
+        child: Row(
+          children: [
+            Icon(icon, color: AppColors.ink.withValues(alpha: 0.6), size: 20),
+            const SizedBox(width: 16),
+            Expanded(child: Text(title, style: const TextStyle(fontSize: 15, color: AppColors.ink))),
+            trailing ?? Icon(LucideIcons.chevronRight, color: AppColors.ink.withValues(alpha: 0.4), size: 18),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLogoutButton(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      height: 50,
+      child: OutlinedButton(
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (BuildContext dialogContext) {
+              return AlertDialog(
+                backgroundColor: Colors.white,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                title: const Text('Logout', style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.ink)),
+                content: Text('Are you sure you want to log out?', style: TextStyle(color: AppColors.ink.withValues(alpha: 0.7))),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(dialogContext).pop(),
+                    child: const Text('Cancel', style: TextStyle(color: AppColors.ink, fontWeight: FontWeight.w600)),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(builder: (_) => const LoginPage()),
+                        (route) => false,
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.redAccent,
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    ),
+                    child: const Text('Logout', style: TextStyle(fontWeight: FontWeight.bold)),
+                  ),
+                ],
+              );
+            },
+          );
+        },
+        style: OutlinedButton.styleFrom(
+          foregroundColor: Colors.redAccent,
+          side: const BorderSide(color: Colors.redAccent),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+          elevation: 0,
+        ),
+        child: const Text('Logout', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
       ),
     );
   }
