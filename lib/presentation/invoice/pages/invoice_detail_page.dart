@@ -22,11 +22,12 @@ class InvoiceDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => Injection.provideInvoiceBloc()
-        ..add(LoadInvoiceEvent(bookingId: bookingId)),
-      child: _InvoiceDetailView(bookingId: bookingId),
-    );
+    return _InvoiceDetailView(bookingId: bookingId);
+    // return BlocProvider(
+    //   create: (_) => Injection.provideInvoiceBloc()
+    //     ..add(LoadInvoiceEvent(bookingId: bookingId)),
+    //   child: _InvoiceDetailView(bookingId: bookingId),
+    // );
   }
 }
 
@@ -460,33 +461,33 @@ class _InvoiceDetailView extends StatelessWidget {
     );
   }
 
-  Widget _buildError(BuildContext context, String message) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(LucideIcons.alertCircle, color: Colors.red, size: 48),
-            const SizedBox(height: 12),
-            Text(message, textAlign: TextAlign.center),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.brand,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(25)),
-                elevation: 0,
-              ),
-              onPressed: () => context
-                  .read<InvoiceBloc>()
-                  .add(LoadInvoiceEvent(bookingId: bookingId)),
-              child: const Text('Coba Lagi',
-                  style: TextStyle(color: Colors.white)),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  // Widget _buildError(BuildContext context, String message) {
+  //   return Center(
+  //     child: Padding(
+  //       padding: const EdgeInsets.all(24),
+  //       child: Column(
+  //         mainAxisSize: MainAxisSize.min,
+  //         children: [
+  //           const Icon(LucideIcons.alertCircle, color: Colors.red, size: 48),
+  //           const SizedBox(height: 12),
+  //           Text(message, textAlign: TextAlign.center),
+  //           const SizedBox(height: 16),
+  //           ElevatedButton(
+  //             style: ElevatedButton.styleFrom(
+  //               backgroundColor: AppColors.brand,
+  //               shape: RoundedRectangleBorder(
+  //                   borderRadius: BorderRadius.circular(25)),
+  //               elevation: 0,
+  //             ),
+  //             onPressed: () => context
+  //                 .read<InvoiceBloc>()
+  //                 .add(LoadInvoiceEvent(bookingId: bookingId)),
+  //             child: const Text('Coba Lagi',
+  //                 style: TextStyle(color: Colors.white)),
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 }
