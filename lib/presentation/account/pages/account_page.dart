@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../injection.dart';
 import '../../auth/pages/login_page.dart';
@@ -99,10 +100,23 @@ class _AccountView extends StatelessWidget {
                         return _buildMenuOption(
                           icon: LucideIcons.info,
                           title: 'App Version',
-                          trailing: Text(state.settings?.appVersion ?? 'Loading...',
-                              style: TextStyle(
-                                  color: AppColors.ink.withValues(alpha: 0.4),
-                                  fontSize: 13)),
+                          trailing: state.isLoading && state.settings == null
+                              ? Shimmer.fromColors(
+                                  baseColor: AppColors.ink.withValues(alpha: 0.1),
+                                  highlightColor: AppColors.ink.withValues(alpha: 0.05),
+                                  child: Container(
+                                    width: 40,
+                                    height: 14,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                  ),
+                                )
+                              : Text(state.settings?.appVersion ?? 'Unknown',
+                                  style: TextStyle(
+                                      color: AppColors.ink.withValues(alpha: 0.4),
+                                      fontSize: 13)),
                         );
                       },
                     ),
@@ -136,50 +150,54 @@ class _AccountView extends StatelessWidget {
     return BlocBuilder<AccountBloc, AccountState>(
       builder: (context, state) {
         if (state.isLoading && state.profile == null) {
-          return Row(
-            children: [
-              Container(
-                width: 56,
-                height: 56,
-                decoration: BoxDecoration(
-                  color: AppColors.ink.withValues(alpha: 0.1),
-                  shape: BoxShape.circle,
+          return Shimmer.fromColors(
+            baseColor: AppColors.ink.withValues(alpha: 0.1),
+            highlightColor: AppColors.ink.withValues(alpha: 0.05),
+            child: Row(
+              children: [
+                Container(
+                  width: 56,
+                  height: 56,
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                  ),
                 ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: 120,
-                      height: 18,
-                      decoration: BoxDecoration(
-                        color: AppColors.ink.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(4),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: 120,
+                        height: 18,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 8),
-                    Container(
-                      width: 80,
-                      height: 14,
-                      decoration: BoxDecoration(
-                        color: AppColors.ink.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(4),
+                      const SizedBox(height: 8),
+                      Container(
+                        width: 80,
+                        height: 14,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              Container(
-                width: 60,
-                height: 16,
-                decoration: BoxDecoration(
-                  color: AppColors.ink.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(4),
+                Container(
+                  width: 60,
+                  height: 16,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           );
         }
 

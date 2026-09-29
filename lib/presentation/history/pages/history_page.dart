@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:shimmer/shimmer.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../injection.dart';
 import '../../invoice/pages/invoice_detail_page.dart';
@@ -94,7 +96,12 @@ class _HistoryPageViewState extends State<_HistoryPageView> {
                 ),
                 Expanded(
                   child: state.isLoading 
-                    ? const Center(child: CircularProgressIndicator(color: AppColors.brand))
+                    ? ListView.separated(
+                        padding: const EdgeInsets.fromLTRB(20, 8, 20, 120),
+                        itemCount: 3,
+                        separatorBuilder: (context, index) => const SizedBox(height: 16),
+                        itemBuilder: (context, index) => _buildHistoryShimmer(),
+                      )
                     : PageView(
                     controller: _pageController,
                     onPageChanged: (index) {
@@ -261,19 +268,26 @@ class _HistoryPageViewState extends State<_HistoryPageView> {
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(12),
-                child: Image.network(
-                  imageUrl,
+                child: CachedNetworkImage(
+                  imageUrl: imageUrl,
                   width: 48,
                   height: 48,
                   fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
+                  placeholder: (context, url) => Shimmer.fromColors(
+                    baseColor: AppColors.ink.withValues(alpha: 0.05),
+                    highlightColor: AppColors.ink.withValues(alpha: 0.02),
+                    child: Container(
                       width: 48,
                       height: 48,
-                      color: Colors.grey[200],
-                      child: const Icon(LucideIcons.bike, color: Colors.grey, size: 24),
-                    );
-                  },
+                      color: Colors.white,
+                    ),
+                  ),
+                  errorWidget: (context, url, error) => Container(
+                    width: 48,
+                    height: 48,
+                    color: Colors.grey[200],
+                    child: const Icon(LucideIcons.bike, color: Colors.grey, size: 24),
+                  ),
                 ),
               ),
               const SizedBox(width: 12),
@@ -336,6 +350,65 @@ class _HistoryPageViewState extends State<_HistoryPageView> {
             ],
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildHistoryShimmer() {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(24),
+      ),
+      child: Shimmer.fromColors(
+        baseColor: AppColors.ink.withValues(alpha: 0.05),
+        highlightColor: AppColors.ink.withValues(alpha: 0.02),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(width: 120, height: 16, color: Colors.white),
+                      const SizedBox(height: 6),
+                      Container(width: 80, height: 12, color: Colors.white),
+                    ],
+                  ),
+                ),
+                Container(width: 60, height: 20, color: Colors.white),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Container(width: 180, height: 14, color: Colors.white),
+            const SizedBox(height: 10),
+            Container(width: 140, height: 14, color: Colors.white),
+            const SizedBox(height: 10),
+            Container(width: double.infinity, height: 14, color: Colors.white),
+            const SizedBox(height: 16),
+            Container(width: double.infinity, height: 1, color: Colors.white),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(width: 100, height: 18, color: Colors.white),
+                Container(width: 80, height: 24, color: Colors.white),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

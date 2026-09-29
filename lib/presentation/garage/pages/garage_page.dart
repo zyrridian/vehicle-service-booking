@@ -2,6 +2,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:shimmer/shimmer.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../injection.dart';
 import '../bloc/garage_bloc.dart';
@@ -36,7 +38,12 @@ class _GaragePageView extends StatelessWidget {
               child: BlocBuilder<GarageBloc, GarageState>(
                 builder: (context, state) {
                   if (state.isLoading && state.vehicles == null) {
-                    return const Center(child: CircularProgressIndicator(color: AppColors.brand));
+                    return ListView.separated(
+                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 120),
+                      itemCount: 3,
+                      separatorBuilder: (context, index) => const SizedBox(height: 12),
+                      itemBuilder: (context, index) => _buildVehicleShimmer(),
+                    );
                   }
 
                   final vehicles = state.vehicles ?? [];
@@ -205,19 +212,26 @@ class _GaragePageView extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
               child: imageUrl.startsWith('http')
-                  ? Image.network(
-                      imageUrl,
+                  ? CachedNetworkImage(
+                      imageUrl: imageUrl,
                       width: 100,
                       height: 100,
                       fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Container(
+                      placeholder: (context, url) => Shimmer.fromColors(
+                        baseColor: AppColors.ink.withValues(alpha: 0.05),
+                        highlightColor: AppColors.ink.withValues(alpha: 0.02),
+                        child: Container(
                           width: 100,
                           height: 100,
-                          color: Colors.grey[200],
-                          child: const Icon(LucideIcons.bike, color: Colors.grey),
-                        );
-                      },
+                          color: Colors.white,
+                        ),
+                      ),
+                      errorWidget: (context, url, error) => Container(
+                        width: 100,
+                        height: 100,
+                        color: Colors.grey[200],
+                        child: const Icon(LucideIcons.bike, color: Colors.grey),
+                      ),
                     )
                   : Image.file(
                       File(imageUrl),
@@ -291,6 +305,49 @@ class _GaragePageView extends StatelessWidget {
                       ),
                     ],
                   ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildVehicleShimmer() {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(24),
+      ),
+      child: Shimmer.fromColors(
+        baseColor: AppColors.ink.withValues(alpha: 0.05),
+        highlightColor: AppColors.ink.withValues(alpha: 0.02),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 100,
+              height: 100,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 4),
+                  Container(width: 150, height: 18, color: Colors.white),
+                  const SizedBox(height: 8),
+                  Container(width: 100, height: 14, color: Colors.white),
+                  const SizedBox(height: 16),
+                  Container(width: double.infinity, height: 14, color: Colors.white),
+                  const SizedBox(height: 12),
+                  Container(width: 180, height: 14, color: Colors.white),
                 ],
               ),
             ),
