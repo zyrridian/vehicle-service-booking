@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../auth/pages/login_page.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -32,7 +33,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
     OnboardingData(
       imagePath: 'assets/images/onboarding1.svg',
       title: 'Book Multiple Motorbikes at Once',
-      subtitle: 'Manage services, parts, and issues for each bike\nin a single order',
+      subtitle:
+          'Manage services, parts, and issues for each bike\nin a single order',
     ),
     OnboardingData(
       imagePath: 'assets/images/onboarding2.svg',
@@ -46,13 +48,6 @@ class _OnboardingPageState extends State<OnboardingPage> {
     ),
   ];
 
-  @override
-  void initState() {
-    super.initState();
-    Future.delayed(const Duration(seconds: 2), () {
-      FlutterNativeSplash.remove();
-    });
-  }
 
   @override
   void dispose() {
@@ -60,10 +55,15 @@ class _OnboardingPageState extends State<OnboardingPage> {
     super.dispose();
   }
 
-  void _goToLogin(BuildContext context) {
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (_) => const LoginPage()),
-    );
+  void _goToLogin(BuildContext context) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('has_seen_onboarding', true);
+
+    if (context.mounted) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (_) => const LoginPage()),
+      );
+    }
   }
 
   Widget _buildDots() {
@@ -116,10 +116,10 @@ class _OnboardingPageState extends State<OnboardingPage> {
         AnimatedSwitcher(
           duration: const Duration(milliseconds: 300),
           child: _currentPage == 2
-              ? Container(key: const ValueKey('back_left'), child: _buildBackButton())
+              ? Container(
+                  key: const ValueKey('back_left'), child: _buildBackButton())
               : Container(key: const ValueKey('dots'), child: _buildDots()),
         ),
-
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -127,12 +127,13 @@ class _OnboardingPageState extends State<OnboardingPage> {
               duration: const Duration(milliseconds: 300),
               width: _currentPage == 1 ? 56 : 0,
               margin: EdgeInsets.only(right: _currentPage == 1 ? 16 : 0),
-              child: ClipRRect( 
+              child: ClipRRect(
                 borderRadius: BorderRadius.circular(28),
-                child: _currentPage == 1 ? _buildBackButton() : const SizedBox.shrink(),
+                child: _currentPage == 1
+                    ? _buildBackButton()
+                    : const SizedBox.shrink(),
               ),
             ),
-            
             AnimatedContainer(
               duration: const Duration(milliseconds: 300),
               curve: Curves.easeInOut,
@@ -190,11 +191,12 @@ class _OnboardingPageState extends State<OnboardingPage> {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0),
               child: Align(
                 alignment: Alignment.topRight,
-                child: GestureDetector(
-                  onTap: () => _goToLogin(context),
+                child: TextButton(
+                  onPressed: () => _goToLogin(context),
                   child: const Text(
                     'Skip',
                     style: TextStyle(
@@ -206,7 +208,6 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 ),
               ),
             ),
-            
             Expanded(
               child: PageView.builder(
                 controller: _pageController,
@@ -258,7 +259,6 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 },
               ),
             ),
-            
             Padding(
               padding: const EdgeInsets.fromLTRB(24, 0, 24, 32),
               child: _buildBottomNav(),

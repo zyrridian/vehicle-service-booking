@@ -94,7 +94,6 @@ class _LoginViewState extends State<_LoginView> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      resizeToAvoidBottomInset: false,
       body: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is AuthLoginSuccess) {
@@ -117,7 +116,7 @@ class _LoginViewState extends State<_LoginView> {
         },
         builder: (context, state) {
           return SafeArea(
-            child: Padding(
+            child: SingleChildScrollView(
               padding:
                   const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0),
               child: Column(
@@ -301,7 +300,7 @@ class _LoginViewState extends State<_LoginView> {
                             ),
                     ),
                   ),
-                  const Spacer(),
+                  const SizedBox(height: 48),
                 ],
               ),
             ),
