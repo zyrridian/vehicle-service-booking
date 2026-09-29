@@ -59,6 +59,7 @@ class _HistoryPageViewState extends State<_HistoryPageView> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
+        bottom: false,
         child: BlocBuilder<HistoryBloc, HistoryState>(
           builder: (context, state) {
             return Column(
@@ -120,7 +121,7 @@ class _HistoryPageViewState extends State<_HistoryPageView> {
       return _buildEmptyState(emptyTitle, emptyMessage);
     }
     return ListView.separated(
-      padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
+      padding: const EdgeInsets.fromLTRB(20, 8, 20, 120),
       itemCount: bookings.length,
       separatorBuilder: (context, index) => const SizedBox(height: 16),
       itemBuilder: (context, index) {
@@ -192,17 +193,18 @@ class _HistoryPageViewState extends State<_HistoryPageView> {
 
   Widget _buildTab(bool isActive, String label) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       decoration: BoxDecoration(
-        color: isActive ? AppColors.brand : Colors.grey[200],
+        color: isActive ? AppColors.brand.withValues(alpha: 0.1) : AppColors.surface,
         borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: isActive ? AppColors.brand : Colors.transparent, width: 2),
       ),
       child: Text(
         label,
         style: TextStyle(
           fontSize: 14,
-          fontWeight: FontWeight.w600,
-          color: isActive ? Colors.white : AppColors.ink.withValues(alpha: 0.5),
+          fontWeight: isActive ? FontWeight.bold : FontWeight.w600,
+          color: isActive ? AppColors.brand : AppColors.ink.withValues(alpha: 0.6),
         ),
       ),
     );

@@ -38,12 +38,13 @@ class _AccountView extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
+        bottom: false,
         child: Column(
           children: [
             _buildHeader(),
             Expanded(
               child: ListView(
-                padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
+                padding: const EdgeInsets.fromLTRB(20, 12, 20, 120),
                 children: [
                   _buildProfileSection(context),
                   const SizedBox(height: 32),

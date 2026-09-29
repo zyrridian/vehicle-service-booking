@@ -28,14 +28,11 @@ class _MainLayoutPageState extends State<MainLayoutPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      extendBody: true,
       body: _pages[_currentIndex],
       floatingActionButton: Container(
         height: 72,
         width: 72,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: AppColors.brand.withValues(alpha: 0.2),
-        ),
         padding: const EdgeInsets.all(6.0),
         child: SizedBox(
           width: 60,
@@ -43,10 +40,12 @@ class _MainLayoutPageState extends State<MainLayoutPage> {
           child: FloatingActionButton(
             onPressed: () {
               Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const BookingSelectVehiclesPage()),
+                MaterialPageRoute(
+                    builder: (_) => const BookingSelectVehiclesPage()),
               );
             },
-            elevation: 0,
+            elevation: 2,
+            highlightElevation: 4,
             backgroundColor: AppColors.brand,
             shape: const CircleBorder(),
             child: Icon(
@@ -58,27 +57,11 @@ class _MainLayoutPageState extends State<MainLayoutPage> {
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.08),
-              blurRadius: 4,
-              spreadRadius: 0,
-              offset: const Offset(0, -1),
-            ),
-          ],
-        ),
+      bottomNavigationBar: CustomPaint(
+        painter: _BottomNavShadowPainter(),
         child: BottomAppBar(
-          color: Colors.white,
+          color: Colors.transparent,
           elevation: 0,
-          notchMargin: 8,
-          clipBehavior: Clip.antiAlias,
-          shape: const AutomaticNotchedShape(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-            ),
-          ),
           child: SizedBox(
             height: 64,
             child: Row(
@@ -103,7 +86,7 @@ class _MainLayoutPageState extends State<MainLayoutPage> {
                     ],
                   ),
                 ),
-                const SizedBox(width: 56),
+                const SizedBox(width: 80),
                 Expanded(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -169,4 +152,41 @@ class _MainLayoutPageState extends State<MainLayoutPage> {
       ),
     );
   }
+}
+
+class _BottomNavShadowPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final host = Rect.fromLTWH(0, 0, size.width, size.height);
+    final guest = Rect.fromCenter(
+      center: Offset(size.width / 2, 0),
+      width: 72,
+      height: 72,
+    ).inflate(8);
+
+    final notchPath =
+        const CircularNotchedRectangle().getOuterPath(host, guest);
+    final rrectPath = Path()
+      ..addRRect(RRect.fromRectAndCorners(
+        host,
+        topLeft: const Radius.circular(24),
+        topRight: const Radius.circular(24),
+      ));
+    final path = Path.combine(PathOperation.intersect, notchPath, rrectPath);
+
+    final shadowPaint = Paint()
+      ..color = Colors.black.withValues(alpha: 0.08)
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4);
+
+    canvas.save();
+    canvas.translate(0, -2);
+    canvas.drawPath(path, shadowPaint);
+    canvas.restore();
+
+    final fillPaint = Paint()..color = Colors.white;
+    canvas.drawPath(path, fillPaint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

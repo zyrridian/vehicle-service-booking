@@ -27,6 +27,7 @@ class _GaragePageView extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
+        bottom: false,
         child: Column(
           children: [
             _buildHeader(context),
@@ -48,7 +49,7 @@ class _GaragePageView extends StatelessWidget {
                         ? _buildEmptyState(context)
                         : ListView.separated(
                             physics: const AlwaysScrollableScrollPhysics(),
-                            padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+                            padding: const EdgeInsets.fromLTRB(16, 8, 16, 120),
                             itemCount: vehicles.length + 1,
                             separatorBuilder: (context, index) => const SizedBox(height: 12),
                             itemBuilder: (context, index) {
