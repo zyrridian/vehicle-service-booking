@@ -1,8 +1,8 @@
 import '../../domain/entities/address_entity.dart';
 import '../../domain/entities/profile_entity.dart';
 import '../../domain/repositories/account_repository.dart';
-import '../datasources/account_local_datasource.dart';
-import '../datasources/account_remote_datasource.dart';
+import '../datasources/local/account_local_datasource.dart';
+import '../datasources/remote/account_remote_datasource.dart';
 import '../models/profile_model.dart';
 import '../models/address_model.dart';
 

@@ -1,6 +1,6 @@
 import 'dart:convert';
-import '../models/address_model.dart';
-import '../models/profile_model.dart';
+import '../../models/address_model.dart';
+import '../../models/profile_model.dart';
 
 abstract class AccountRemoteDataSource {
   Future<ProfileModel> getProfile();

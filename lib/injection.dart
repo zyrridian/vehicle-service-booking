@@ -6,8 +6,8 @@ import 'domain/usecases/verify_otp_usecase.dart';
 import 'domain/usecases/logout_usecase.dart';
 import 'presentation/auth/bloc/auth_bloc.dart';
 
-import 'data/datasources/account_local_datasource.dart';
-import 'data/datasources/account_remote_datasource.dart';
+import 'data/datasources/local/account_local_datasource.dart';
+import 'data/datasources/remote/account_remote_datasource.dart';
 import 'data/repositories/account_repository_impl.dart';
 import 'domain/usecases/get_profile_usecase.dart';
 import 'domain/usecases/update_profile_usecase.dart';
