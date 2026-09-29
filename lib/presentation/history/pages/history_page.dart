@@ -1,49 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../injection.dart';
 import '../../invoice/pages/invoice_detail_page.dart';
 import '../../review/pages/review_page.dart';
 import '../../tracking/pages/mechanic_tracking_page.dart';
+import '../bloc/history_bloc.dart';
+import '../bloc/history_event.dart';
+import '../bloc/history_state.dart';
+import '../../../domain/entities/history_entity.dart';
 
-class HistoryPage extends StatefulWidget {
+class HistoryPage extends StatelessWidget {
   const HistoryPage({super.key});
 
   @override
-  State<HistoryPage> createState() => _HistoryPageState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => Injection.provideHistoryBloc()..add(LoadHistoryEvent()),
+      child: const _HistoryPageView(),
+    );
+  }
 }
 
-class _HistoryPageState extends State<HistoryPage> {
+class _HistoryPageView extends StatefulWidget {
+  const _HistoryPageView();
+
+  @override
+  State<_HistoryPageView> createState() => _HistoryPageViewState();
+}
+
+class _HistoryPageViewState extends State<_HistoryPageView> {
   late PageController _pageController;
   int _currentIndex = 0;
-
-  final List<Map<String, dynamic>> _activeBookings = [
-    {
-      'vehicleName': 'Honda Vario 150',
-      'bookingId': 'SA-20260925-7765',
-      'serviceType': 'Routine Service & Oil Change',
-      'dateTime': 'Sep 25, 2026 · 11:00 AM',
-      'location': 'Servisin Aja Partner - Bandung',
-      'total': 'Rp 185,000',
-      'status': 'In Progress',
-      'statusColor': AppColors.good,
-      'imageUrl':
-          'https://images.unsplash.com/photo-1449426468159-d96dbf08f19f?w=300&q=80',
-    },
-    {
-      'vehicleName': 'Yamaha NMAX 155',
-      'bookingId': 'SA-20261001-8892',
-      'serviceType': 'CVT Check & Cleaning',
-      'dateTime': 'Oct 01, 2026 · 02:00 PM',
-      'location': 'Servisin Aja Partner - Jakarta',
-      'total': 'Rp 250,000',
-      'status': 'Waiting',
-      'statusColor': AppColors.warn,
-      'imageUrl':
-          'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=300&q=80',
-    }
-  ];
-
-  final List<Map<String, dynamic>> _completedBookings = [];
 
   @override
   void initState() {
@@ -70,57 +59,63 @@ class _HistoryPageState extends State<HistoryPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 16, 20, 12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text('Booking History',
-                      style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.ink)),
-                  const SizedBox(height: 16),
-                  Row(
+        child: BlocBuilder<HistoryBloc, HistoryState>(
+          builder: (context, state) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      GestureDetector(
-                        onTap: () => _onTabTapped(0),
-                        child: _buildTab(_currentIndex == 0, 'Active'),
-                      ),
-                      const SizedBox(width: 8),
-                      GestureDetector(
-                        onTap: () => _onTabTapped(1),
-                        child: _buildTab(_currentIndex == 1, 'Completed'),
+                      const Text('Booking History',
+                          style: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.ink)),
+                      const SizedBox(height: 16),
+                      Row(
+                        children: [
+                          GestureDetector(
+                            onTap: () => _onTabTapped(0),
+                            child: _buildTab(_currentIndex == 0, 'Active'),
+                          ),
+                          const SizedBox(width: 8),
+                          GestureDetector(
+                            onTap: () => _onTabTapped(1),
+                            child: _buildTab(_currentIndex == 1, 'Completed'),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
-              ),
-            ),
-            Expanded(
-              child: PageView(
-                controller: _pageController,
-                onPageChanged: (index) {
-                  setState(() {
-                    _currentIndex = index;
-                  });
-                },
-                children: [
-                  _buildList(_activeBookings, 'No Active Bookings', 'You don\'t have any active service bookings right now.', isActive: true),
-                  _buildList(_completedBookings, 'No Completed Bookings', 'You haven\'t completed any service bookings yet.'),
-                ],
-              ),
-            ),
-          ],
+                ),
+                Expanded(
+                  child: state.isLoading 
+                    ? const Center(child: CircularProgressIndicator(color: AppColors.brand))
+                    : PageView(
+                    controller: _pageController,
+                    onPageChanged: (index) {
+                      setState(() {
+                        _currentIndex = index;
+                      });
+                    },
+                    children: [
+                      _buildList(state.activeBookings, 'No Active Bookings', 'You don\'t have any active service bookings right now.', isActive: true),
+                      _buildList(state.completedBookings, 'No Completed Bookings', 'You haven\'t completed any service bookings yet.'),
+                    ],
+                  ),
+                ),
+              ],
+            );
+          },
         ),
       ),
     );
   }
 
-  Widget _buildList(List<Map<String, dynamic>> bookings, String emptyTitle, String emptyMessage, {bool isActive = false}) {
+  Widget _buildList(List<HistoryBookingEntity> bookings, String emptyTitle, String emptyMessage, {bool isActive = false}) {
     if (bookings.isEmpty) {
       return _buildEmptyState(emptyTitle, emptyMessage);
     }
@@ -130,20 +125,36 @@ class _HistoryPageState extends State<HistoryPage> {
       separatorBuilder: (context, index) => const SizedBox(height: 16),
       itemBuilder: (context, index) {
         final b = bookings[index];
+        final statusColor = _getStatusColor(b.status);
         return _buildHistoryCard(
-          vehicleName: b['vehicleName'],
-          bookingId: b['bookingId'],
-          serviceType: b['serviceType'],
-          dateTime: b['dateTime'],
-          location: b['location'],
-          total: b['total'],
-          status: b['status'],
-          statusColor: b['statusColor'],
-          imageUrl: b['imageUrl'],
+          vehicleName: b.vehicleName,
+          bookingId: b.bookingId,
+          serviceType: b.serviceType,
+          dateTime: b.dateTime,
+          location: b.location,
+          total: b.total,
+          status: b.status,
+          statusColor: statusColor,
+          imageUrl: b.imageUrl,
           isActive: isActive,
         );
       },
     );
+  }
+
+  Color _getStatusColor(String status) {
+    switch (status.toLowerCase()) {
+      case 'in progress':
+      case 'completed':
+        return AppColors.good;
+      case 'waiting':
+      case 'scheduled':
+        return AppColors.warn;
+      case 'cancelled':
+        return Colors.red;
+      default:
+        return AppColors.ink;
+    }
   }
 
   Widget _buildEmptyState(String title, String message) {

@@ -21,3 +21,10 @@ class UpdateAddressRequested extends AccountEvent {
   final AddressEntity address;
   UpdateAddressRequested(this.address);
 }
+
+class LoadSettingsRequested extends AccountEvent {}
+
+class ChangeLanguageRequested extends AccountEvent {
+  final String languageCode;
+  ChangeLanguageRequested(this.languageCode);
+}

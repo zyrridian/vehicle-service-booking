@@ -25,7 +25,6 @@ import 'data/datasources/local/settings_local_datasource.dart';
 import 'data/repositories/settings_repository_impl.dart';
 import 'domain/usecases/get_settings_usecase.dart';
 import 'domain/usecases/update_language_usecase.dart';
-import 'presentation/settings/bloc/settings_bloc.dart';
 
 import 'data/datasources/remote/booking_remote_datasource.dart';
 import 'data/repositories/booking_repository_impl.dart';
@@ -57,7 +56,19 @@ import 'data/repositories/review_repository_impl.dart';
 import 'domain/usecases/review_usecases.dart';
 import 'presentation/review/bloc/review_bloc.dart';
 
+import 'data/datasources/remote/history_remote_datasource.dart';
+import 'data/repositories/history_repository_impl.dart';
+import 'domain/usecases/get_history_usecases.dart';
+import 'presentation/history/bloc/history_bloc.dart';
+
 class Injection {
+  static HistoryBloc provideHistoryBloc() {
+    final remoteDataSource = HistoryRemoteDataSourceImpl();
+    final repository = HistoryRepositoryImpl(remoteDataSource);
+    return HistoryBloc(
+      getHistoryBookingsUseCase: GetHistoryBookingsUseCase(repository),
+    );
+  }
   static GarageBloc provideGarageBloc() {
     final remoteDataSource = GarageRemoteDataSourceImpl();
     final repository = GarageRepositoryImpl(remoteDataSource);
@@ -137,12 +148,18 @@ class Injection {
       remoteDataSource: remoteDataSource,
       localDataSource: localDataSource,
     );
+    
+    final settingsLocalDataSource = SettingsLocalDataSourceImpl();
+    final settingsRepository = SettingsRepositoryImpl(settingsLocalDataSource);
+
     return AccountBloc(
       getProfileUseCase: GetProfileUseCase(repository),
       updateProfileUseCase: UpdateProfileUseCase(repository),
       getAddressesUseCase: GetAddressesUseCase(repository),
       addAddressUseCase: AddAddressUseCase(repository),
       updateAddressUseCase: UpdateAddressUseCase(repository),
+      getSettingsUseCase: GetSettingsUseCase(settingsRepository),
+      updateLanguageUseCase: UpdateLanguageUseCase(settingsRepository),
     );
   }
 
@@ -151,15 +168,6 @@ class Injection {
     final repository = NotificationRepositoryImpl(remoteDataSource: remoteDataSource);
     return NotificationBloc(
       getNotificationsUseCase: GetNotificationsUseCase(repository),
-    );
-  }
-
-  static SettingsBloc provideSettingsBloc() {
-    final localDataSource = SettingsLocalDataSourceImpl();
-    final repository = SettingsRepositoryImpl(localDataSource);
-    return SettingsBloc(
-      getSettingsUseCase: GetSettingsUseCase(repository),
-      updateLanguageUseCase: UpdateLanguageUseCase(repository),
     );
   }
 }

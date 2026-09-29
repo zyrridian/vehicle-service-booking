@@ -10,7 +10,6 @@ import '../../notifications/pages/notifications_page.dart';
 import '../bloc/account_bloc.dart';
 import '../bloc/account_event.dart';
 import '../bloc/account_state.dart';
-import '../../settings/bloc/settings_bloc.dart';
 import 'edit_profile_page.dart';
 import 'saved_addresses_page.dart';
 import 'language_page.dart';
@@ -23,7 +22,9 @@ class AccountPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => Injection.provideAccountBloc()..add(FetchProfileRequested()),
+      create: (_) => Injection.provideAccountBloc()
+        ..add(FetchProfileRequested())
+        ..add(LoadSettingsRequested()),
       child: const _AccountView(),
     );
   }
@@ -85,20 +86,17 @@ class _AccountView extends StatelessWidget {
                         builder: (_) => const TermsPrivacyPage())),
                   ),
                   const SizedBox(height: 12),
-                  BlocProvider(
-                    create: (_) => Injection.provideSettingsBloc()..add(LoadSettingsRequested()),
-                    child: BlocBuilder<SettingsBloc, SettingsState>(
-                      builder: (context, state) {
-                        return _buildMenuOption(
-                          icon: LucideIcons.info,
-                          title: 'App Version',
-                          trailing: Text(state.settings?.appVersion ?? 'Loading...',
-                              style: TextStyle(
-                                  color: AppColors.ink.withValues(alpha: 0.4),
-                                  fontSize: 13)),
-                        );
-                      },
-                    ),
+                  BlocBuilder<AccountBloc, AccountState>(
+                    builder: (context, state) {
+                      return _buildMenuOption(
+                        icon: LucideIcons.info,
+                        title: 'App Version',
+                        trailing: Text(state.settings?.appVersion ?? 'Loading...',
+                            style: TextStyle(
+                                color: AppColors.ink.withValues(alpha: 0.4),
+                                fontSize: 13)),
+                      );
+                    },
                   ),
                   const SizedBox(height: 32),
                   _buildLogoutButton(context),

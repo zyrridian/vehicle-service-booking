@@ -3,7 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../injection.dart';
-import '../../settings/bloc/settings_bloc.dart';
+import '../bloc/account_bloc.dart';
+import '../bloc/account_event.dart';
+import '../bloc/account_state.dart';
 
 class TermsPrivacyPage extends StatelessWidget {
   const TermsPrivacyPage({super.key});
@@ -11,7 +13,7 @@ class TermsPrivacyPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => Injection.provideSettingsBloc()..add(LoadSettingsRequested()),
+      create: (_) => Injection.provideAccountBloc()..add(LoadSettingsRequested()),
       child: const _TermsPrivacyView(),
     );
   }
@@ -36,7 +38,7 @@ class _TermsPrivacyView extends StatelessWidget {
         title: const Text('Terms & Privacy', style: TextStyle(color: AppColors.ink, fontSize: 18, fontWeight: FontWeight.bold)),
         centerTitle: true,
       ),
-      body: BlocBuilder<SettingsBloc, SettingsState>(
+      body: BlocBuilder<AccountBloc, AccountState>(
         builder: (context, state) {
           if (state.isLoading || state.settings == null) {
             return const Center(child: CircularProgressIndicator(color: AppColors.brand));
