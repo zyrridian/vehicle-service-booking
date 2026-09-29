@@ -22,10 +22,17 @@ class AccountPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => Injection.provideAccountBloc()
-        ..add(FetchProfileRequested())
-        ..add(LoadSettingsRequested()),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (_) => Injection.provideAccountBloc()
+            ..add(FetchProfileRequested())
+            ..add(LoadSettingsRequested()),
+        ),
+        BlocProvider(
+          create: (_) => Injection.provideAuthBloc(),
+        ),
+      ],
       child: const _AccountView(),
     );
   }

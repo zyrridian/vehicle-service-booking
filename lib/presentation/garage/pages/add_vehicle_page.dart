@@ -221,7 +221,7 @@ class _AddVehiclePageState extends State<AddVehiclePage> {
                   decoration: BoxDecoration(
                     color: AppColors.surface,
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: AppColors.ink.withValues(alpha: 0.1)),
+                    // border: Border.all(color: AppColors.ink.withValues(alpha: 0.1)),
                   ),
                   child: const Center(
                     child: Icon(LucideIcons.camera, color: AppColors.brand, size: 32),

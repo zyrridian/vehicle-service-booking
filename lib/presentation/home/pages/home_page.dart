@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../account/bloc/account_bloc.dart';
+import '../../account/bloc/account_event.dart';
+import '../../account/bloc/account_state.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:lucide_icons/lucide_icons.dart';
@@ -27,6 +30,10 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+        BlocProvider<AccountBloc>(
+          create: (_) => Injection.provideAccountBloc()
+            ..add(FetchProfileRequested()),
+        ),
         BlocProvider<WorkshopBloc>(
           create: (_) => Injection.provideWorkshopBloc()
             ..add(const LoadWorkshopsEvent(lat: -6.200000, lon: 106.816666)),
@@ -48,6 +55,7 @@ class HomePage extends StatelessWidget {
             return RefreshIndicator(
               color: AppColors.brand,
               onRefresh: () async {
+                context.read<AccountBloc>().add(FetchProfileRequested());
                 context.read<WorkshopBloc>().add(
                     const LoadWorkshopsEvent(lat: -6.200000, lon: 106.816666));
                 context.read<GarageBloc>().add(LoadGarageVehiclesEvent());
@@ -79,81 +87,155 @@ class HomePage extends StatelessWidget {
     );
   }
 
+  String _getGreeting() {
+    final hour = DateTime.now().hour;
+    if (hour < 12) return 'Good Morning,';
+    if (hour < 17) return 'Good Afternoon,';
+    return 'Good Evening,';
+  }
+
   Widget _buildHeader(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-      child: Row(
-        children: [
-          const CircleAvatar(
-            radius: 22,
-            backgroundColor: AppColors.surface,
-            backgroundImage: NetworkImage(
-                'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=200&auto=format&fit=crop'),
-          ),
-          const SizedBox(width: 12),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Good Morning,',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: AppColors.ink.withValues(alpha: 0.5),
+      child: BlocBuilder<AccountBloc, AccountState>(
+        builder: (context, state) {
+          final profile = state.profile;
+          final name = profile?.name ?? 'User';
+          
+          Widget avatarProvider;
+          if (profile?.profilePictureUrl != null && profile!.profilePictureUrl!.isNotEmpty) {
+            avatarProvider = CircleAvatar(
+              radius: 22,
+              backgroundColor: AppColors.surface,
+              backgroundImage: CachedNetworkImageProvider(profile.profilePictureUrl!),
+            );
+          } else {
+            avatarProvider = const CircleAvatar(
+              radius: 22,
+              backgroundColor: AppColors.surface,
+              child: Icon(LucideIcons.user, color: AppColors.ink),
+            );
+          }
+
+          if (state.isLoading && profile == null) {
+            return Row(
+              children: [
+                Shimmer.fromColors(
+                  baseColor: AppColors.ink.withValues(alpha: 0.05),
+                  highlightColor: AppColors.ink.withValues(alpha: 0.02),
+                  child: Container(
+                    width: 44,
+                    height: 44,
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
                 ),
-              ),
-              const SizedBox(height: 2),
-              const Row(
+                const SizedBox(width: 12),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Shimmer.fromColors(
+                      baseColor: AppColors.ink.withValues(alpha: 0.05),
+                      highlightColor: AppColors.ink.withValues(alpha: 0.02),
+                      child: Container(
+                        width: 80,
+                        height: 12,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Shimmer.fromColors(
+                      baseColor: AppColors.ink.withValues(alpha: 0.05),
+                      highlightColor: AppColors.ink.withValues(alpha: 0.02),
+                      child: Container(
+                        width: 120,
+                        height: 16,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const Spacer(),
+                _buildNotificationBell(context),
+              ],
+            );
+          }
+
+          return Row(
+            children: [
+              avatarProvider,
+              const SizedBox(width: 12),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Alex Carter',
+                    _getGreeting(),
                     style: TextStyle(
+                      fontSize: 12,
+                      color: AppColors.ink.withValues(alpha: 0.5),
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    name,
+                    style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w700,
                       color: AppColors.ink,
                     ),
                   ),
-                  SizedBox(width: 4),
-                  Text('👑', style: TextStyle(fontSize: 14)),
                 ],
               ),
+              const Spacer(),
+              _buildNotificationBell(context),
             ],
-          ),
-          const Spacer(),
-          GestureDetector(
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const NotificationsPage()),
-              );
-            },
-            child: Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                shape: BoxShape.circle,
-                border: Border.all(color: AppColors.line),
-              ),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  const Icon(LucideIcons.bell, color: AppColors.ink, size: 20),
-                  Positioned(
-                    top: 10,
-                    right: 11,
-                    child: Container(
-                      width: 8,
-                      height: 8,
-                      decoration: const BoxDecoration(
-                        color: Colors.red,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                  ),
-                ],
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildNotificationBell(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => const NotificationsPage()),
+        );
+      },
+      child: Container(
+        width: 40,
+        height: 40,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          shape: BoxShape.circle,
+          border: Border.all(color: AppColors.line),
+        ),
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            const Icon(LucideIcons.bell, color: AppColors.ink, size: 20),
+            Positioned(
+              top: 10,
+              right: 11,
+              child: Container(
+                width: 8,
+                height: 8,
+                decoration: const BoxDecoration(
+                  color: Colors.red,
+                  shape: BoxShape.circle,
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -218,21 +218,30 @@ class _BookingInfoCard extends StatelessWidget {
             children: [
               const Icon(LucideIcons.car, color: AppColors.ink, size: 20),
               const SizedBox(width: 8),
-              Text(
-                vehicleName,
-                style: const TextStyle(
-                  color: AppColors.ink,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 15,
+              Flexible(
+                child: Text(
+                  vehicleName,
+                  style: const TextStyle(
+                    color: AppColors.ink,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 15,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
-              const Spacer(),
-              Text(
-                'ID: $bookingId',
-                style: const TextStyle(
-                  color: AppColors.brand,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  'ID: $bookingId',
+                  textAlign: TextAlign.right,
+                  style: const TextStyle(
+                    color: AppColors.brand,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ],
@@ -242,11 +251,15 @@ class _BookingInfoCard extends StatelessWidget {
             children: [
               const Icon(LucideIcons.wrench, color: AppColors.ink, size: 20),
               const SizedBox(width: 8),
-              Text(
-                serviceType,
-                style: TextStyle(
-                  color: AppColors.ink.withValues(alpha: 0.6),
-                  fontSize: 13,
+              Expanded(
+                child: Text(
+                  serviceType,
+                  style: TextStyle(
+                    color: AppColors.ink.withValues(alpha: 0.6),
+                    fontSize: 13,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ],

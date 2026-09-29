@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:intl/intl.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../domain/entities/garage_vehicle_entity.dart';
 import '../../booking/pages/booking_select_vehicles_page.dart';
@@ -198,10 +199,12 @@ class _VehicleDetailPageState extends State<VehicleDetailPage> {
   }
 
   Widget _buildImageHeader(GarageVehicleEntity vehicle) {
-    final images = vehicle.imageUrls.isNotEmpty 
-        ? vehicle.imageUrls 
-        : ['https://images.unsplash.com/photo-1449426468159-d96dbf08f19f?w=300&q=80'];
-        
+    final images = vehicle.imageUrls.isNotEmpty
+        ? vehicle.imageUrls
+        : [
+            'https://images.unsplash.com/photo-1449426468159-d96dbf08f19f?w=300&q=80'
+          ];
+
     return Stack(
       clipBehavior: Clip.none,
       children: [
@@ -323,27 +326,35 @@ class _VehicleDetailPageState extends State<VehicleDetailPage> {
                   fontWeight: FontWeight.bold,
                   color: AppColors.ink)),
           const SizedBox(height: 16),
-          _buildTimelineItem(
-              icon: PhosphorIcons.drop(),
-              title: 'Oil Change & Tune Up',
-              subtitle: '12 Aug 2026 · AHASS Bintang Motor Bandung',
-              isLast: false),
-          _buildTimelineItem(
-              icon: PhosphorIcons.gear(),
-              title: 'CVT Cleaning & Roller Replacement',
-              subtitle: '20 May 2026 · Servisin Aja Mitra Baleendah',
-              isLast: false),
-          _buildTimelineItem(
-              icon: PhosphorIcons.shieldCheck(),
-              title: 'Front & Rear Brake Pad Replacement',
-              subtitle: '15 Feb 2026 · Bengkel SiTepat Buah Batu',
-              isLast: false),
-          _buildTimelineItem(
-              icon: PhosphorIcons.fileText(),
-              title: 'Complete Periodic Service (10,000 km)',
-              subtitle: '10 Nov 2025 · AHASS Daya Motor Moh. Toha',
-              isLast: true),
+          if (vehicle.serviceHistory.isEmpty)
+            Text(
+              'No service history available.',
+              style: TextStyle(
+                fontSize: 14,
+                color: AppColors.ink.withValues(alpha: 0.5),
+              ),
+            )
+          else
+            ...vehicle.serviceHistory.asMap().entries.map((entry) {
+              final index = entry.key;
+              final history = entry.value;
+              final isLast = index == vehicle.serviceHistory.length - 1;
+
+              String formattedDate = history.date;
+              try {
+                final dateObj = DateTime.parse(history.date);
+                formattedDate = DateFormat('dd MMM yyyy').format(dateObj);
+              } catch (e) {}
+
+              return _buildTimelineItem(
+                icon: _getIconForType(history.iconType),
+                title: history.type,
+                subtitle: '$formattedDate · ${history.workshopName}',
+                isLast: isLast,
+              );
+            }),
           const SizedBox(height: 16),
+          /*
           Row(
             children: [
               Expanded(
@@ -359,6 +370,7 @@ class _VehicleDetailPageState extends State<VehicleDetailPage> {
                       PhosphorIcons.motorcycle(), 'Pickup', 'Ready')),
             ],
           ),
+          */
         ],
       ),
     );
@@ -372,11 +384,11 @@ class _VehicleDetailPageState extends State<VehicleDetailPage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, size: 16, color: AppColors.ink),
-          const SizedBox(width: 8),
+          // Icon(icon, size: 16, color: AppColors.ink),
+          // const SizedBox(width: 8),
           Flexible(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(value,
                     style: const TextStyle(
@@ -404,8 +416,7 @@ class _VehicleDetailPageState extends State<VehicleDetailPage> {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
       decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(16)),
+          color: AppColors.surface, borderRadius: BorderRadius.circular(16)),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -479,6 +490,21 @@ class _VehicleDetailPageState extends State<VehicleDetailPage> {
         ),
       ],
     );
+  }
+
+  IconData _getIconForType(String type) {
+    switch (type.toLowerCase()) {
+      case 'maintenance':
+        return PhosphorIcons.drop();
+      case 'repair':
+        return PhosphorIcons.gear();
+      case 'inspection':
+        return PhosphorIcons.shieldCheck();
+      case 'periodic':
+        return PhosphorIcons.fileText();
+      default:
+        return PhosphorIcons.wrench();
+    }
   }
 
   Widget _buildBottomBar() {

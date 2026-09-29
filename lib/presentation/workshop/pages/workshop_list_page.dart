@@ -123,13 +123,13 @@ class _WorkshopListViewState extends State<_WorkshopListView> {
           fillColor: AppColors.surface,
           contentPadding:
               const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: AppColors.line),
-          ),
+          // border: OutlineInputBorder(
+          //   borderRadius: BorderRadius.circular(12),
+          //   borderSide: const BorderSide(color: AppColors.line),
+          // ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: AppColors.line),
+            borderSide: const BorderSide(color: AppColors.surface),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
