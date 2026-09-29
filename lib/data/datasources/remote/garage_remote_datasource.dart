@@ -1,87 +1,89 @@
+import '../../../core/network/api_endpoints.dart';
+import '../../../core/network/network_client.dart';
+import '../local/auth_local_datasource.dart';
+import '../../models/garage_vehicle_model.dart';
 import 'package:vehicle_service_booking/domain/entities/garage_vehicle_entity.dart';
 
 abstract class GarageRemoteDataSource {
   Future<List<GarageVehicleEntity>> getGarageVehicles();
   Future<GarageVehicleEntity> getVehicleDetail(String id);
-  Future<void> addVehicle(GarageVehicleEntity vehicle);
-  Future<void> editVehicle(GarageVehicleEntity vehicle);
+  Future<GarageVehicleEntity> addVehicle(GarageVehicleEntity vehicle);
+  Future<GarageVehicleEntity> editVehicle(GarageVehicleEntity vehicle);
   Future<void> deleteVehicle(String id);
 }
 
 class GarageRemoteDataSourceImpl implements GarageRemoteDataSource {
-  // In-memory cache for simulation
-  final List<GarageVehicleEntity> _vehicles = [
-    GarageVehicleEntity(
-      id: 'v1',
-      name: 'Honda Vario 150',
-      plate: 'B 4567 ABC',
-      expiry: '10/28',
-      mileage: '14500',
-      type: 'Scooter / Matic',
-      capacity: '150',
-      year: '2019',
-      nextService: 'Oct 15, 2026',
-      status: 'Good',
-      imageUrl: 'https://images.unsplash.com/photo-1449426468159-d96dbf08f19f?w=300&q=80',
-    ),
-    GarageVehicleEntity(
-      id: 'v2',
-      name: 'Yamaha NMAX 155',
-      plate: 'D 1234 XYZ',
-      expiry: '11/27',
-      mileage: '8200',
-      type: 'Maxi Scooter',
-      capacity: '155',
-      year: '2021',
-      nextService: 'Nov 02, 2026',
-      status: 'Check',
-      imageUrl: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=300&q=80',
-    ),
-    GarageVehicleEntity(
-      id: 'v3',
-      name: 'Kawasaki Ninja 250',
-      plate: 'B 9999 KAW',
-      expiry: '09/29',
-      mileage: '21000',
-      type: 'Sport',
-      capacity: '250',
-      year: '2018',
-      nextService: 'Sep 20, 2026',
-      status: 'Good',
-      imageUrl: 'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=300&q=80',
-    ),
-  ];
+  final NetworkClient _client;
+  final AuthLocalDataSource _authLocalDataSource;
+
+  GarageRemoteDataSourceImpl(this._client, this._authLocalDataSource);
 
   @override
   Future<List<GarageVehicleEntity>> getGarageVehicles() async {
-    await Future.delayed(const Duration(milliseconds: 600));
-    return _vehicles;
+    final session = await _authLocalDataSource.getSession();
+    if (session == null) throw Exception("Unauthorized");
+
+    final responseData = await _client.get(
+      ApiEndpoints.garageVehicles,
+      queryParameters: {"userId": session.id},
+    );
+
+    final List<dynamic> dataList = responseData as List<dynamic>;
+    return dataList.map((json) => GarageVehicleModel.fromJson(json)).toList();
   }
 
   @override
   Future<GarageVehicleEntity> getVehicleDetail(String id) async {
-    await Future.delayed(const Duration(milliseconds: 300));
-    return _vehicles.firstWhere((v) => v.id == id);
+    final responseData = await _client.get('${ApiEndpoints.garageVehicles}/$id');
+    return GarageVehicleModel.fromJson(responseData);
   }
 
   @override
-  Future<void> addVehicle(GarageVehicleEntity vehicle) async {
-    await Future.delayed(const Duration(milliseconds: 800));
-    _vehicles.add(vehicle);
+  Future<GarageVehicleEntity> addVehicle(GarageVehicleEntity vehicle) async {
+    final session = await _authLocalDataSource.getSession();
+    if (session == null) throw Exception("Unauthorized");
+
+    final responseData = await _client.post(
+      ApiEndpoints.garageVehicles,
+      data: {
+        "userId": session.id,
+        "name": vehicle.name,
+        "plate": vehicle.plate,
+        "expiry": vehicle.expiry,
+        "mileage": vehicle.mileage,
+        "type": vehicle.type,
+        "capacity": vehicle.capacity,
+        "year": vehicle.year,
+        "nextService": vehicle.nextService,
+        "status": vehicle.status,
+        "imageUrls": vehicle.imageUrls,
+      },
+    );
+    return GarageVehicleModel.fromJson(responseData);
   }
 
   @override
-  Future<void> editVehicle(GarageVehicleEntity vehicle) async {
-    await Future.delayed(const Duration(milliseconds: 800));
-    final index = _vehicles.indexWhere((v) => v.id == vehicle.id);
-    if (index != -1) {
-      _vehicles[index] = vehicle;
-    }
+  Future<GarageVehicleEntity> editVehicle(GarageVehicleEntity vehicle) async {
+    final responseData = await _client.put(
+      '${ApiEndpoints.garageVehicles}/${vehicle.id}',
+      data: {
+        "name": vehicle.name,
+        "plate": vehicle.plate,
+        "expiry": vehicle.expiry,
+        "mileage": vehicle.mileage,
+        "type": vehicle.type,
+        "capacity": vehicle.capacity,
+        "year": vehicle.year,
+        "nextService": vehicle.nextService,
+        "status": vehicle.status,
+        "imageUrls": vehicle.imageUrls,
+      },
+    );
+    return GarageVehicleModel.fromJson(responseData);
   }
 
   @override
   Future<void> deleteVehicle(String id) async {
-    await Future.delayed(const Duration(milliseconds: 800));
-    _vehicles.removeWhere((v) => v.id == id);
+    await _client.delete('${ApiEndpoints.garageVehicles}/$id');
   }
 }

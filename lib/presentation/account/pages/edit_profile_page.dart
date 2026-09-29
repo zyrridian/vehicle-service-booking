@@ -1,5 +1,7 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../domain/entities/profile_entity.dart';
@@ -19,6 +21,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
   late TextEditingController _nameController;
   late TextEditingController _phoneController;
   late TextEditingController _emailController;
+  
+  File? _imageFile;
+  final ImagePicker _picker = ImagePicker();
 
   @override
   void initState() {
@@ -35,6 +40,15 @@ class _EditProfilePageState extends State<EditProfilePage> {
     _phoneController.dispose();
     _emailController.dispose();
     super.dispose();
+  }
+
+  Future<void> _pickImage() async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      setState(() {
+        _imageFile = File(image.path);
+      });
+    }
   }
 
   @override
@@ -63,14 +77,65 @@ class _EditProfilePageState extends State<EditProfilePage> {
           }
         },
         builder: (context, state) {
+          final profile = state.profile;
+          
+          ImageProvider? imageProvider;
+          if (_imageFile != null) {
+            imageProvider = FileImage(_imageFile!);
+          } else if (profile?.profilePictureUrl != null && profile!.profilePictureUrl!.isNotEmpty) {
+            if (profile.profilePictureUrl!.startsWith('http')) {
+              imageProvider = NetworkImage(profile.profilePictureUrl!);
+            } else {
+              imageProvider = FileImage(File(profile.profilePictureUrl!));
+            }
+          }
+
           return Form(
             key: _formKey,
             child: ListView(
               padding: const EdgeInsets.all(24),
               children: [
+                Center(
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: _pickImage,
+                    child: SizedBox(
+                      width: 104,
+                      height: 104,
+                      child: Stack(
+                        children: [
+                          Align(
+                            alignment: Alignment.center,
+                            child: CircleAvatar(
+                              radius: 50,
+                              backgroundColor: AppColors.surface,
+                              backgroundImage: imageProvider,
+                              child: imageProvider == null
+                                  ? const Icon(LucideIcons.camera, size: 30, color: AppColors.ink)
+                                  : null,
+                            ),
+                          ),
+                          Positioned(
+                            bottom: 0,
+                            right: 0,
+                            child: Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: const BoxDecoration(
+                                color: AppColors.brand,
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(LucideIcons.edit2, size: 16, color: Colors.white),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 32),
                 _buildTextField(label: 'Full Name', controller: _nameController),
                 const SizedBox(height: 20),
-                _buildTextField(label: 'Phone Number', controller: _phoneController, keyboardType: TextInputType.phone),
+                _buildTextField(label: 'Phone Number', controller: _phoneController, keyboardType: TextInputType.phone, readOnly: true),
                 const SizedBox(height: 20),
                 _buildTextField(label: 'Email', controller: _emailController, keyboardType: TextInputType.emailAddress),
                 const SizedBox(height: 48),
@@ -81,10 +146,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     onPressed: state.isLoading ? null : () {
                       if (_formKey.currentState?.validate() ?? false) {
                         final updated = ProfileEntity(
-                          id: state.profile?.id ?? 'USR-99812',
+                          id: profile?.id ?? 'USR-99812',
                           name: _nameController.text,
                           phone: _phoneController.text,
                           email: _emailController.text,
+                          profilePictureUrl: _imageFile?.path ?? profile?.profilePictureUrl,
                         );
                         context.read<AccountBloc>().add(UpdateProfileRequested(updated));
                       }
@@ -108,7 +174,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     );
   }
 
-  Widget _buildTextField({required String label, required TextEditingController controller, TextInputType? keyboardType}) {
+  Widget _buildTextField({required String label, required TextEditingController controller, TextInputType? keyboardType, bool readOnly = false}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -117,14 +183,15 @@ class _EditProfilePageState extends State<EditProfilePage> {
         TextFormField(
           controller: controller,
           keyboardType: keyboardType,
-          style: const TextStyle(fontSize: 15, color: AppColors.ink),
+          readOnly: readOnly,
+          style: TextStyle(fontSize: 15, color: readOnly ? AppColors.ink.withValues(alpha: 0.5) : AppColors.ink),
           validator: (val) => val == null || val.isEmpty ? 'Required field' : null,
           decoration: InputDecoration(
             contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             filled: true,
-            fillColor: AppColors.surface,
+            fillColor: readOnly ? AppColors.surface.withValues(alpha: 0.5) : AppColors.surface,
             enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: const BorderSide(color: Colors.transparent)),
-            focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: const BorderSide(color: AppColors.brand, width: 2)),
+            focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide(color: readOnly ? Colors.transparent : AppColors.brand, width: 2)),
           ),
         ),
       ],

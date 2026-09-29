@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lucide_icons/lucide_icons.dart';
@@ -18,7 +19,6 @@ class VehicleDetailPage extends StatefulWidget {
 
 class _VehicleDetailPageState extends State<VehicleDetailPage> {
   int _currentImageIndex = 0;
-  final int _totalImages = 4;
 
   @override
   void initState() {
@@ -198,44 +198,51 @@ class _VehicleDetailPageState extends State<VehicleDetailPage> {
   }
 
   Widget _buildImageHeader(GarageVehicleEntity vehicle) {
+    final images = vehicle.imageUrls.isNotEmpty 
+        ? vehicle.imageUrls 
+        : ['https://images.unsplash.com/photo-1449426468159-d96dbf08f19f?w=300&q=80'];
+        
     return Stack(
       clipBehavior: Clip.none,
       children: [
         SizedBox(
           height: 280,
           child: PageView.builder(
-            itemCount: _totalImages,
+            itemCount: images.length,
             onPageChanged: (index) {
               setState(() {
                 _currentImageIndex = index;
               });
             },
             itemBuilder: (context, index) {
-              return Image.network(
-                vehicle.imageUrl,
-                fit: BoxFit.cover,
-              );
+              final imgUrl = images[index];
+              if (imgUrl.startsWith('http')) {
+                return Image.network(imgUrl, fit: BoxFit.cover);
+              } else {
+                return Image.file(File(imgUrl), fit: BoxFit.cover);
+              }
             },
           ),
         ),
-        Positioned(
-          left: 16,
-          bottom: 24,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              color: Colors.black.withValues(alpha: 0.6),
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Text(
-              '${_currentImageIndex + 1} / $_totalImages',
-              style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold),
+        if (images.length > 1)
+          Positioned(
+            left: 16,
+            bottom: 24,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: Colors.black.withValues(alpha: 0.6),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Text(
+                '${_currentImageIndex + 1} / ${images.length}',
+                style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold),
+              ),
             ),
           ),
-        ),
         Positioned(
           bottom: -24,
           right: 20,

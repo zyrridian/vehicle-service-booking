@@ -40,7 +40,7 @@ class _MechanicTrackingViewState extends State<_MechanicTrackingView>
   late AnimationController _pulseController;
   late Animation<double> _pulseAnimation;
 
-  static const int _activeStep = 2;
+
 
   static const List<String> _steps = [
     'Booking Confirmed',
@@ -167,7 +167,7 @@ class _MechanicTrackingViewState extends State<_MechanicTrackingView>
           _StepTimeline(
             steps: _steps,
             icons: _stepIcons,
-            activeStep: _activeStep,
+            activeStep: _calculateActiveStep(state.tracking?.currentStatus),
             pulseAnimation: _pulseAnimation,
           ),
           const SizedBox(height: 12),
@@ -176,6 +176,19 @@ class _MechanicTrackingViewState extends State<_MechanicTrackingView>
         ],
       ),
     );
+  }
+
+  int _calculateActiveStep(String? status) {
+    if (status == null) return 0;
+    final s = status.toLowerCase();
+    switch (s) {
+      case 'confirmed': return 0;
+      case 'assigned': return 1;
+      case 'on_the_way': return 2;
+      case 'working': return 3;
+      case 'completed': return 4;
+      default: return 0;
+    }
   }
 }
 
@@ -279,7 +292,6 @@ class _MechanicInfoCard extends StatelessWidget {
           const SizedBox(height: 12),
           Row(
             children: [
-              // Avatar
               CircleAvatar(
                 radius: 28,
                 backgroundColor: AppColors.surface,

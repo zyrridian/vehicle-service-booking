@@ -59,4 +59,9 @@ class AccountRepositoryImpl implements AccountRepository {
       isDefault: address.isDefault,
     ));
   }
+
+  @override
+  Future<void> deleteAddress(String addressId) async {
+    await remoteDataSource.deleteAddress(addressId);
+  }
 }

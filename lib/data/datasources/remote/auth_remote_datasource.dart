@@ -1,4 +1,5 @@
-import 'dart:convert';
+import '../../../core/network/api_endpoints.dart';
+import '../../../core/network/network_client.dart';
 import '../../models/user_model.dart';
 
 abstract class AuthRemoteDataSource {
@@ -8,6 +9,10 @@ abstract class AuthRemoteDataSource {
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
+  final NetworkClient _client;
+
+  AuthRemoteDataSourceImpl(this._client);
+
   @override
   Future<void> login(String phone) async {
     await Future.delayed(const Duration(milliseconds: 1000));
@@ -15,19 +20,14 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   @override
   Future<UserModel> verifyOtp(String phone, String otp) async {
-    await Future.delayed(const Duration(milliseconds: 1000));
-    if (otp == '123456') {
-      const jsonResponse = '''
-      {
-        "id": "USR-12345",
-        "name": "Dimas Pratama",
-        "phone": "+62 812 3456 7890",
-        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-      }
-      ''';
-      return UserModel.fromJson(jsonDecode(jsonResponse));
-    }
-    throw Exception('Invalid OTP Code');
+    final responseData = await _client.post(
+      ApiEndpoints.verifyOtp,
+      data: {
+        "phone": phone,
+        "otp": otp,
+      },
+    );
+    return UserModel.fromJson(responseData);
   }
 
   @override

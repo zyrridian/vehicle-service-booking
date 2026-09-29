@@ -43,65 +43,73 @@ class _AccountView extends StatelessWidget {
           children: [
             _buildHeader(),
             Expanded(
-              child: ListView(
-                padding: const EdgeInsets.fromLTRB(20, 12, 20, 120),
-                children: [
-                  _buildProfileSection(context),
-                  const SizedBox(height: 32),
-                  _buildSectionTitle('ACCOUNT'),
-                  const SizedBox(height: 12),
-                  _buildMenuOption(
-                    icon: LucideIcons.mapPin,
-                    title: 'Saved Addresses',
-                    onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                        builder: (_) => const SavedAddressesPage())),
-                  ),
-                  const SizedBox(height: 12),
-                  _buildMenuOption(
-                    icon: LucideIcons.bell,
-                    title: 'Notifications',
-                    onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                        builder: (_) => const NotificationsPage())),
-                  ),
-                  const SizedBox(height: 12),
-                  _buildMenuOption(
-                    icon: LucideIcons.globe,
-                    title: 'Language',
-                    onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                        builder: (_) => const LanguagePage())),
-                  ),
-                  const SizedBox(height: 24),
-                  _buildSectionTitle('SUPPORT & ABOUT'),
-                  const SizedBox(height: 12),
-                  _buildMenuOption(
-                    icon: LucideIcons.headphones,
-                    title: 'Help Center',
-                    onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                        builder: (_) => const HelpCenterPage())),
-                  ),
-                  const SizedBox(height: 12),
-                  _buildMenuOption(
-                    icon: LucideIcons.shield,
-                    title: 'Terms & Privacy Policy',
-                    onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                        builder: (_) => const TermsPrivacyPage())),
-                  ),
-                  const SizedBox(height: 12),
-                  BlocBuilder<AccountBloc, AccountState>(
-                    builder: (context, state) {
-                      return _buildMenuOption(
-                        icon: LucideIcons.info,
-                        title: 'App Version',
-                        trailing: Text(state.settings?.appVersion ?? 'Loading...',
-                            style: TextStyle(
-                                color: AppColors.ink.withValues(alpha: 0.4),
-                                fontSize: 13)),
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 32),
-                  _buildLogoutButton(context),
-                ],
+              child: RefreshIndicator(
+                color: AppColors.brand,
+                onRefresh: () async {
+                  context.read<AccountBloc>().add(FetchProfileRequested());
+                  await Future.delayed(const Duration(milliseconds: 500));
+                },
+                child: ListView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: const EdgeInsets.fromLTRB(20, 12, 20, 120),
+                  children: [
+                    _buildProfileSection(context),
+                    const SizedBox(height: 32),
+                    _buildSectionTitle('ACCOUNT'),
+                    const SizedBox(height: 12),
+                    _buildMenuOption(
+                      icon: LucideIcons.mapPin,
+                      title: 'Saved Addresses',
+                      onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                          builder: (_) => const SavedAddressesPage())),
+                    ),
+                    const SizedBox(height: 12),
+                    _buildMenuOption(
+                      icon: LucideIcons.bell,
+                      title: 'Notifications',
+                      onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                          builder: (_) => const NotificationsPage())),
+                    ),
+                    const SizedBox(height: 12),
+                    _buildMenuOption(
+                      icon: LucideIcons.globe,
+                      title: 'Language',
+                      onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                          builder: (_) => const LanguagePage())),
+                    ),
+                    const SizedBox(height: 24),
+                    _buildSectionTitle('SUPPORT & ABOUT'),
+                    const SizedBox(height: 12),
+                    _buildMenuOption(
+                      icon: LucideIcons.headphones,
+                      title: 'Help Center',
+                      onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                          builder: (_) => const HelpCenterPage())),
+                    ),
+                    const SizedBox(height: 12),
+                    _buildMenuOption(
+                      icon: LucideIcons.shield,
+                      title: 'Terms & Privacy Policy',
+                      onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                          builder: (_) => const TermsPrivacyPage())),
+                    ),
+                    const SizedBox(height: 12),
+                    BlocBuilder<AccountBloc, AccountState>(
+                      builder: (context, state) {
+                        return _buildMenuOption(
+                          icon: LucideIcons.info,
+                          title: 'App Version',
+                          trailing: Text(state.settings?.appVersion ?? 'Loading...',
+                              style: TextStyle(
+                                  color: AppColors.ink.withValues(alpha: 0.4),
+                                  fontSize: 13)),
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 32),
+                    _buildLogoutButton(context),
+                  ],
+                ),
               ),
             ),
           ],
@@ -128,11 +136,50 @@ class _AccountView extends StatelessWidget {
     return BlocBuilder<AccountBloc, AccountState>(
       builder: (context, state) {
         if (state.isLoading && state.profile == null) {
-          return const Center(
-            child: Padding(
-              padding: EdgeInsets.all(16.0),
-              child: CircularProgressIndicator(color: AppColors.brand),
-            ),
+          return Row(
+            children: [
+              Container(
+                width: 56,
+                height: 56,
+                decoration: BoxDecoration(
+                  color: AppColors.ink.withValues(alpha: 0.1),
+                  shape: BoxShape.circle,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: 120,
+                      height: 18,
+                      decoration: BoxDecoration(
+                        color: AppColors.ink.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Container(
+                      width: 80,
+                      height: 14,
+                      decoration: BoxDecoration(
+                        color: AppColors.ink.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                width: 60,
+                height: 16,
+                decoration: BoxDecoration(
+                  color: AppColors.ink.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
+            ],
           );
         }
 

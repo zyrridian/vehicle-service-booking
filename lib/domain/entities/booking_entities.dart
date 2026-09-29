@@ -29,6 +29,7 @@ class BookingRequestEntity {
   final DateTime date;
   final String timeSlot;
   final String notes;
+  final String workshopId;
 
   BookingRequestEntity({
     required this.vehicleIds,
@@ -36,5 +37,6 @@ class BookingRequestEntity {
     required this.date,
     required this.timeSlot,
     required this.notes,
+    required this.workshopId,
   });
 }

@@ -1,5 +1,6 @@
 class HistoryBookingEntity {
   final String bookingId;
+  final String workshopId;
   final String vehicleName;
   final String serviceType;
   final String dateTime;
@@ -11,6 +12,7 @@ class HistoryBookingEntity {
 
   HistoryBookingEntity({
     required this.bookingId,
+    required this.workshopId,
     required this.vehicleName,
     required this.serviceType,
     required this.dateTime,

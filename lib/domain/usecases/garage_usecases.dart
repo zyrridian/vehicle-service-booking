@@ -16,13 +16,13 @@ class GetVehicleDetailUseCase {
 class AddVehicleUseCase {
   final GarageRepository repository;
   AddVehicleUseCase(this.repository);
-  Future<void> execute(GarageVehicleEntity vehicle) => repository.addVehicle(vehicle);
+  Future<GarageVehicleEntity> execute(GarageVehicleEntity vehicle) => repository.addVehicle(vehicle);
 }
 
 class EditVehicleUseCase {
   final GarageRepository repository;
   EditVehicleUseCase(this.repository);
-  Future<void> execute(GarageVehicleEntity vehicle) => repository.editVehicle(vehicle);
+  Future<GarageVehicleEntity> execute(GarageVehicleEntity vehicle) => repository.editVehicle(vehicle);
 }
 
 class DeleteVehicleUseCase {

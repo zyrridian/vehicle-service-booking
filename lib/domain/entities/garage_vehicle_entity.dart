@@ -9,7 +9,7 @@ class GarageVehicleEntity {
   final String year;
   final String nextService;
   final String status;
-  final String imageUrl;
+  final List<String> imageUrls;
 
   GarageVehicleEntity({
     required this.id,
@@ -22,6 +22,6 @@ class GarageVehicleEntity {
     required this.year,
     required this.nextService,
     required this.status,
-    required this.imageUrl,
+    required this.imageUrls,
   });
 }

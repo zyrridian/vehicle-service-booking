@@ -1,5 +1,7 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../domain/entities/garage_vehicle_entity.dart';
@@ -23,9 +25,12 @@ class _AddVehiclePageState extends State<AddVehiclePage> {
   late final TextEditingController _mileageController;
   late final TextEditingController _capacityController;
   late final TextEditingController _yearController;
-  late final TextEditingController _imageUrlController;
 
   final List<String> _vehicleTypes = ['Scooter / Matic', 'Manual / Bebek', 'Sport'];
+  
+  final ImagePicker _picker = ImagePicker();
+  List<String> _existingImages = [];
+  List<File> _newImages = [];
 
   @override
   void initState() {
@@ -37,10 +42,12 @@ class _AddVehiclePageState extends State<AddVehiclePage> {
     _mileageController = TextEditingController(text: v?.mileage);
     _capacityController = TextEditingController(text: v?.capacity);
     _yearController = TextEditingController(text: v?.year);
-    _imageUrlController = TextEditingController(text: v?.imageUrl);
     
-    if (v != null && _vehicleTypes.contains(v.type)) {
-      _selectedVehicleType = v.type;
+    if (v != null) {
+      _existingImages = List.from(v.imageUrls);
+      if (_vehicleTypes.contains(v.type)) {
+        _selectedVehicleType = v.type;
+      }
     }
   }
 
@@ -52,8 +59,28 @@ class _AddVehiclePageState extends State<AddVehiclePage> {
     _mileageController.dispose();
     _capacityController.dispose();
     _yearController.dispose();
-    _imageUrlController.dispose();
     super.dispose();
+  }
+
+  Future<void> _pickImages() async {
+    final List<XFile> images = await _picker.pickMultiImage();
+    if (images.isNotEmpty) {
+      setState(() {
+        _newImages.addAll(images.map((img) => File(img.path)));
+      });
+    }
+  }
+
+  void _removeExistingImage(int index) {
+    setState(() {
+      _existingImages.removeAt(index);
+    });
+  }
+
+  void _removeNewImage(int index) {
+    setState(() {
+      _newImages.removeAt(index);
+    });
   }
 
   @override
@@ -95,6 +122,8 @@ class _AddVehiclePageState extends State<AddVehiclePage> {
           child: ListView(
             padding: const EdgeInsets.fromLTRB(20, 24, 20, 32),
             children: [
+              _buildImagePicker(),
+              const SizedBox(height: 24),
               _buildTextField(hint: 'Vehicle Model', controller: _nameController),
               const SizedBox(height: 16),
               Row(
@@ -116,8 +145,6 @@ class _AddVehiclePageState extends State<AddVehiclePage> {
                   Expanded(child: _buildTextField(hint: 'Year', keyboardType: TextInputType.number, controller: _yearController)),
                 ],
               ),
-              const SizedBox(height: 16),
-              _buildTextField(hint: 'Image URL (Optional)', controller: _imageUrlController, isOptional: true),
               const SizedBox(height: 32),
               SizedBox(
                 width: double.infinity,
@@ -129,6 +156,11 @@ class _AddVehiclePageState extends State<AddVehiclePage> {
                           ? null
                           : () {
                               if (_formKey.currentState?.validate() ?? false) {
+                                final List<String> finalImages = [
+                                  ..._existingImages,
+                                  ..._newImages.map((f) => f.path)
+                                ];
+
                                 final vehicle = GarageVehicleEntity(
                                   id: widget.vehicleToEdit?.id ?? DateTime.now().millisecondsSinceEpoch.toString(),
                                   name: _nameController.text,
@@ -140,9 +172,7 @@ class _AddVehiclePageState extends State<AddVehiclePage> {
                                   year: _yearController.text,
                                   nextService: widget.vehicleToEdit?.nextService ?? 'Not scheduled',
                                   status: widget.vehicleToEdit?.status ?? 'Good',
-                                  imageUrl: _imageUrlController.text.isNotEmpty 
-                                      ? _imageUrlController.text 
-                                      : 'https://images.unsplash.com/photo-1449426468159-d96dbf08f19f?w=300&q=80',
+                                  imageUrls: finalImages.isNotEmpty ? finalImages : ['https://images.unsplash.com/photo-1449426468159-d96dbf08f19f?w=300&q=80'],
                                 );
                                 if (widget.vehicleToEdit != null) {
                                   context.read<GarageBloc>().add(EditVehicleEvent(vehicle));
@@ -167,6 +197,82 @@ class _AddVehiclePageState extends State<AddVehiclePage> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildImagePicker() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Vehicle Images', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.ink.withValues(alpha: 0.7))),
+        const SizedBox(height: 12),
+        SizedBox(
+          height: 100,
+          child: ListView(
+            scrollDirection: Axis.horizontal,
+            children: [
+              GestureDetector(
+                onTap: _pickImages,
+                child: Container(
+                  width: 100,
+                  height: 100,
+                  margin: const EdgeInsets.only(right: 12),
+                  decoration: BoxDecoration(
+                    color: AppColors.surface,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: AppColors.ink.withValues(alpha: 0.1)),
+                  ),
+                  child: const Center(
+                    child: Icon(LucideIcons.camera, color: AppColors.brand, size: 32),
+                  ),
+                ),
+              ),
+              ...List.generate(_existingImages.length, (index) {
+                final imgUrl = _existingImages[index];
+                final imageProvider = imgUrl.startsWith('http') ? NetworkImage(imgUrl) : FileImage(File(imgUrl)) as ImageProvider;
+                return _buildImageThumbnail(imageProvider, () => _removeExistingImage(index));
+              }),
+              ...List.generate(_newImages.length, (index) {
+                return _buildImageThumbnail(FileImage(_newImages[index]), () => _removeNewImage(index));
+              }),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildImageThumbnail(ImageProvider imageProvider, VoidCallback onRemove) {
+    return Container(
+      width: 100,
+      height: 100,
+      margin: const EdgeInsets.only(right: 12),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        image: DecorationImage(
+          image: imageProvider,
+          fit: BoxFit.cover,
+        ),
+      ),
+      child: Stack(
+        children: [
+          Positioned(
+            top: 4,
+            right: 4,
+            child: GestureDetector(
+              onTap: onRemove,
+              child: Container(
+                padding: const EdgeInsets.all(4),
+                decoration: const BoxDecoration(
+                  color: Colors.black54,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(LucideIcons.x, color: Colors.white, size: 14),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

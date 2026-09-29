@@ -5,7 +5,8 @@ class ProfileModel extends ProfileEntity {
     required super.id,
     required super.name,
     required super.phone,
-    required super.email,
+    super.email,
+    super.profilePictureUrl,
   });
 
   factory ProfileModel.fromJson(Map<String, dynamic> json) {
@@ -13,7 +14,8 @@ class ProfileModel extends ProfileEntity {
       id: json['id'],
       name: json['name'],
       phone: json['phone'],
-      email: json['email'] ?? '',
+      email: json['email'],
+      profilePictureUrl: json['profilePictureUrl'],
     );
   }
 
@@ -23,6 +25,7 @@ class ProfileModel extends ProfileEntity {
       'name': name,
       'phone': phone,
       'email': email,
+      'profilePictureUrl': profilePictureUrl,
     };
   }
 
@@ -32,6 +35,7 @@ class ProfileModel extends ProfileEntity {
       name: entity.name,
       phone: entity.phone,
       email: entity.email,
+      profilePictureUrl: entity.profilePictureUrl,
     );
   }
 }

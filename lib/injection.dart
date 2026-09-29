@@ -1,3 +1,4 @@
+import 'core/network/network_client.dart';
 import 'data/datasources/local/auth_local_datasource.dart';
 import 'data/datasources/remote/auth_remote_datasource.dart';
 import 'data/repositories/auth_repository_impl.dart';
@@ -14,6 +15,7 @@ import 'domain/usecases/update_profile_usecase.dart';
 import 'domain/usecases/get_addresses_usecase.dart';
 import 'domain/usecases/add_address_usecase.dart';
 import 'domain/usecases/update_address_usecase.dart';
+import 'domain/usecases/delete_address_usecase.dart';
 import 'presentation/account/bloc/account_bloc.dart';
 
 import 'data/datasources/remote/notification_remote_datasource.dart';
@@ -62,15 +64,18 @@ import 'domain/usecases/get_history_usecases.dart';
 import 'presentation/history/bloc/history_bloc.dart';
 
 class Injection {
+  static final AuthLocalDataSource _authLocalDataSource = AuthLocalDataSourceImpl();
+  static final NetworkClient _networkClient = NetworkClientImpl(_authLocalDataSource);
+
   static HistoryBloc provideHistoryBloc() {
-    final remoteDataSource = HistoryRemoteDataSourceImpl();
+    final remoteDataSource = HistoryRemoteDataSourceImpl(_networkClient, _authLocalDataSource);
     final repository = HistoryRepositoryImpl(remoteDataSource);
     return HistoryBloc(
       getHistoryBookingsUseCase: GetHistoryBookingsUseCase(repository),
     );
   }
   static GarageBloc provideGarageBloc() {
-    final remoteDataSource = GarageRemoteDataSourceImpl();
+    final remoteDataSource = GarageRemoteDataSourceImpl(_networkClient, _authLocalDataSource);
     final repository = GarageRepositoryImpl(remoteDataSource);
     return GarageBloc(
       getGarageVehiclesUseCase: GetGarageVehiclesUseCase(repository),
@@ -82,7 +87,7 @@ class Injection {
   }
 
   static WorkshopBloc provideWorkshopBloc() {
-    final remoteDataSource = WorkshopRemoteDataSourceImpl();
+    final remoteDataSource = WorkshopRemoteDataSourceImpl(_networkClient);
     final repository = WorkshopRepositoryImpl(remoteDataSource);
     return WorkshopBloc(
       getWorkshopsUseCase: GetWorkshopsUseCase(repository),
@@ -91,7 +96,7 @@ class Injection {
   }
 
   static TrackingBloc provideTrackingBloc() {
-    final remoteDataSource = TrackingRemoteDataSourceImpl();
+    final remoteDataSource = TrackingRemoteDataSourceImpl(_networkClient);
     final repository = TrackingRepositoryImpl(remoteDataSource);
     return TrackingBloc(
       getBookingTrackingUseCase: GetBookingTrackingUseCase(repository),
@@ -99,7 +104,7 @@ class Injection {
   }
 
   static InvoiceBloc provideInvoiceBloc() {
-    final remoteDataSource = InvoiceRemoteDataSourceImpl();
+    final remoteDataSource = InvoiceRemoteDataSourceImpl(_networkClient);
     final repository = InvoiceRepositoryImpl(remoteDataSource);
     return InvoiceBloc(
       getInvoiceUseCase: GetInvoiceUseCase(repository),
@@ -107,7 +112,7 @@ class Injection {
   }
 
   static ReviewBloc provideReviewBloc() {
-    final remoteDataSource = ReviewRemoteDataSourceImpl();
+    final remoteDataSource = ReviewRemoteDataSourceImpl(_networkClient);
     final repository = ReviewRepositoryImpl(remoteDataSource);
     return ReviewBloc(
       submitReviewUseCase: SubmitReviewUseCase(repository),
@@ -116,23 +121,27 @@ class Injection {
   }
 
   static BookingBloc provideBookingBloc() {
-    final remoteDataSource = BookingRemoteDataSourceImpl();
+    final remoteDataSource = BookingRemoteDataSourceImpl(_networkClient, _authLocalDataSource);
     final repository = BookingRepositoryImpl(remoteDataSource);
+    
+    final workshopRemoteDataSource = WorkshopRemoteDataSourceImpl(_networkClient);
+    final workshopRepository = WorkshopRepositoryImpl(workshopRemoteDataSource);
+    
     return BookingBloc(
       getMyVehiclesUseCase: GetMyVehiclesUseCase(repository),
       getAvailableServicesUseCase: GetAvailableServicesUseCase(repository),
       getAvailableTimeSlotsUseCase: GetAvailableTimeSlotsUseCase(repository),
       createBookingUseCase: CreateBookingUseCase(repository),
       addTemporaryVehicleUseCase: AddTemporaryVehicleUseCase(repository),
+      getWorkshopsUseCase: GetWorkshopsUseCase(workshopRepository),
     );
   }
 
   static AuthBloc provideAuthBloc() {
-    final remoteDataSource = AuthRemoteDataSourceImpl();
-    final localDataSource = AuthLocalDataSourceImpl();
+    final remoteDataSource = AuthRemoteDataSourceImpl(_networkClient);
     final repository = AuthRepositoryImpl(
       remoteDataSource: remoteDataSource,
-      localDataSource: localDataSource,
+      localDataSource: _authLocalDataSource,
     );
     return AuthBloc(
       loginUseCase: LoginUseCase(repository),
@@ -142,7 +151,7 @@ class Injection {
   }
 
   static AccountBloc provideAccountBloc() {
-    final remoteDataSource = AccountRemoteDataSourceImpl();
+    final remoteDataSource = AccountRemoteDataSourceImpl(_networkClient, _authLocalDataSource);
     final localDataSource = AccountLocalDataSourceImpl();
     final repository = AccountRepositoryImpl(
       remoteDataSource: remoteDataSource,
@@ -158,6 +167,7 @@ class Injection {
       getAddressesUseCase: GetAddressesUseCase(repository),
       addAddressUseCase: AddAddressUseCase(repository),
       updateAddressUseCase: UpdateAddressUseCase(repository),
+      deleteAddressUseCase: DeleteAddressUseCase(repository),
       getSettingsUseCase: GetSettingsUseCase(settingsRepository),
       updateLanguageUseCase: UpdateLanguageUseCase(settingsRepository),
     );

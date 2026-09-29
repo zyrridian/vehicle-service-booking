@@ -27,38 +27,7 @@ class _WorkshopDetailView extends StatelessWidget {
 
   const _WorkshopDetailView({required this.workshopId});
 
-  static final Map<String, dynamic> _mockDetail = {
-    'id': 'ws001',
-    'name': 'Bengkel Maju Jaya',
-    'city': 'Jakarta Selatan',
-    'address': 'Jl. Fatmawati No. 12, Cilandak, Jakarta Selatan 12430',
-    'phone': '+62 21-7654-3210',
-    'rating': 4.8,
-    'reviewCount': 234,
-    'hours': 'Senin – Sabtu: 08.00 – 18.00 WIB',
-    'services': ['Ganti Oli', 'Tune Up', 'Rem & Kampas', 'Ban & Velg',
-        'AC Mobil', 'Kelistrikan', 'Suspensi', 'Transmisi'],
-    'reviews': [
-      {
-        'name': 'Andi Prasetyo',
-        'rating': 5,
-        'comment': 'Pelayanannya sangat memuaskan! Montir profesional dan tepat waktu.',
-        'date': '2 hari lalu',
-      },
-      {
-        'name': 'Siti Rahayu',
-        'rating': 4,
-        'comment': 'Harga wajar, bengkel bersih dan nyaman. Recommended!',
-        'date': '1 minggu lalu',
-      },
-      {
-        'name': 'Rudi Hartono',
-        'rating': 5,
-        'comment': 'Servis AC mobilku selesai cepat. Puas dengan hasilnya.',
-        'date': '2 minggu lalu',
-      },
-    ],
-  };
+
 
   @override
   Widget build(BuildContext context) {
@@ -86,9 +55,6 @@ class _WorkshopDetailView extends StatelessWidget {
 
 
   Widget _buildContent(BuildContext context, dynamic workshop) {
-    final reviews =
-        (_mockDetail['reviews'] as List).cast<Map<String, dynamic>>();
-
     return CustomScrollView(
       slivers: [
         SliverAppBar(
@@ -111,7 +77,7 @@ class _WorkshopDetailView extends StatelessWidget {
           flexibleSpace: FlexibleSpaceBar(
             background: Container(
               color: AppColors.surface,
-              child: workshop.imageUrl != null
+              child: workshop.imageUrl != null && workshop.imageUrl.isNotEmpty
                   ? Image.network(
                       workshop.imageUrl,
                       fit: BoxFit.cover,
@@ -134,6 +100,11 @@ class _WorkshopDetailView extends StatelessWidget {
               const SizedBox(height: 16),
               _buildHeaderSection(workshop),
               const SizedBox(height: 16),
+              
+              if (workshop.description != null && workshop.description.isNotEmpty) ...[
+                _buildDescriptionSection(workshop.description),
+                const SizedBox(height: 16),
+              ],
 
               _buildInfoSection(workshop),
               const SizedBox(height: 16),
@@ -141,7 +112,7 @@ class _WorkshopDetailView extends StatelessWidget {
               _buildServicesSection(workshop),
               const SizedBox(height: 16),
 
-              _buildReviewsSection(reviews),
+              _buildReviewsSection(workshop.reviews),
               const SizedBox(height: 100),
             ],
           ),
@@ -150,11 +121,9 @@ class _WorkshopDetailView extends StatelessWidget {
     );
   }
 
-  Widget _buildHeaderSection(dynamic workshop) {
-    final rating = workshop.rating as double;
-    final reviewCount = workshop.reviewCount as int;
-
+  Widget _buildDescriptionSection(String description) {
     return Container(
+      width: double.infinity,
       margin: const EdgeInsets.symmetric(horizontal: 16),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -164,15 +133,76 @@ class _WorkshopDetailView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            workshop.name,
-            style: const TextStyle(
+          const Text(
+            'About',
+            style: TextStyle(
               color: AppColors.ink,
-              fontWeight: FontWeight.w800,
-              fontSize: 20,
+              fontWeight: FontWeight.w700,
+              fontSize: 15,
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 8),
+          Text(
+            description,
+            style: TextStyle(
+              color: AppColors.ink.withValues(alpha: 0.7),
+              fontSize: 13,
+              height: 1.5,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHeaderSection(dynamic workshop) {
+    final rating = workshop.rating as double;
+    final reviewCount = workshop.reviewCount as int;
+
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(24),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Text(
+                  workshop.name,
+                  style: const TextStyle(
+                    color: AppColors.ink,
+                    fontWeight: FontWeight.w800,
+                    fontSize: 20,
+                  ),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: workshop.isOpen
+                      ? AppColors.good.withValues(alpha: 0.12)
+                      : Colors.red.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  workshop.isOpen ? 'Open' : 'Closed',
+                  style: TextStyle(
+                    color: workshop.isOpen ? AppColors.good : Colors.red,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
           Row(
             children: [
               const Icon(LucideIcons.mapPin, size: 13, color: AppColors.brand),
@@ -223,6 +253,7 @@ class _WorkshopDetailView extends StatelessWidget {
 
   Widget _buildInfoSection(dynamic workshop) {
     return Container(
+      width: double.infinity,
       margin: const EdgeInsets.symmetric(horizontal: 16),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -271,6 +302,7 @@ class _WorkshopDetailView extends StatelessWidget {
     final services = (workshop.services as List).cast<String>();
 
     return Container(
+      width: double.infinity,
       margin: const EdgeInsets.symmetric(horizontal: 16),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -318,8 +350,9 @@ class _WorkshopDetailView extends StatelessWidget {
     );
   }
 
-  Widget _buildReviewsSection(List<Map<String, dynamic>> reviews) {
+  Widget _buildReviewsSection(List<dynamic> reviews) {
     return Container(
+      width: double.infinity,
       margin: const EdgeInsets.symmetric(horizontal: 16),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -338,7 +371,17 @@ class _WorkshopDetailView extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
-          ...reviews.map((r) => _ReviewTile(review: r)),
+          if (reviews.isEmpty)
+            Text(
+              'No reviews yet',
+              style: TextStyle(
+                color: AppColors.ink.withValues(alpha: 0.5),
+                fontSize: 13,
+                fontStyle: FontStyle.italic,
+              ),
+            )
+          else
+            ...reviews.map((r) => _ReviewTile(review: r)),
         ],
       ),
     );
@@ -413,13 +456,13 @@ class _WorkshopDetailView extends StatelessWidget {
 }
 
 class _ReviewTile extends StatelessWidget {
-  final Map<String, dynamic> review;
+  final dynamic review;
 
   const _ReviewTile({required this.review});
 
   @override
   Widget build(BuildContext context) {
-    final rating = review['rating'] as int;
+    final rating = review.rating as double;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
@@ -437,14 +480,19 @@ class _ReviewTile extends StatelessWidget {
                 CircleAvatar(
                   radius: 16,
                   backgroundColor: AppColors.brand.withValues(alpha: 0.15),
-                  child: Text(
-                    (review['name'] as String)[0],
-                    style: const TextStyle(
-                      color: AppColors.brand,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 13,
-                    ),
-                  ),
+                  backgroundImage: review.reviewerProfilePictureUrl != null
+                      ? NetworkImage(review.reviewerProfilePictureUrl!)
+                      : null,
+                  child: review.reviewerProfilePictureUrl == null
+                      ? Text(
+                          review.reviewerName.isNotEmpty ? review.reviewerName[0] : '?',
+                          style: const TextStyle(
+                            color: AppColors.brand,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 13,
+                          ),
+                        )
+                      : null,
                 ),
                 const SizedBox(width: 8),
                 Expanded(
@@ -452,7 +500,7 @@ class _ReviewTile extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        review['name'] as String,
+                        review.reviewerName,
                         style: const TextStyle(
                           color: AppColors.ink,
                           fontWeight: FontWeight.w600,
@@ -460,7 +508,7 @@ class _ReviewTile extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        review['date'] as String,
+                        '${review.createdAt.day}/${review.createdAt.month}/${review.createdAt.year}',
                         style: TextStyle(
                           color: AppColors.ink.withValues(alpha: 0.4),
                           fontSize: 11,
@@ -475,7 +523,7 @@ class _ReviewTile extends StatelessWidget {
                     (i) => Icon(
                       LucideIcons.star,
                       size: 12,
-                      color: i < rating ? Colors.amber : AppColors.line,
+                      color: i < rating.round() ? Colors.amber : AppColors.line,
                     ),
                   ),
                 ),
@@ -483,7 +531,7 @@ class _ReviewTile extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              review['comment'] as String,
+              review.comment,
               style: TextStyle(
                 color: AppColors.ink.withValues(alpha: 0.7),
                 fontSize: 13,

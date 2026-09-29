@@ -7,4 +7,5 @@ abstract class AccountRepository {
   Future<List<AddressEntity>> getAddresses();
   Future<AddressEntity> addAddress(AddressEntity address);
   Future<AddressEntity> updateAddress(AddressEntity address);
+  Future<void> deleteAddress(String addressId);
 }

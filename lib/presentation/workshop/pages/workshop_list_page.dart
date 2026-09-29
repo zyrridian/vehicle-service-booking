@@ -14,7 +14,7 @@ class WorkshopListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => Injection.provideWorkshopBloc()
-        ..add(const LoadWorkshopsEvent()),
+        ..add(const LoadWorkshopsEvent(lat: -6.200000, lon: 106.816666)),
       child: const _WorkshopListView(),
     );
   }
@@ -203,7 +203,7 @@ class _WorkshopListViewState extends State<_WorkshopListView> {
               ),
               onPressed: () => context
                   .read<WorkshopBloc>()
-                  .add(const LoadWorkshopsEvent()),
+                  .add(const LoadWorkshopsEvent(lat: -6.200000, lon: 106.816666)),
               child: const Text('Try Again',
                   style: TextStyle(color: Colors.white)),
             ),

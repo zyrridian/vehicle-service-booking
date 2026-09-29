@@ -8,12 +8,14 @@ import '../bloc/review_bloc.dart';
 
 class ReviewPage extends StatelessWidget {
   final String bookingId;
+  final String workshopId;
   final String workshopName;
   final String vehicleName;
 
   const ReviewPage({
     super.key,
     required this.bookingId,
+    required this.workshopId,
     required this.workshopName,
     required this.vehicleName,
   });
@@ -24,6 +26,7 @@ class ReviewPage extends StatelessWidget {
       create: (_) => Injection.provideReviewBloc(),
       child: _ReviewView(
         bookingId: bookingId,
+        workshopId: workshopId,
         workshopName: workshopName,
         vehicleName: vehicleName,
       ),
@@ -33,11 +36,13 @@ class ReviewPage extends StatelessWidget {
 
 class _ReviewView extends StatefulWidget {
   final String bookingId;
+  final String workshopId;
   final String workshopName;
   final String vehicleName;
 
   const _ReviewView({
     required this.bookingId,
+    required this.workshopId,
     required this.workshopName,
     required this.vehicleName,
   });
@@ -80,7 +85,7 @@ class _ReviewViewState extends State<_ReviewView> {
     context.read<ReviewBloc>().add(
           SubmitReviewEvent(
             bookingId: widget.bookingId,
-            workshopId: 'ws-001', 
+            workshopId: widget.workshopId,
             rating: _selectedRating,
             comment: _commentController.text.trim(),
           ),
@@ -110,7 +115,7 @@ class _ReviewViewState extends State<_ReviewView> {
         }
       },
       child: Scaffold(
-        backgroundColor: AppColors.surface,
+        backgroundColor: Colors.white,
         appBar: _buildAppBar(context),
         body: _buildBody(context),
       ),
@@ -120,6 +125,7 @@ class _ReviewViewState extends State<_ReviewView> {
   AppBar _buildAppBar(BuildContext context) {
     return AppBar(
       backgroundColor: Colors.white,
+      surfaceTintColor: Colors.transparent,
       elevation: 0,
       centerTitle: true,
       leading: IconButton(
@@ -165,9 +171,8 @@ class _ReviewViewState extends State<_ReviewView> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.line),
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(24),
       ),
       child: Row(
         children: [
@@ -220,9 +225,8 @@ class _ReviewViewState extends State<_ReviewView> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.line),
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(24),
       ),
       child: Column(
         children: [
@@ -281,9 +285,8 @@ class _ReviewViewState extends State<_ReviewView> {
   Widget _buildCommentCard() {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.line),
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(24),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

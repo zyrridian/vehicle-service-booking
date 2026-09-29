@@ -12,7 +12,13 @@ abstract class WorkshopEvent extends Equatable {
 }
 
 class LoadWorkshopsEvent extends WorkshopEvent {
-  const LoadWorkshopsEvent();
+  final double? lat;
+  final double? lon;
+  
+  const LoadWorkshopsEvent({this.lat, this.lon});
+
+  @override
+  List<Object?> get props => [lat, lon];
 }
 
 class LoadWorkshopDetailEvent extends WorkshopEvent {
@@ -74,7 +80,7 @@ class WorkshopBloc extends Bloc<WorkshopEvent, WorkshopState> {
   ) async {
     emit(state.copyWith(isLoading: true, errorMessage: null));
     try {
-      final workshops = await getWorkshopsUseCase();
+      final workshops = await getWorkshopsUseCase(lat: event.lat, lon: event.lon);
       emit(state.copyWith(isLoading: false, workshops: workshops));
     } catch (e) {
       emit(state.copyWith(

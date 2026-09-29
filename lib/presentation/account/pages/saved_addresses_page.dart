@@ -49,66 +49,117 @@ class _SavedAddressesView extends StatelessWidget {
           }
           final addresses = state.addresses ?? [];
           if (addresses.isEmpty) {
-            return const Center(child: Text('No addresses saved yet.'));
+            return RefreshIndicator(
+              onRefresh: () async {
+                context.read<AccountBloc>().add(FetchAddressesRequested());
+                await context.read<AccountBloc>().stream.firstWhere((s) => !s.isLoading);
+              },
+              child: ListView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                children: const [
+                  SizedBox(height: 100),
+                  Center(child: Text('No addresses saved yet.')),
+                ],
+              ),
+            );
           }
-          return ListView.builder(
-            padding: const EdgeInsets.all(20),
-            itemCount: addresses.length,
-            itemBuilder: (context, index) {
-              final addr = addresses[index];
-              return Container(
-                margin: const EdgeInsets.only(bottom: 16),
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: addr.isDefault ? AppColors.brand.withValues(alpha: 0.05) : AppColors.surface,
-                  borderRadius: BorderRadius.circular(24),
-                  border: Border.all(color: addr.isDefault ? AppColors.brand : Colors.transparent, width: 2.0),
-                ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Icon(LucideIcons.mapPin, color: addr.isDefault ? AppColors.brand : AppColors.ink.withValues(alpha: 0.5), size: 24),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Text(addr.label, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: AppColors.ink)),
-                              if (addr.isDefault) ...[
-                                const SizedBox(width: 8),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                  decoration: BoxDecoration(color: AppColors.brand.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(4)),
-                                  child: const Text('Default', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColors.brand)),
-                                ),
-                              ]
-                            ],
-                          ),
-                          const SizedBox(height: 4),
-                          Text(addr.fullAddress, style: TextStyle(fontSize: 13, height: 1.4, color: AppColors.ink.withValues(alpha: 0.7))),
-                        ],
-                      ),
-                    ),
-                    IconButton(
-                      icon: const Icon(LucideIcons.edit2, size: 18),
-                      color: AppColors.ink.withValues(alpha: 0.5),
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => BlocProvider.value(
-                              value: context.read<AccountBloc>(),
-                              child: AddEditAddressPage(addressToEdit: addr),
-                            ),
-                          ),
-                        );
-                      },
-                    )
-                  ],
-                ),
-              );
+          return RefreshIndicator(
+            onRefresh: () async {
+              context.read<AccountBloc>().add(FetchAddressesRequested());
+              await context.read<AccountBloc>().stream.firstWhere((s) => !s.isLoading);
             },
+            child: ListView.builder(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.all(20),
+              itemCount: addresses.length,
+              itemBuilder: (context, index) {
+                final addr = addresses[index];
+                return Container(
+                  margin: const EdgeInsets.only(bottom: 16),
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: addr.isDefault ? AppColors.brand.withValues(alpha: 0.05) : AppColors.surface,
+                    borderRadius: BorderRadius.circular(24),
+                    border: Border.all(color: addr.isDefault ? AppColors.brand : Colors.transparent, width: 2.0),
+                  ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Icon(LucideIcons.mapPin, color: addr.isDefault ? AppColors.brand : AppColors.ink.withValues(alpha: 0.5), size: 24),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Text(addr.label, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: AppColors.ink)),
+                                if (addr.isDefault) ...[
+                                  const SizedBox(width: 8),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                    decoration: BoxDecoration(color: AppColors.brand.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(4)),
+                                    child: const Text('Default', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColors.brand)),
+                                  ),
+                                ]
+                              ],
+                            ),
+                            const SizedBox(height: 4),
+                            Text(addr.fullAddress, style: TextStyle(fontSize: 13, height: 1.4, color: AppColors.ink.withValues(alpha: 0.7))),
+                          ],
+                        ),
+                      ),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: const Icon(LucideIcons.edit2, size: 18),
+                            color: AppColors.ink.withValues(alpha: 0.5),
+                            onPressed: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) => BlocProvider.value(
+                                    value: context.read<AccountBloc>(),
+                                    child: AddEditAddressPage(addressToEdit: addr),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                          IconButton(
+                            icon: const Icon(LucideIcons.trash2, size: 18),
+                            color: Colors.red.withValues(alpha: 0.7),
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (dialogContext) => AlertDialog(
+                                  backgroundColor: Colors.white,
+                                  title: const Text('Delete Address'),
+                                  content: const Text('Are you sure you want to delete this address?'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => Navigator.of(dialogContext).pop(),
+                                      child: const Text('Cancel', style: TextStyle(color: AppColors.ink)),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(dialogContext).pop();
+                                        context.read<AccountBloc>().add(DeleteAddressRequested(addr.id));
+                                      },
+                                      child: const Text('Delete', style: TextStyle(color: Colors.red)),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                );
+              },
+            ),
           );
         },
       ),

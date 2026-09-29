@@ -17,6 +17,12 @@ class _BookingScheduleSummaryPageState extends State<BookingScheduleSummaryPage>
   int _selectedBranch = 0;
 
   @override
+  void initState() {
+    super.initState();
+    context.read<BookingBloc>().add(FetchWorkshopsEvent());
+  }
+
+  @override
   Widget build(BuildContext context) {
     final today = DateTime.now();
     final dates = List.generate(7, (i) => today.add(Duration(days: i)));
@@ -57,14 +63,28 @@ class _BookingScheduleSummaryPageState extends State<BookingScheduleSummaryPage>
                       const SizedBox(height: 10),
                       SizedBox(
                         height: 44,
-                        child: ListView(
-                          scrollDirection: Axis.horizontal,
-                          children: [
-                            _buildBranchBtn(0, 'Servisin Aja - Kemang'),
-                            const SizedBox(width: 8),
-                            _buildBranchBtn(1, 'BSD'),
-                          ],
-                        ),
+                        child: state.workshops == null
+                          ? const Center(child: CircularProgressIndicator(color: AppColors.brand))
+                          : state.workshops!.isEmpty
+                            ? const Center(child: Text('No workshops available', style: TextStyle(color: Colors.grey, fontSize: 13)))
+                            : ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: state.workshops!.length,
+                                itemBuilder: (context, index) {
+                                  final w = state.workshops![index];
+                                  final isSelected = state.selectedWorkshopId == w.id;
+                                  return Padding(
+                                    padding: const EdgeInsets.only(right: 8),
+                                    child: _buildBranchBtn(
+                                      label: w.name, 
+                                      isSelected: isSelected, 
+                                      onTap: () {
+                                        context.read<BookingBloc>().add(SelectWorkshopEvent(w.id));
+                                      },
+                                    ),
+                                  );
+                                },
+                              ),
                       ),
                       const SizedBox(height: 20),
                       
@@ -167,7 +187,7 @@ class _BookingScheduleSummaryPageState extends State<BookingScheduleSummaryPage>
       ),
       bottomSheet: BlocBuilder<BookingBloc, BookingState>(
         builder: (context, state) {
-          final isReady = state.selectedDate != null && state.selectedTimeSlot != null;
+          final isReady = state.selectedDate != null && state.selectedTimeSlot != null && state.selectedWorkshopId != null;
           
           return Container(
             padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
@@ -240,10 +260,9 @@ class _BookingScheduleSummaryPageState extends State<BookingScheduleSummaryPage>
     );
   }
 
-  Widget _buildBranchBtn(int index, String label) {
-    final isSelected = _selectedBranch == index;
+  Widget _buildBranchBtn({required String label, required bool isSelected, required VoidCallback onTap}) {
     return GestureDetector(
-      onTap: () => setState(() => _selectedBranch = index),
+      onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
         decoration: BoxDecoration(

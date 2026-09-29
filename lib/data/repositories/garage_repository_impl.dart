@@ -14,10 +14,10 @@ class GarageRepositoryImpl implements GarageRepository {
   Future<GarageVehicleEntity> getVehicleDetail(String id) => remoteDataSource.getVehicleDetail(id);
 
   @override
-  Future<void> addVehicle(GarageVehicleEntity vehicle) => remoteDataSource.addVehicle(vehicle);
+  Future<GarageVehicleEntity> addVehicle(GarageVehicleEntity vehicle) => remoteDataSource.addVehicle(vehicle);
 
   @override
-  Future<void> editVehicle(GarageVehicleEntity vehicle) => remoteDataSource.editVehicle(vehicle);
+  Future<GarageVehicleEntity> editVehicle(GarageVehicleEntity vehicle) => remoteDataSource.editVehicle(vehicle);
 
   @override
   Future<void> deleteVehicle(String id) => remoteDataSource.deleteVehicle(id);

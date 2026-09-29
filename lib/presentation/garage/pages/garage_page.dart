@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lucide_icons/lucide_icons.dart';
@@ -76,7 +77,7 @@ class _GaragePageView extends StatelessWidget {
                                 nextService: v.nextService,
                                 status: v.status,
                                 statusColor: v.status == 'Good' ? AppColors.good : AppColors.warn,
-                                imageUrl: v.imageUrl,
+                                imageUrl: v.imageUrls.isNotEmpty ? v.imageUrls.first : 'https://images.unsplash.com/photo-1449426468159-d96dbf08f19f?w=300&q=80',
                               );
                             },
                           ),
@@ -203,20 +204,27 @@ class _GaragePageView extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
-              child: Image.network(
-                imageUrl,
-                width: 100,
-                height: 100,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return Container(
-                    width: 100,
-                    height: 100,
-                    color: Colors.grey[200],
-                    child: const Icon(LucideIcons.bike, color: Colors.grey),
-                  );
-                },
-              ),
+              child: imageUrl.startsWith('http')
+                  ? Image.network(
+                      imageUrl,
+                      width: 100,
+                      height: 100,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          width: 100,
+                          height: 100,
+                          color: Colors.grey[200],
+                          child: const Icon(LucideIcons.bike, color: Colors.grey),
+                        );
+                      },
+                    )
+                  : Image.file(
+                      File(imageUrl),
+                      width: 100,
+                      height: 100,
+                      fit: BoxFit.cover,
+                    ),
             ),
             const SizedBox(width: 16),
             Expanded(

@@ -118,28 +118,36 @@ class _HistoryPageViewState extends State<_HistoryPageView> {
 
   Widget _buildList(List<HistoryBookingEntity> bookings, String emptyTitle, String emptyMessage, {bool isActive = false}) {
     if (bookings.isEmpty) {
-      return _buildEmptyState(emptyTitle, emptyMessage);
+      return _buildEmptyState(context, emptyTitle, emptyMessage);
     }
-    return ListView.separated(
-      padding: const EdgeInsets.fromLTRB(20, 8, 20, 120),
-      itemCount: bookings.length,
-      separatorBuilder: (context, index) => const SizedBox(height: 16),
-      itemBuilder: (context, index) {
-        final b = bookings[index];
-        final statusColor = _getStatusColor(b.status);
-        return _buildHistoryCard(
-          vehicleName: b.vehicleName,
-          bookingId: b.bookingId,
-          serviceType: b.serviceType,
-          dateTime: b.dateTime,
-          location: b.location,
-          total: b.total,
-          status: b.status,
-          statusColor: statusColor,
-          imageUrl: b.imageUrl,
-          isActive: isActive,
-        );
+    return RefreshIndicator(
+      color: AppColors.brand,
+      onRefresh: () async {
+        context.read<HistoryBloc>().add(LoadHistoryEvent());
+        await Future.delayed(const Duration(milliseconds: 500));
       },
+      child: ListView.separated(
+        padding: const EdgeInsets.fromLTRB(20, 8, 20, 120),
+        itemCount: bookings.length,
+        separatorBuilder: (context, index) => const SizedBox(height: 16),
+        itemBuilder: (context, index) {
+          final b = bookings[index];
+          final statusColor = _getStatusColor(b.status);
+          return _buildHistoryCard(
+            vehicleName: b.vehicleName,
+            bookingId: b.bookingId,
+            workshopId: b.workshopId,
+            serviceType: b.serviceType,
+            dateTime: b.dateTime,
+            location: b.location,
+            total: b.total,
+            status: b.status,
+            statusColor: statusColor,
+            imageUrl: b.imageUrl,
+            isActive: isActive,
+          );
+        },
+      ),
     );
   }
 
@@ -149,6 +157,7 @@ class _HistoryPageViewState extends State<_HistoryPageView> {
       case 'completed':
         return AppColors.good;
       case 'waiting':
+      case 'pending':
       case 'scheduled':
         return AppColors.warn;
       case 'cancelled':
@@ -158,34 +167,49 @@ class _HistoryPageViewState extends State<_HistoryPageView> {
     }
   }
 
-  Widget _buildEmptyState(String title, String message) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 32.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(LucideIcons.calendarX,
-                size: 80, color: AppColors.ink.withValues(alpha: 0.1)),
-            const SizedBox(height: 24),
-            Text(
-              title,
-              style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.ink),
+  Widget _buildEmptyState(BuildContext context, String title, String message) {
+    return RefreshIndicator(
+      color: AppColors.brand,
+      onRefresh: () async {
+        context.read<HistoryBloc>().add(LoadHistoryEvent());
+        await Future.delayed(const Duration(milliseconds: 500));
+      },
+      child: LayoutBuilder(
+        builder: (context, constraints) => SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight),
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(LucideIcons.calendarX,
+                        size: 80, color: AppColors.ink.withValues(alpha: 0.1)),
+                    const SizedBox(height: 24),
+                    Text(
+                      title,
+                      style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.ink),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      message,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontSize: 14,
+                          color: AppColors.ink.withValues(alpha: 0.5),
+                          height: 1.5),
+                    ),
+                    const SizedBox(height: 60),
+                  ],
+                ),
+              ),
             ),
-            const SizedBox(height: 8),
-            Text(
-              message,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                  fontSize: 14,
-                  color: AppColors.ink.withValues(alpha: 0.5),
-                  height: 1.5),
-            ),
-            const SizedBox(height: 60),
-          ],
+          ),
         ),
       ),
     );
@@ -213,6 +237,7 @@ class _HistoryPageViewState extends State<_HistoryPageView> {
   Widget _buildHistoryCard({
     required String vehicleName,
     required String bookingId,
+    required String workshopId,
     required String serviceType,
     required String dateTime,
     required String location,
@@ -298,7 +323,7 @@ class _HistoryPageViewState extends State<_HistoryPageView> {
                 Row(
                   children: [
                     GestureDetector(
-                      onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => ReviewPage(bookingId: bookingId, workshopName: location, vehicleName: vehicleName))),
+                      onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => ReviewPage(bookingId: bookingId, workshopId: workshopId, workshopName: location, vehicleName: vehicleName))),
                       child: const Text('Rate', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.brand)),
                     ),
                     const SizedBox(width: 16),

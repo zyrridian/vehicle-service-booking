@@ -1,67 +1,48 @@
 import 'package:vehicle_service_booking/domain/entities/tracking_entity.dart';
+import '../../../core/network/api_endpoints.dart';
+import '../../../core/network/network_client.dart';
 
 abstract class TrackingRemoteDataSource {
   Future<BookingTrackingEntity> getBookingTracking(String bookingId);
 }
 
 class TrackingRemoteDataSourceImpl implements TrackingRemoteDataSource {
+  final NetworkClient _client;
+
+  TrackingRemoteDataSourceImpl(this._client);
+
   @override
   Future<BookingTrackingEntity> getBookingTracking(String bookingId) async {
-    await Future.delayed(const Duration(milliseconds: 500));
+    final response = await _client.get('${ApiEndpoints.tracking}/$bookingId');
+    final data = response as Map<String, dynamic>;
 
     return BookingTrackingEntity(
       bookingId: bookingId,
-      vehicleName: 'Toyota Avanza 2021',
-      serviceType: 'Full Service + Oil Change',
-      mechanicName: 'Rudi Hartono',
-      mechanicPhone: '+62 812-3456-7890',
-      mechanicPhotoUrl:
-          'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200',
-      mechanicRating: 4.7,
-      estimatedMinutes: 45,
-      currentStatus: 'working',
-      steps: [
-        TrackingStepEntity(
-          id: 'step-1',
-          title: 'Booking Confirmed',
-          description: 'Your service booking has been confirmed.',
-          isCompleted: true,
-          isActive: false,
-          time: '09:00',
-        ),
-        TrackingStepEntity(
-          id: 'step-2',
-          title: 'Mechanic Assigned',
-          description: 'Rudi Hartono has been assigned to your vehicle.',
-          isCompleted: true,
-          isActive: false,
-          time: '09:15',
-        ),
-        TrackingStepEntity(
-          id: 'step-3',
-          title: 'Mechanic On The Way',
-          description: 'Your mechanic is heading to the workshop bay.',
-          isCompleted: true,
-          isActive: false,
-          time: '09:30',
-        ),
-        TrackingStepEntity(
-          id: 'step-4',
-          title: 'Service In Progress',
-          description: 'Your vehicle is currently being serviced.',
-          isCompleted: false,
-          isActive: true,
-          time: '09:45',
-        ),
-        TrackingStepEntity(
-          id: 'step-5',
-          title: 'Service Completed',
-          description: 'Your vehicle is ready for pickup.',
-          isCompleted: false,
-          isActive: false,
-          time: null,
-        ),
-      ],
+      vehicleName: data['vehicleName'] ?? 'Unknown Vehicle',
+      serviceType: data['serviceType'] ?? 'Unknown Service',
+      mechanicName: data['mechanicName'] ?? 'Pending Mechanic',
+      mechanicPhone: data['mechanicPhone'] ?? '-',
+      mechanicPhotoUrl: data['mechanicPhotoUrl'],
+      mechanicRating: (data['mechanicRating'] ?? 0).toDouble(),
+      estimatedMinutes: data['estimatedMinutes'] ?? 0,
+      currentStatus: data['currentStatus'] ?? 'scheduled',
+      steps: _generateFallbackSteps(data['currentStatus'] ?? 'scheduled'),
     );
+  }
+
+  List<TrackingStepEntity> _generateFallbackSteps(String currentStatus) {
+    final statusList = ['confirmed', 'assigned', 'on_the_way', 'working', 'completed'];
+    final s = currentStatus.toLowerCase();
+    
+    int currentIndex = statusList.indexOf(s);
+    if (currentIndex == -1) currentIndex = 0;
+
+    return [
+      TrackingStepEntity(id: '1', title: 'Booking Confirmed', description: 'Confirmed', isCompleted: currentIndex >= 0, isActive: currentIndex == 0, time: ''),
+      TrackingStepEntity(id: '2', title: 'Mechanic Assigned', description: 'Assigned', isCompleted: currentIndex >= 1, isActive: currentIndex == 1, time: ''),
+      TrackingStepEntity(id: '3', title: 'Mechanic On The Way', description: 'On the way', isCompleted: currentIndex >= 2, isActive: currentIndex == 2, time: ''),
+      TrackingStepEntity(id: '4', title: 'Service In Progress', description: 'Working', isCompleted: currentIndex >= 3, isActive: currentIndex == 3, time: ''),
+      TrackingStepEntity(id: '5', title: 'Service Completed', description: 'Done', isCompleted: currentIndex >= 4, isActive: currentIndex == 4, time: ''),
+    ];
   }
 }

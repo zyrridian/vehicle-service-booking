@@ -11,8 +11,10 @@ class WorkshopRepositoryImpl implements WorkshopRepository {
   Future<List<WorkshopEntity>> getWorkshops({
     String? city,
     String? service,
+    double? lat,
+    double? lon,
   }) {
-    return _remoteDataSource.getWorkshops(city: city, service: service);
+    return _remoteDataSource.getWorkshops(city: city, service: service, lat: lat, lon: lon);
   }
 
   @override

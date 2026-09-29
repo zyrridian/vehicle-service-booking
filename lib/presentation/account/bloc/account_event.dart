@@ -28,3 +28,8 @@ class ChangeLanguageRequested extends AccountEvent {
   final String languageCode;
   ChangeLanguageRequested(this.languageCode);
 }
+
+class DeleteAddressRequested extends AccountEvent {
+  final String addressId;
+  DeleteAddressRequested(this.addressId);
+}

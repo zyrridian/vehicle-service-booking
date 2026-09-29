@@ -17,19 +17,25 @@ class MainLayoutPage extends StatefulWidget {
 class _MainLayoutPageState extends State<MainLayoutPage> {
   int _currentIndex = 0;
 
-  final List<Widget> _pages = const [
-    HomePage(),
-    GaragePage(),
-    HistoryPage(),
-    AccountPage(),
-  ];
+  void _switchTab(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    final List<Widget> pages = [
+      HomePage(onNavigateToTab: _switchTab),
+      const GaragePage(),
+      const HistoryPage(),
+      const AccountPage(),
+    ];
+
     return Scaffold(
       backgroundColor: Colors.white,
       extendBody: true,
-      body: _pages[_currentIndex],
+      body: pages[_currentIndex],
       floatingActionButton: Container(
         height: 72,
         width: 72,

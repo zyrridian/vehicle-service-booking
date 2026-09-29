@@ -9,6 +9,7 @@ import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
 import 'login_success_page.dart';
+import '../../account/pages/simple_data_diri_page.dart';
 
 class OtpVerificationPage extends StatelessWidget {
   final String phoneNumber;
@@ -110,14 +111,25 @@ class _OtpVerificationViewState extends State<_OtpVerificationView> {
       body: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is AuthOtpSuccess) {
-            Navigator.of(context).pushAndRemoveUntil(
-              PageRouteBuilder(
-                transitionDuration: Duration.zero,
-                reverseTransitionDuration: Duration.zero,
-                pageBuilder: (context, animation, secondaryAnimation) => const LoginSuccessPage(),
-              ),
-              (route) => false,
-            );
+            if (state.user.isNewUser) {
+              Navigator.of(context).pushAndRemoveUntil(
+                PageRouteBuilder(
+                  transitionDuration: Duration.zero,
+                  reverseTransitionDuration: Duration.zero,
+                  pageBuilder: (context, animation, secondaryAnimation) => SimpleDataDiriPage(user: state.user),
+                ),
+                (route) => false,
+              );
+            } else {
+              Navigator.of(context).pushAndRemoveUntil(
+                PageRouteBuilder(
+                  transitionDuration: Duration.zero,
+                  reverseTransitionDuration: Duration.zero,
+                  pageBuilder: (context, animation, secondaryAnimation) => const LoginSuccessPage(),
+                ),
+                (route) => false,
+              );
+            }
           } else if (state is AuthError) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(state.message)),

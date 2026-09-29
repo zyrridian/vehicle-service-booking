@@ -1,59 +1,46 @@
 import '../../../domain/entities/history_entity.dart';
+import '../../../core/network/api_endpoints.dart';
+import '../../../core/network/network_client.dart';
+import '../../datasources/local/auth_local_datasource.dart';
 
 abstract class HistoryRemoteDataSource {
   Future<List<HistoryBookingEntity>> getHistoryBookings();
 }
 
 class HistoryRemoteDataSourceImpl implements HistoryRemoteDataSource {
+  final NetworkClient _client;
+  final AuthLocalDataSource _authLocal;
+
+  HistoryRemoteDataSourceImpl(this._client, this._authLocal);
+
   @override
   Future<List<HistoryBookingEntity>> getHistoryBookings() async {
-    await Future.delayed(const Duration(milliseconds: 800));
-    
-    return [
-      HistoryBookingEntity(
-        bookingId: 'BK-1204',
-        vehicleName: 'Honda Civic 2020',
-        serviceType: 'Full Service',
-        dateTime: 'Oct 24, 10:00 AM',
-        location: 'AutoFix Workshop',
-        total: '\$150',
-        status: 'In Progress',
-        imageUrl: 'https://images.unsplash.com/photo-1590362891991-f776e747a588?auto=format&fit=crop&q=80&w=200',
-        isActive: true,
-      ),
-      HistoryBookingEntity(
-        bookingId: 'BK-1205',
-        vehicleName: 'Toyota Camry 2019',
-        serviceType: 'Oil Change',
-        dateTime: 'Oct 25, 14:00 PM',
-        location: 'QuickLube Center',
-        total: '\$45',
-        status: 'Scheduled',
-        imageUrl: 'https://images.unsplash.com/photo-1590362891991-f776e747a588?auto=format&fit=crop&q=80&w=200',
-        isActive: true,
-      ),
-      HistoryBookingEntity(
-        bookingId: 'BK-1102',
-        vehicleName: 'Honda Civic 2020',
-        serviceType: 'Brake Inspection',
-        dateTime: 'Sep 15, 09:30 AM',
-        location: 'AutoFix Workshop',
-        total: '\$85',
-        status: 'Completed',
-        imageUrl: 'https://images.unsplash.com/photo-1590362891991-f776e747a588?auto=format&fit=crop&q=80&w=200',
-        isActive: false,
-      ),
-      HistoryBookingEntity(
-        bookingId: 'BK-1054',
-        vehicleName: 'Honda Civic 2020',
-        serviceType: 'Tire Rotation',
-        dateTime: 'Aug 02, 11:00 AM',
-        location: 'TireMasters',
-        total: '\$40',
-        status: 'Cancelled',
-        imageUrl: 'https://images.unsplash.com/photo-1590362891991-f776e747a588?auto=format&fit=crop&q=80&w=200',
-        isActive: false,
-      ),
-    ];
+    final session = await _authLocal.getSession();
+    final userId = session?.id;
+    if (userId == null) throw Exception('User not logged in');
+
+    final response = await _client.get(
+      ApiEndpoints.history,
+      queryParameters: {'userId': userId},
+    );
+
+    final List<dynamic> data = response;
+    return data.map((json) => HistoryBookingEntity(
+      bookingId: json['bookingId'] ?? '',
+      workshopId: json['workshopId'] ?? '00000000-0000-0000-0000-000000000000',
+      vehicleName: json['vehicleName'] ?? '',
+      serviceType: json['serviceType'] ?? '',
+      dateTime: json['dateTime'] ?? '',
+      location: json['location'] ?? '',
+      total: json['total'] ?? 'Rp 0',
+      status: json['status'] ?? '',
+      imageUrl: json['imageUrl'] ?? 'https://images.unsplash.com/photo-1590362891991-f776e747a588?auto=format&fit=crop&q=80&w=200',
+      isActive: _isActiveStatus(json['status'] ?? ''),
+    )).toList();
+  }
+
+  bool _isActiveStatus(String status) {
+    final s = status.toLowerCase();
+    return s == 'in progress' || s == 'scheduled' || s == 'waiting' || s == 'pending';
   }
 }

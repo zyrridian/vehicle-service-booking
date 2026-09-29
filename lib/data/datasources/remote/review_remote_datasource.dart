@@ -1,4 +1,6 @@
 import 'package:vehicle_service_booking/domain/entities/review_entity.dart';
+import '../../../core/network/api_endpoints.dart';
+import '../../../core/network/network_client.dart';
 
 abstract class ReviewRemoteDataSource {
   Future<ReviewEntity> submitReview({
@@ -15,68 +17,9 @@ abstract class ReviewRemoteDataSource {
 }
 
 class ReviewRemoteDataSourceImpl implements ReviewRemoteDataSource {
-  final List<ReviewEntity> _store = [
-    ReviewEntity(
-      id: 'rv-001',
-      bookingId: 'bk-100',
-      workshopId: 'ws-001',
-      workshopName: 'AutoCare Pro Workshop',
-      vehicleName: 'Honda Jazz 2020',
-      rating: 5.0,
-      comment:
-          'Excellent service! The mechanic was very professional and finished ahead of schedule.',
-      datePosted: DateTime(2026, 9, 20),
-      mechanicName: 'Rudi Hartono',
-    ),
-    ReviewEntity(
-      id: 'rv-002',
-      bookingId: 'bk-099',
-      workshopId: 'ws-001',
-      workshopName: 'AutoCare Pro Workshop',
-      vehicleName: 'Mitsubishi Xpander 2022',
-      rating: 4.5,
-      comment:
-          'Great workshop. Clean facility and transparent pricing. Will definitely come back.',
-      datePosted: DateTime(2026, 9, 15),
-      mechanicName: 'Andi Setiawan',
-    ),
-    ReviewEntity(
-      id: 'rv-003',
-      bookingId: 'bk-098',
-      workshopId: 'ws-001',
-      workshopName: 'AutoCare Pro Workshop',
-      vehicleName: 'Toyota Rush 2019',
-      rating: 4.0,
-      comment:
-          'Good service overall. Took a bit longer than estimated but the quality was solid.',
-      datePosted: DateTime(2026, 9, 10),
-      mechanicName: 'Budi Santoso',
-    ),
-    ReviewEntity(
-      id: 'rv-004',
-      bookingId: 'bk-097',
-      workshopId: 'ws-002',
-      workshopName: 'Speedy Motors Service',
-      vehicleName: 'Suzuki Ertiga 2021',
-      rating: 4.5,
-      comment:
-          'Fast and efficient. The oil change and tire rotation were done in under an hour.',
-      datePosted: DateTime(2026, 9, 8),
-      mechanicName: 'Doni Pratama',
-    ),
-    ReviewEntity(
-      id: 'rv-005',
-      bookingId: 'bk-096',
-      workshopId: 'ws-003',
-      workshopName: 'EliteTech Auto Center',
-      vehicleName: 'BMW 320i 2023',
-      rating: 5.0,
-      comment:
-          'Top-notch service for a premium vehicle. Technicians clearly know what they are doing.',
-      datePosted: DateTime(2026, 9, 5),
-      mechanicName: 'Fajar Nugroho',
-    ),
-  ];
+  final NetworkClient _client;
+
+  ReviewRemoteDataSourceImpl(this._client);
 
   @override
   Future<ReviewEntity> submitReview({
@@ -88,10 +31,17 @@ class ReviewRemoteDataSourceImpl implements ReviewRemoteDataSource {
     required String comment,
     required String mechanicName,
   }) async {
-    await Future.delayed(const Duration(milliseconds: 700));
-
-    final newReview = ReviewEntity(
-      id: 'rv-${DateTime.now().millisecondsSinceEpoch}',
+    final body = {
+      "bookingId": bookingId,
+      "workshopId": workshopId,
+      "rating": rating,
+      "comment": comment,
+    };
+    
+    final response = await _client.post(ApiEndpoints.reviews, data: body);
+    
+    return ReviewEntity(
+      id: 'generated-by-backend',
       bookingId: bookingId,
       workshopId: workshopId,
       workshopName: workshopName,
@@ -101,19 +51,26 @@ class ReviewRemoteDataSourceImpl implements ReviewRemoteDataSource {
       datePosted: DateTime.now(),
       mechanicName: mechanicName,
     );
-
-    _store.add(newReview);
-    return newReview;
   }
 
   @override
   Future<List<ReviewEntity>> getReviews(String workshopId) async {
-    await Future.delayed(const Duration(milliseconds: 500));
-
-    final filtered =
-        _store.where((r) => r.workshopId == workshopId).toList()
-          ..sort((a, b) => b.datePosted.compareTo(a.datePosted));
-
-    return filtered;
+    try {
+      final response = await _client.get(ApiEndpoints.reviews, queryParameters: {'workshopId': workshopId});
+      final List<dynamic> data = response;
+      return data.map((r) => ReviewEntity(
+        id: r['id'] ?? '',
+        bookingId: r['bookingId'] ?? '',
+        workshopId: r['workshopId'] ?? '',
+        workshopName: r['workshopName'] ?? '',
+        vehicleName: r['vehicleName'] ?? '',
+        rating: (r['rating'] ?? 0).toDouble(),
+        comment: r['comment'] ?? '',
+        datePosted: r['createdAt'] != null ? DateTime.parse(r['createdAt']) : DateTime.now(),
+        mechanicName: r['mechanicName'] ?? 'Mechanic',
+      )).toList();
+    } catch (e) {
+      return [];
+    }
   }
 }

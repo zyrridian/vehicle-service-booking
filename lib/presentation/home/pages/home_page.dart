@@ -1,36 +1,77 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../injection.dart';
 import '../../notifications/pages/notifications_page.dart';
 import '../../booking/pages/booking_select_vehicles_page.dart';
 import '../../workshop/pages/workshop_list_page.dart';
+import '../../workshop/pages/workshop_detail_page.dart';
+import '../../workshop/bloc/workshop_bloc.dart';
+import '../../garage/pages/vehicle_detail_page.dart';
+import '../../garage/bloc/garage_bloc.dart';
 import '../../tracking/pages/mechanic_tracking_page.dart';
 
+import '../../history/bloc/history_bloc.dart';
+import '../../history/bloc/history_event.dart';
+import '../../history/bloc/history_state.dart';
+
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  final void Function(int)? onNavigateToTab;
+
+  const HomePage({super.key, this.onNavigateToTab});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        bottom: false,
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.only(bottom: 120),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildHeader(context),
-              const SizedBox(height: 24),
-              _buildBanner(context),
-              const SizedBox(height: 24),
-              _buildActiveBookingSection(context),
-              const SizedBox(height: 24),
-              _buildNearbyWorkshopsSection(context),
-              const SizedBox(height: 24),
-              _buildGarageSection(context),
-            ],
-          ),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<WorkshopBloc>(
+          create: (_) => Injection.provideWorkshopBloc()
+            ..add(const LoadWorkshopsEvent(lat: -6.200000, lon: 106.816666)),
+        ),
+        BlocProvider<GarageBloc>(
+          create: (_) =>
+              Injection.provideGarageBloc()..add(LoadGarageVehiclesEvent()),
+        ),
+        BlocProvider<HistoryBloc>(
+          create: (_) =>
+              Injection.provideHistoryBloc()..add(LoadHistoryEvent()),
+        ),
+      ],
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: SafeArea(
+          bottom: false,
+          child: Builder(builder: (context) {
+            return RefreshIndicator(
+              color: AppColors.brand,
+              onRefresh: () async {
+                context.read<WorkshopBloc>().add(
+                    const LoadWorkshopsEvent(lat: -6.200000, lon: 106.816666));
+                context.read<GarageBloc>().add(LoadGarageVehiclesEvent());
+                context.read<HistoryBloc>().add(LoadHistoryEvent());
+                await Future.delayed(const Duration(milliseconds: 500));
+              },
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: const EdgeInsets.only(bottom: 120),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildHeader(context),
+                    const SizedBox(height: 24),
+                    _buildBanner(context),
+                    const SizedBox(height: 24),
+                    _buildActiveBookingSection(context),
+                    const SizedBox(height: 24),
+                    _buildNearbyWorkshopsSection(context),
+                    const SizedBox(height: 24),
+                    _buildGarageSection(context),
+                  ],
+                ),
+              ),
+            );
+          }),
         ),
       ),
     );
@@ -224,12 +265,12 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _buildActiveBookingSection(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const Text(
@@ -241,9 +282,9 @@ class HomePage extends StatelessWidget {
                 ),
               ),
               GestureDetector(
-                onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                    builder: (_) => const MechanicTrackingPage(
-                        bookingId: 'SA-20260925-7765'))),
+                onTap: () {
+                  onNavigateToTab?.call(2);
+                },
                 child: const Text(
                   'See All →',
                   style: TextStyle(
@@ -255,121 +296,160 @@ class HomePage extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 16),
-          GestureDetector(
-            onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                builder: (_) => const MechanicTrackingPage(
-                    bookingId: 'SA-20260925-7765'))),
-            child: Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: AppColors.surface,
-                borderRadius: BorderRadius.circular(24),
-              ),
-              child: Row(
-                children: [
-                  Container(
-                    width: 80,
-                    height: 80,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
+        ),
+        const SizedBox(height: 16),
+        BlocBuilder<HistoryBloc, HistoryState>(
+          builder: (context, state) {
+            if (state.isLoading && state.activeBookings.isEmpty) {
+              return const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(24.0),
+                  child: CircularProgressIndicator(color: AppColors.brand),
+                ),
+              );
+            }
+
+            if (state.activeBookings.isEmpty) {
+              return Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  color: AppColors.surface,
+                  borderRadius: BorderRadius.circular(24),
+                ),
+                child: Column(
+                  children: [
+                    const Icon(LucideIcons.calendarX,
+                        color: AppColors.line, size: 48),
+                    const SizedBox(height: 12),
+                    Text(
+                      'No active bookings',
+                      style: TextStyle(
+                        color: AppColors.ink.withValues(alpha: 0.5),
+                        fontSize: 14,
+                      ),
                     ),
-                    child: const Center(
-                      child: Icon(LucideIcons.navigation,
-                          color: AppColors.brand, size: 32),
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Honda Vario 150',
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.ink,
+                  ],
+                ),
+              );
+            }
+
+            return SizedBox(
+              height: 128,
+              child: ListView.separated(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                scrollDirection: Axis.horizontal,
+                itemCount: state.activeBookings.length,
+                separatorBuilder: (context, index) => const SizedBox(width: 12),
+                itemBuilder: (context, index) {
+                  final activeBooking = state.activeBookings[index];
+                  return GestureDetector(
+                    onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                        builder: (_) => MechanicTrackingPage(
+                            bookingId: activeBooking.bookingId))),
+                    child: Container(
+                      width: 320,
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: AppColors.surface,
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 80,
+                            height: 80,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: const Center(
+                              child: Icon(LucideIcons.navigation,
+                                  color: AppColors.brand, size: 32),
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          'Oil Change & Tune Up',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: AppColors.ink.withValues(alpha: 0.6),
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 8, vertical: 4),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: const Row(
-                                children: [
-                                  Icon(LucideIcons.clock,
-                                      size: 12, color: AppColors.ink),
-                                  SizedBox(width: 4),
-                                  Text(
-                                    '~45 mins',
-                                    style: TextStyle(
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.w600,
-                                      color: AppColors.ink,
-                                    ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  activeBooking.vehicleName,
+                                  style: const TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.ink,
                                   ),
-                                ],
-                              ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  activeBooking.serviceType,
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: AppColors.ink.withValues(alpha: 0.6),
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                const SizedBox(height: 12),
+                                Row(
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8, vertical: 4),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          const Icon(LucideIcons.clock,
+                                              size: 12, color: AppColors.ink),
+                                          const SizedBox(width: 4),
+                                          Text(
+                                            activeBooking.status,
+                                            style: const TextStyle(
+                                              fontSize: 11,
+                                              fontWeight: FontWeight.w600,
+                                              color: AppColors.ink,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const Spacer(),
+                                    Container(
+                                      width: 32,
+                                      height: 32,
+                                      decoration: const BoxDecoration(
+                                        color: AppColors.brand,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: const Icon(LucideIcons.arrowRight,
+                                          color: Colors.white, size: 16),
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
-                            const Spacer(),
-                            Container(
-                              width: 32,
-                              height: 32,
-                              decoration: const BoxDecoration(
-                                color: AppColors.brand,
-                                shape: BoxShape.circle,
-                              ),
-                              child: const Icon(LucideIcons.arrowRight,
-                                  color: Colors.white, size: 16),
-                            ),
-                          ],
-                        ),
-                      ],
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  );
+                },
               ),
-            ),
-          ),
-        ],
-      ),
+            );
+          },
+        ),
+      ],
     );
   }
 
   Widget _buildNearbyWorkshopsSection(BuildContext context) {
-    final workshops = [
-      _WorkshopPreview(
-          name: 'AHASS Bintang Motor',
-          rating: 4.8,
-          distance: '1.2 km',
-          isOpen: true,
-          imageUrl:
-              'https://images.unsplash.com/photo-1625047509248-ec889cbff17f?q=80&w=200&auto=format&fit=crop'),
-      _WorkshopPreview(
-          name: 'Bengkel SiTepat',
-          rating: 4.6,
-          distance: '2.1 km',
-          isOpen: true,
-          imageUrl:
-              'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?q=80&w=200&auto=format&fit=crop'),
-    ];
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
@@ -401,87 +481,139 @@ class HomePage extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 16),
-          Column(
-            children: workshops.map((w) {
-              return GestureDetector(
-                onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                    builder: (_) => const WorkshopListPage())),
-                child: Container(
-                  margin: const EdgeInsets.only(bottom: 12),
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: AppColors.surface,
-                    borderRadius: BorderRadius.circular(24),
+          BlocBuilder<WorkshopBloc, WorkshopState>(
+            builder: (context, state) {
+              if (state.isLoading && state.workshops.isEmpty) {
+                return const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(24.0),
+                    child: CircularProgressIndicator(color: AppColors.brand),
                   ),
-                  child: Row(
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(16),
-                        child: Image.network(
-                          w.imageUrl,
-                          width: 80,
-                          height: 80,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) =>
-                              Container(width: 80, height: 80, color: Colors.grey, child: const Icon(LucideIcons.imageOff)),
-                        ),
+                );
+              }
+
+              if (state.errorMessage != null && state.workshops.isEmpty) {
+                return Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(24.0),
+                    child: Text(
+                      'Failed to load workshops',
+                      style: TextStyle(
+                          color: AppColors.ink.withValues(alpha: 0.5)),
+                    ),
+                  ),
+                );
+              }
+
+              if (state.workshops.isEmpty) {
+                return Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(24.0),
+                    child: Text(
+                      'No workshops found nearby',
+                      style: TextStyle(
+                          color: AppColors.ink.withValues(alpha: 0.5)),
+                    ),
+                  ),
+                );
+              }
+
+              final previewWorkshops = state.workshops.take(3).toList();
+
+              return Column(
+                children: previewWorkshops.map((w) {
+                  return GestureDetector(
+                    onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                      builder: (_) => BlocProvider.value(
+                        value: context.read<WorkshopBloc>(),
+                        child: WorkshopDetailPage(workshopId: w.id),
                       ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              w.name,
-                              style: const TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.ink,
-                              ),
+                    )),
+                    child: Container(
+                      margin: const EdgeInsets.only(bottom: 12),
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: AppColors.surface,
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      child: Row(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(16),
+                            child: Image.network(
+                              w.imageUrl,
+                              width: 80,
+                              height: 80,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) =>
+                                  Container(
+                                      width: 80,
+                                      height: 80,
+                                      color: Colors.grey,
+                                      child: const Icon(LucideIcons.imageOff,
+                                          color: Colors.white)),
                             ),
-                            const SizedBox(height: 4),
-                            Text(
-                              'Official · ${w.distance}',
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: AppColors.ink.withValues(alpha: 0.6),
-                              ),
-                            ),
-                            const SizedBox(height: 12),
-                            Row(
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Icon(LucideIcons.star,
-                                    size: 14, color: Color(0xFFFFC107)),
-                                const SizedBox(width: 4),
                                 Text(
-                                  '${w.rating}',
+                                  w.name,
                                   style: const TextStyle(
-                                    fontSize: 12,
+                                    fontSize: 15,
                                     fontWeight: FontWeight.bold,
                                     color: AppColors.ink,
                                   ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
-                                const Spacer(),
-                                Container(
-                                  width: 32,
-                                  height: 32,
-                                  decoration: const BoxDecoration(
-                                    color: AppColors.brand,
-                                    shape: BoxShape.circle,
+                                const SizedBox(height: 4),
+                                Text(
+                                  '${w.isOpen ? "Open" : "Closed"} · ${w.distanceKm} km',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: AppColors.ink.withValues(alpha: 0.6),
                                   ),
-                                  child: const Icon(LucideIcons.arrowRight,
-                                      color: Colors.white, size: 16),
+                                ),
+                                const SizedBox(height: 12),
+                                Row(
+                                  children: [
+                                    const Icon(LucideIcons.star,
+                                        size: 14, color: Color(0xFFFFC107)),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      '${w.rating}',
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                        color: AppColors.ink,
+                                      ),
+                                    ),
+                                    const Spacer(),
+                                    Container(
+                                      width: 32,
+                                      height: 32,
+                                      decoration: const BoxDecoration(
+                                        color: AppColors.brand,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: const Icon(LucideIcons.arrowRight,
+                                          color: Colors.white, size: 16),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                ),
+                    ),
+                  );
+                }).toList(),
               );
-            }).toList(),
+            },
           ),
         ],
       ),
@@ -505,12 +637,17 @@ class HomePage extends StatelessWidget {
                   color: AppColors.ink,
                 ),
               ),
-              const Text(
-                'See All →',
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.ink,
+              GestureDetector(
+                onTap: () {
+                  onNavigateToTab?.call(1);
+                },
+                child: const Text(
+                  'See All →',
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.ink,
+                  ),
                 ),
               ),
             ],
@@ -519,21 +656,56 @@ class HomePage extends StatelessWidget {
         const SizedBox(height: 16),
         SizedBox(
           height: 120,
-          child: ListView(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            scrollDirection: Axis.horizontal,
-            children: [
-              _buildGarageItem('Honda Vario 150', 'B 4567 ABC', '2 mos ago'),
-              const SizedBox(width: 12),
-              _buildGarageItem('Honda Beat Street', 'B 2210 XYZ', '5 mos ago'),
-            ],
+          child: BlocBuilder<GarageBloc, GarageState>(
+            builder: (context, state) {
+              if (state.isLoading &&
+                  (state.vehicles == null || state.vehicles!.isEmpty)) {
+                return const Center(
+                    child: CircularProgressIndicator(color: AppColors.brand));
+              }
+
+              final vehicles = state.vehicles ?? [];
+
+              if (vehicles.isEmpty) {
+                return Center(
+                  child: Text(
+                    'No vehicles in garage',
+                    style:
+                        TextStyle(color: AppColors.ink.withValues(alpha: 0.5)),
+                  ),
+                );
+              }
+
+              return ListView.separated(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                scrollDirection: Axis.horizontal,
+                itemCount: vehicles.length,
+                separatorBuilder: (context, index) => const SizedBox(width: 12),
+                itemBuilder: (context, index) {
+                  final v = vehicles[index];
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (_) => BlocProvider.value(
+                          value: context.read<GarageBloc>(),
+                          child: VehicleDetailPage(vehicleId: v.id),
+                        ),
+                      ));
+                    },
+                    child: _buildGarageItem(
+                        v.name, v.plate, v.nextService, v.status),
+                  );
+                },
+              );
+            },
           ),
         ),
       ],
     );
   }
 
-  Widget _buildGarageItem(String name, String plate, String lastService) {
+  Widget _buildGarageItem(
+      String name, String plate, String lastService, String status) {
     return Container(
       width: 220,
       padding: const EdgeInsets.all(16),
@@ -563,8 +735,8 @@ class HomePage extends StatelessWidget {
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: const Text(
-                  'Good Condition',
+                child: Text(
+                  status,
                   style: TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.w600,
@@ -592,25 +764,11 @@ class HomePage extends StatelessWidget {
               fontSize: 11,
               color: AppColors.ink.withValues(alpha: 0.6),
             ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
         ],
       ),
     );
   }
-}
-
-class _WorkshopPreview {
-  final String name;
-  final double rating;
-  final String distance;
-  final bool isOpen;
-  final String imageUrl;
-
-  _WorkshopPreview({
-    required this.name,
-    required this.rating,
-    required this.distance,
-    required this.isOpen,
-    required this.imageUrl,
-  });
 }

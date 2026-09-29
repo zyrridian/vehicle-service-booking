@@ -6,8 +6,8 @@ class GetWorkshopsUseCase {
 
   GetWorkshopsUseCase(this._repository);
 
-  Future<List<WorkshopEntity>> call({String? city, String? service}) {
-    return _repository.getWorkshops(city: city, service: service);
+  Future<List<WorkshopEntity>> call({String? city, String? service, double? lat, double? lon}) {
+    return _repository.getWorkshops(city: city, service: service, lat: lat, lon: lon);
   }
 }
 

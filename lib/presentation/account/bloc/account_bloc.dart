@@ -5,6 +5,7 @@ import '../../../domain/usecases/get_profile_usecase.dart';
 import '../../../domain/usecases/update_profile_usecase.dart';
 import '../../../domain/usecases/add_address_usecase.dart';
 import '../../../domain/usecases/update_address_usecase.dart';
+import '../../../domain/usecases/delete_address_usecase.dart';
 import '../../../domain/usecases/get_settings_usecase.dart';
 import '../../../domain/usecases/update_language_usecase.dart';
 import 'account_event.dart';
@@ -16,6 +17,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
   final UpdateProfileUseCase updateProfileUseCase;
   final AddAddressUseCase addAddressUseCase;
   final UpdateAddressUseCase updateAddressUseCase;
+  final DeleteAddressUseCase deleteAddressUseCase;
   final GetSettingsUseCase getSettingsUseCase;
   final UpdateLanguageUseCase updateLanguageUseCase;
 
@@ -25,6 +27,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
     required this.updateProfileUseCase,
     required this.addAddressUseCase,
     required this.updateAddressUseCase,
+    required this.deleteAddressUseCase,
     required this.getSettingsUseCase,
     required this.updateLanguageUseCase,
   }) : super(AccountState()) {
@@ -33,6 +36,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
     on<UpdateProfileRequested>(_onUpdateProfileRequested);
     on<AddAddressRequested>(_onAddAddressRequested);
     on<UpdateAddressRequested>(_onUpdateAddressRequested);
+    on<DeleteAddressRequested>(_onDeleteAddressRequested);
     on<LoadSettingsRequested>(_onLoadSettingsRequested);
     on<ChangeLanguageRequested>(_onChangeLanguageRequested);
   }
@@ -134,6 +138,18 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
       await updateLanguageUseCase.execute(event.languageCode);
       final updatedSettings = await getSettingsUseCase.execute();
       emit(state.copyWith(isLoading: false, settings: updatedSettings));
+    } catch (e) {
+      emit(state.copyWith(isLoading: false, errorMessage: e.toString()));
+    }
+  }
+
+  Future<void> _onDeleteAddressRequested(DeleteAddressRequested event, Emitter<AccountState> emit) async {
+    emit(state.copyWith(isLoading: true, errorMessage: null));
+    try {
+      await deleteAddressUseCase.execute(event.addressId);
+      final currentAddresses = List<AddressEntity>.from(state.addresses ?? []);
+      currentAddresses.removeWhere((a) => a.id == event.addressId);
+      emit(state.copyWith(isLoading: false, addresses: currentAddresses, isSuccess: true));
     } catch (e) {
       emit(state.copyWith(isLoading: false, errorMessage: e.toString()));
     }
