@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:intl/intl.dart';
 
+import '../../../domain/entities/invoice_entity.dart';
+
 import '../../../core/theme/app_colors.dart';
 import '../../../injection.dart';
 import '../bloc/invoice_bloc.dart';
@@ -35,25 +37,29 @@ class _InvoiceDetailView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final dummyInvoice = InvoiceEntity(
+      invoiceId: 'INV-${bookingId.length > 8 ? bookingId.substring(0, 8).toUpperCase() : bookingId.toUpperCase()}',
+      bookingId: bookingId,
+      vehicleName: 'Honda PCX 160',
+      plate: 'D 1234 ABC',
+      workshopName: 'AHASS Bintang Motor Bandung',
+      dateTime: DateTime.now().subtract(const Duration(days: 2)),
+      lineItems: [
+        InvoiceLineItemEntity(name: 'Jasa Service CVT', qty: 1, unitPrice: 75000, total: 75000, type: 'Jasa'),
+        InvoiceLineItemEntity(name: 'Oli Mesin MPX 2', qty: 1, unitPrice: 55000, total: 55000, type: 'Sparepart'),
+        InvoiceLineItemEntity(name: 'Filter Udara', qty: 1, unitPrice: 55000, total: 55000, type: 'Sparepart'),
+      ],
+      subtotal: 185000,
+      taxAmount: 20350,
+      totalAmount: 205350,
+      paymentMethod: 'BCA Virtual Account',
+      isPaid: true,
+    );
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: _buildAppBar(context),
-      body: BlocBuilder<InvoiceBloc, InvoiceState>(
-        builder: (context, state) {
-          if (state.isLoading) {
-            return const Center(
-              child: CircularProgressIndicator(color: AppColors.brand),
-            );
-          }
-          if (state.errorMessage != null) {
-            return _buildError(context, state.errorMessage!);
-          }
-          if (state.invoice != null) {
-            return _buildBody(context, state.invoice);
-          }
-          return const SizedBox.shrink();
-        },
-      ),
+      body: _buildBody(context, dummyInvoice),
       bottomNavigationBar: _buildDownloadBar(context),
     );
   }
